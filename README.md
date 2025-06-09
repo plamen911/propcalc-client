@@ -3,6 +3,9 @@
 ## Overview
 Estate Calculator is a modern, user-friendly ReactJS application designed to calculate property insurance premiums. This frontend application provides a seamless multi-step form experience for users to input property details, select insurance coverage options, enter personal information, and review their insurance order.
 
+## Live Demo
+Check out the live application: [https://propcalc-dy7.pages.dev/](https://propcalc-dy7.pages.dev/)
+
 ## Features
 - **Multi-step Form Process**: Intuitive 4-step form with smooth animations between steps
 - **Property Information Collection**: Gather details about property location, type, and characteristics
@@ -91,3 +94,5 @@ The application uses JWT (JSON Web Token) authentication with anonymous users. T
 
 ## Deployment
 The application is configured to be deployed to any static hosting service. The production build outputs optimized static files to the `dist` directory.
+
+The application is currently deployed on Cloudflare Pages and accessible at [https://propcalc-dy7.pages.dev/](https://propcalc-dy7.pages.dev/).
