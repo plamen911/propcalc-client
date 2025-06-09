@@ -337,7 +337,14 @@ const CoveredRisksForm = ({ formData, nextStep, prevStep, lastOpenedAccordion, s
                 onClick={() => toggleAccordion(preset.id)}
               >
                 <div className="flex items-center flex-1 min-w-0">
-                  <span className="text-white font-medium text-base sm:text-lg">{preset.name}</span>
+                  <div className="flex items-center">
+                    <span className="text-white font-medium text-base sm:text-lg mr-3">{preset.name}</span>
+                    <span className="text-[#ffcc00] text-md font-semibold whitespace-nowrap" style={{animation: 'colorPulse 2s ease-in-out infinite'}}>
+                      {preset.tariff_preset_clauses.find(clause => clause.insurance_clause.id === 1)?.tariff_amount || "0"} {currencySymbol}
+                    </span>
+                    <ArrowForward className="mx-2 text-white" fontSize="small" />
+                    <span className="text-[#ffcc00] text-md font-semibold whitespace-nowrap" style={{animation: 'colorPulse 2s ease-in-out infinite'}}>{preset.statistics.total_amount} {currencySymbol}</span>
+                  </div>
                 </div>
                 <div className="bg-white/10 rounded-full p-1.5 ml-2">
                   <svg 
