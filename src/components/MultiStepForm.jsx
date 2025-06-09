@@ -1,0 +1,338 @@
+import { useState, useEffect, useRef } from 'react';
+import EstateDataForm from './EstateDataForm';
+import CoveredRisksForm from './CoveredRisksForm';
+import InsurerForm from './InsurerForm';
+import OrderPreviewForm from './OrderPreviewForm';
+import api from '../services/api';
+import AuthService from '../services/auth';
+
+const MultiStepForm = () => {
+  const [currentStep, setCurrentStep] = useState(0);
+  const [previousStep, setPreviousStep] = useState(0);
+  const [direction, setDirection] = useState('forward');
+  const [animating, setAnimating] = useState(false);
+  const formContainerRef = useRef(null);
+
+  const [formData, setFormData] = useState({
+    settlement_id: '',
+    estate_type_id: '',
+    estate_subtype_id: '',
+    distance_to_water_id: '',
+    area_sq_meters: '',
+  });
+  const [lastOpenedAccordion, setLastOpenedAccordion] = useState(null);
+  const [customClauseAmounts, setCustomClauseAmounts] = useState({});
+  const [selectedRisks, setSelectedRisks] = useState({});
+  const [isCustomPackageSelected, setIsCustomPackageSelected] = useState(false);
+  const [selectedTariff, setSelectedTariff] = useState(null);
+  const [currencySymbol, setCurrencySymbol] = useState('');
+
+  // State for InsurerForm
+  const [insurerData, setInsurerData] = useState({
+    full_name: '',
+    id_number: '',
+    id_number_type_id: '1',
+    insurer_settlement_id: '',
+    permanent_address: '',
+    phone: '',
+    email: '',
+    person_role_id: '1',
+    birth_date: '',
+    insurer_nationality_id: '',
+    gender: ''
+  });
+  const [checkedItems, setCheckedItems] = useState({});
+
+  // State for tracking loading and error states
+  const [isLoading, setIsLoading] = useState(true);
+  const [loadError, setLoadError] = useState(null);
+
+  // Fetch all initial data and perform silent authentication when the component mounts
+  useEffect(() => {
+    const initializeForm = async () => {
+      setIsLoading(true);
+      setLoadError(null);
+
+      try {
+        // First, perform silent authentication
+        await AuthService.loginAnonymous();
+
+        // Then fetch all initial data in a single API call
+        const response = await api.get('/api/v1/form-data/initial-data');
+
+        // Set currency symbol
+        setCurrencySymbol(response.data.currency_symbol);
+
+        // Store the initial data in a global variable to be used by child components
+        window.initialFormData = response.data;
+
+        setIsLoading(false);
+      } catch (error) {
+        console.error('Error initializing form:', error);
+
+        // Handle authentication errors specifically
+        if (error.isAuthError) {
+          setLoadError(error.authErrorMessage || 'Authentication error. Please refresh the page.');
+        } else if (error.response && error.response.status === 401) {
+          setLoadError('Your session has expired. Please refresh the page to continue.');
+        } else {
+          setLoadError('Failed to load form data. Please try again later.');
+        }
+
+        setIsLoading(false);
+      }
+    };
+
+    initializeForm();
+  }, []);
+
+  const handleChange = (e) => {
+    const { name, value } = e.target;
+    setFormData(prevState => ({
+      ...prevState,
+      [name]: value
+    }));
+  };
+
+  const nextStep = () => {
+    if (animating) return;
+    setAnimating(true);
+    setDirection('forward');
+    setPreviousStep(currentStep);
+    setTimeout(() => {
+      setCurrentStep(prevStep => prevStep + 1);
+      setTimeout(() => {
+        setAnimating(false);
+      }, 700); // Match this with the CSS transition duration
+    }, 50);
+  };
+
+  const prevStep = () => {
+    if (animating) return;
+    setAnimating(true);
+    setDirection('backward');
+    setPreviousStep(currentStep);
+    setTimeout(() => {
+      setCurrentStep(prevStep => prevStep - 1);
+      setTimeout(() => {
+        setAnimating(false);
+      }, 700); // Match this with the CSS transition duration
+    }, 50);
+  };
+
+  const resetForm = () => {
+    // Reset animation state first
+    setAnimating(false);
+    setDirection('forward');
+    setPreviousStep(0);
+
+    // Reset all form state to initial values
+    setCurrentStep(0);
+    setFormData({
+      settlement_id: '',
+      estate_type_id: '',
+      estate_subtype_id: '',
+      distance_to_water_id: '',
+      area_sq_meters: '',
+    });
+    setLastOpenedAccordion(null);
+    setCustomClauseAmounts({});
+    setSelectedRisks({});
+    setIsCustomPackageSelected(false);
+    setSelectedTariff(null);
+    setInsurerData({
+      full_name: '',
+      id_number: '',
+      id_number_type_id: '1',
+      insurer_settlement_id: '',
+      permanent_address: '',
+      phone: '',
+      email: '',
+      person_role_id: '1',
+      birth_date: '',
+      insurer_nationality_id: '',
+      gender: ''
+    });
+    setCheckedItems({});
+  };
+
+  const renderStep = () => {
+    // Show loading indicator while data is being fetched
+    if (isLoading) {
+      return (
+        <div className="flex justify-center items-center h-64">
+          <div className="text-white text-center">
+            <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-white mx-auto mb-4"></div>
+            <p>Loading form data...</p>
+          </div>
+        </div>
+      );
+    }
+
+    // Show error message if there was an error loading data
+    if (loadError) {
+      return (
+        <div className="flex justify-center items-center h-64">
+          <div className="bg-red-900/20 border border-red-300/30 rounded-lg p-4 max-w-md text-center">
+            <svg className="w-12 h-12 text-red-300 mx-auto mb-3" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+            </svg>
+            <p className="text-red-300 mb-4">{loadError}</p>
+            <button 
+              onClick={() => window.location.reload()} 
+              className="px-4 py-2 bg-white text-[#8b2131] rounded-full hover:bg-gray-100 transition-colors"
+            >
+              Refresh Page
+            </button>
+          </div>
+        </div>
+      );
+    }
+
+    // Render the appropriate step if data is loaded successfully
+    switch (currentStep) {
+      case 0:
+        return (
+          <EstateDataForm 
+            formData={formData} 
+            handleChange={handleChange} 
+            nextStep={nextStep} 
+          />
+        );
+      case 1:
+        return (
+          <CoveredRisksForm 
+            formData={formData}
+            nextStep={nextStep} 
+            prevStep={prevStep}
+            lastOpenedAccordion={lastOpenedAccordion}
+            setLastOpenedAccordion={setLastOpenedAccordion}
+            customClauseAmounts={customClauseAmounts}
+            setCustomClauseAmounts={setCustomClauseAmounts}
+            selectedRisks={selectedRisks}
+            setSelectedRisks={setSelectedRisks}
+            isCustomPackageSelected={isCustomPackageSelected}
+            setIsCustomPackageSelected={setIsCustomPackageSelected}
+            setSelectedTariff={setSelectedTariff}
+            currencySymbol={currencySymbol}
+          />
+        );
+      case 2:
+        return (
+          <InsurerForm 
+            nextStep={nextStep} 
+            prevStep={prevStep}
+            selectedTariff={selectedTariff}
+            insurerData={insurerData}
+            setInsurerData={setInsurerData}
+            checkedItems={checkedItems}
+            setCheckedItems={setCheckedItems}
+            currencySymbol={currencySymbol}
+          />
+        );
+      case 3:
+        return (
+          <OrderPreviewForm 
+            prevStep={prevStep}
+            selectedTariff={selectedTariff}
+            insurerData={insurerData}
+            checkedItems={checkedItems}
+            formData={formData}
+            currencySymbol={currencySymbol}
+            resetForm={resetForm}
+          />
+        );
+      default:
+        return null;
+    }
+  };
+
+  const steps = [
+    'Данни за имота',
+    'Покрити рискове',
+    'Застраховащ',
+    'Преглед'
+  ];
+
+  // Define custom animation styles with enhanced effects
+  const slideLeftEnter = 'translate-x-0 opacity-100 scale-100';
+  const slideLeftExit = '-translate-x-full opacity-0 scale-95';
+  const slideRightEnter = 'translate-x-0 opacity-100 scale-100';
+  const slideRightExit = 'translate-x-full opacity-0 scale-95';
+
+  // Get animation classes based on direction and previous/current step
+  const getAnimationClasses = () => {
+    if (!animating) return 'translate-x-0 opacity-100 scale-100';
+
+    if (direction === 'forward') {
+      return previousStep < currentStep ? slideLeftEnter : slideLeftExit;
+    } else {
+      return previousStep > currentStep ? slideRightEnter : slideRightExit;
+    }
+  };
+
+  return (
+    <div className="bg-[#8b2131] text-white rounded-lg shadow-lg overflow-hidden transition-all duration-300 hover:shadow-xl">
+      {/* Header with title and step indicator - improved for mobile */}
+      <div className="p-4 sm:p-6 md:p-8 border-b border-[#8b2131]/30 flex flex-col sm:flex-row justify-between items-center gap-3 sm:gap-0">
+        <h2 className="text-xl sm:text-2xl font-medium text-center sm:text-left">
+          ЗАСТРАХОВКА ИМУЩЕСТВО
+        </h2>
+        <span className="px-3 sm:px-4 py-1.5 sm:py-2 bg-white text-[#8b2131] rounded-full border-2 border-white text-sm sm:text-base font-medium whitespace-nowrap">
+          Стъпка {currentStep + 1} от {steps.length}
+        </span>
+      </div>
+
+      {/* Stepper - improved for mobile */}
+      <div className="p-4 sm:p-6 md:p-8 bg-[#8b2131]/90 border-b border-[#8b2131]/30">
+        <div className="flex items-center justify-between">
+          {steps.map((label, index) => (
+            <div key={label} className="flex flex-col items-center">
+              <div className="relative flex items-center">
+                <div className={`w-8 h-8 sm:w-10 sm:h-10 rounded-full flex items-center justify-center ${
+                  currentStep > index || (index === 3 && currentStep === 3)
+                    ? 'bg-green-500 text-white' 
+                    : currentStep === index 
+                      ? 'bg-white text-[#8b2131]' 
+                      : 'bg-white/30 text-white'
+                }`}>
+                  {currentStep > index || (index === 3 && currentStep === 3) ? (
+                    <svg className="w-4 h-4 sm:w-6 sm:h-6" fill="currentColor" viewBox="0 0 20 20">
+                      <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
+                    </svg>
+                  ) : (
+                    <span className="text-sm sm:text-base font-medium">{index + 1}</span>
+                  )}
+                </div>
+                {index < steps.length - 1 && (
+                  <div className={`absolute top-4 sm:top-5 w-full h-0.5 left-8 -right-8 sm:left-10 sm:-right-10 ${
+                    currentStep > index ? 'bg-green-500' : 'bg-white/30'
+                  }`}></div>
+                )}
+              </div>
+              <span className="mt-2 sm:mt-3 text-xs sm:text-sm font-medium text-white text-center">
+                {label}
+              </span>
+            </div>
+          ))}
+        </div>
+      </div>
+
+      {/* Form content - improved for mobile with fancy animation */}
+      <div className="p-4 sm:p-6 md:p-8 bg-[#8b2131] relative overflow-hidden">
+        <div 
+          ref={formContainerRef}
+          className={`transform transition-all duration-700 ease-out ${getAnimationClasses()}`}
+          style={{ 
+            transitionTimingFunction: 'cubic-bezier(0.34, 1.56, 0.64, 1)',
+            willChange: 'transform, opacity, scale'
+          }}
+        >
+          {renderStep()}
+        </div>
+      </div>
+    </div>
+  );
+};
+
+export default MultiStepForm;
