@@ -337,13 +337,15 @@ const CoveredRisksForm = ({ formData, nextStep, prevStep, lastOpenedAccordion, s
                 onClick={() => toggleAccordion(preset.id)}
               >
                 <div className="flex items-center flex-1 min-w-0">
-                  <div className="flex items-center">
-                    <span className="text-white font-medium text-base sm:text-lg mr-3">{preset.name}</span>
-                    <span className="text-[#ffcc00] text-md font-semibold whitespace-nowrap" style={{animation: 'colorPulse 2s ease-in-out infinite'}}>
-                      {preset.tariff_preset_clauses.find(clause => clause.insurance_clause.id === 1)?.tariff_amount || "0"} {currencySymbol}
-                    </span>
-                    <ArrowForward className="mx-2 text-white" fontSize="small" />
-                    <span className="text-[#ffcc00] text-md font-semibold whitespace-nowrap" style={{animation: 'colorPulse 2s ease-in-out infinite'}}>{preset.statistics.total_amount} {currencySymbol}</span>
+                  <div className="flex flex-col sm:flex-row sm:items-center">
+                    <span className="text-white font-medium text-base sm:text-lg sm:mr-3">{preset.name}</span>
+                    <div className="flex items-center mt-1 sm:mt-0">
+                      <span className="text-[#ffcc00] text-md font-semibold whitespace-nowrap" style={{animation: 'colorPulse 2s ease-in-out infinite'}}>
+                        {preset.tariff_preset_clauses.find(clause => clause.insurance_clause.id === 1)?.tariff_amount || "0"} {currencySymbol}
+                      </span>
+                      <ArrowForward className="mx-2 text-white" fontSize="small" />
+                      <span className="text-[#ffcc00] text-md font-semibold whitespace-nowrap" style={{animation: 'colorPulse 2s ease-in-out infinite'}}>{preset.statistics.total_amount} {currencySymbol}</span>
+                    </div>
                   </div>
                 </div>
                 <div className="bg-white/10 rounded-full p-1.5 ml-2">
@@ -383,39 +385,39 @@ const CoveredRisksForm = ({ formData, nextStep, prevStep, lastOpenedAccordion, s
                   {preset.statistics && (
                     <div className="mt-4 sm:mt-6 rounded-lg overflow-hidden border border-white/20 shadow-md">
                       <div className="border-b border-white/10 bg-white/5 p-3">
-                        <div className="flex justify-between items-center">
-                          <div className="flex items-center">
-                            <span className="inline-block w-2 h-2 bg-blue-400 rounded-full mr-2"></span>
+                        <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center">
+                          <div className="flex items-center mb-1 sm:mb-0">
+                            <span className="inline-block w-2 h-2 bg-blue-400 rounded-full mr-2 flex-shrink-0"></span>
                             <span className="uppercase text-white text-xs sm:text-sm font-medium">Застрахователна премия</span>
                           </div>
-                          <div className="text-[#ffcc00] font-semibold text-base sm:text-lg ml-2">{preset.statistics.total_premium} {currencySymbol}</div>
+                          <div className="text-[#ffcc00] font-semibold text-base sm:text-lg sm:ml-2 self-end sm:self-auto">{preset.statistics.total_premium} {currencySymbol}</div>
                         </div>
                       </div>
                       <div className="border-b border-white/10 bg-white/5 p-3">
-                        <div className="flex justify-between items-center">
-                          <div className="flex items-center">
-                            <span className="inline-block w-2 h-2 bg-green-400 rounded-full mr-2"></span>
+                        <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center">
+                          <div className="flex items-center mb-1 sm:mb-0">
+                            <span className="inline-block w-2 h-2 bg-green-400 rounded-full mr-2 flex-shrink-0"></span>
                             <span className="uppercase text-white text-xs sm:text-sm font-medium">Застрахователна премия след отстъпка от {preset.discount_percent}%</span>
                           </div>
-                          <div className="text-[#ffcc00] font-semibold text-base sm:text-lg ml-2">{preset.statistics.discounted_premium} {currencySymbol}</div>
+                          <div className="text-[#ffcc00] font-semibold text-base sm:text-lg sm:ml-2 self-end sm:self-auto">{preset.statistics.discounted_premium} {currencySymbol}</div>
                         </div>
                       </div>
                       <div className="border-b border-white/10 bg-white/5 p-3">
-                        <div className="flex justify-between items-center">
-                          <div className="flex items-center">
-                            <span className="inline-block w-2 h-2 bg-yellow-400 rounded-full mr-2"></span>
+                        <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center">
+                          <div className="flex items-center mb-1 sm:mb-0">
+                            <span className="inline-block w-2 h-2 bg-yellow-400 rounded-full mr-2 flex-shrink-0"></span>
                             <span className="uppercase text-white text-xs sm:text-sm font-medium">{preset.tax_percent}% данък върху застрахователната премия</span>
                           </div>
-                          <div className="text-[#ffcc00] font-semibold text-base sm:text-lg ml-2">{preset.statistics.tax_amount} {currencySymbol}</div>
+                          <div className="text-[#ffcc00] font-semibold text-base sm:text-lg sm:ml-2 self-end sm:self-auto">{preset.statistics.tax_amount} {currencySymbol}</div>
                         </div>
                       </div>
                       <div className="bg-[#8b2131]/70 p-3">
-                        <div className="flex justify-between items-center">
-                          <div className="flex items-center">
-                            <span className="inline-block w-3 h-3 bg-red-500 rounded-full mr-2 animate-pulse"></span>
+                        <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center">
+                          <div className="flex items-center mb-1 sm:mb-0">
+                            <span className="inline-block w-3 h-3 bg-red-500 rounded-full mr-2 animate-pulse flex-shrink-0"></span>
                             <span className="uppercase text-white text-sm sm:text-base font-bold">Общо дължима сума за една година</span>
                           </div>
-                          <div className="text-white font-bold text-lg sm:text-xl ml-2" style={{animation: 'colorPulse 2s ease-in-out infinite'}}>{preset.statistics.total_amount} {currencySymbol}</div>
+                          <div className="text-white font-bold text-lg sm:text-xl sm:ml-2 self-end sm:self-auto" style={{animation: 'colorPulse 2s ease-in-out infinite'}}>{preset.statistics.total_amount} {currencySymbol}</div>
                         </div>
                       </div>
                     </div>
@@ -447,7 +449,9 @@ const CoveredRisksForm = ({ formData, nextStep, prevStep, lastOpenedAccordion, s
               onClick={toggleCustomPackage}
             >
               <div className="flex items-center flex-1 min-w-0">
-                <span className="text-white font-medium text-base sm:text-lg">Пакет по избор</span>
+                <div className="flex flex-col sm:flex-row sm:items-center">
+                  <span className="text-white font-medium text-base sm:text-lg">Пакет по избор</span>
+                </div>
               </div>
               <div className="bg-white/10 rounded-full p-1.5 ml-2">
                 <svg 
@@ -475,7 +479,7 @@ const CoveredRisksForm = ({ formData, nextStep, prevStep, lastOpenedAccordion, s
                   {allClauses.map((clause) => (
                     <div key={clause.id} className="flex justify-between items-center border-b border-white/10 py-2">
                       <div className="text-white text-sm sm:text-base pr-2 flex-1">{clause.name}</div>
-                      <div className="w-32 sm:w-40">
+                      <div className="w-36 sm:w-40">
                         {clause.allow_custom_amount && (
                           <div className="relative rounded-md shadow-sm">
                             <input
@@ -483,7 +487,7 @@ const CoveredRisksForm = ({ formData, nextStep, prevStep, lastOpenedAccordion, s
                               value={customClauseAmounts[clause.id]}
                               onChange={(e) => handleClauseAmountChange(clause.id, e.target.value)}
                               placeholder="Сума"
-                              className="w-full pr-12 px-3 py-3 sm:py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-[#8B2131] focus:border-[#8B2131] text-black text-base sm:text-base touch-manipulation"
+                              className="w-full pr-12 px-3 py-3.5 sm:py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-[#8B2131] focus:border-[#8B2131] text-black text-base sm:text-base touch-manipulation"
                               {...(clause.id === 1 ? {
                                 min: "100000",
                                 max: "600000",
@@ -509,39 +513,39 @@ const CoveredRisksForm = ({ formData, nextStep, prevStep, lastOpenedAccordion, s
                 {/* Statistics section - same design as tariff presets */}
                 <div className="mt-4 sm:mt-6 rounded-lg overflow-hidden border border-white/20 shadow-md">
                   <div className="border-b border-white/10 bg-white/5 p-3">
-                    <div className="flex justify-between items-center">
-                      <div className="flex items-center">
-                        <span className="inline-block w-2 h-2 bg-blue-400 rounded-full mr-2"></span>
+                    <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center">
+                      <div className="flex items-center mb-1 sm:mb-0">
+                        <span className="inline-block w-2 h-2 bg-blue-400 rounded-full mr-2 flex-shrink-0"></span>
                         <span className="uppercase text-white text-xs sm:text-sm font-medium">Застрахователна премия</span>
                       </div>
-                      <div className="text-[#ffcc00] font-semibold text-base sm:text-lg ml-2">{customPackageStatistics.statistics.total_premium} {currencySymbol}</div>
+                      <div className="text-[#ffcc00] font-semibold text-base sm:text-lg sm:ml-2 self-end sm:self-auto">{customPackageStatistics.statistics.total_premium} {currencySymbol}</div>
                     </div>
                   </div>
                   <div className="border-b border-white/10 bg-white/5 p-3">
-                    <div className="flex justify-between items-center">
-                      <div className="flex items-center">
-                        <span className="inline-block w-2 h-2 bg-green-400 rounded-full mr-2"></span>
+                    <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center">
+                      <div className="flex items-center mb-1 sm:mb-0">
+                        <span className="inline-block w-2 h-2 bg-green-400 rounded-full mr-2 flex-shrink-0"></span>
                         <span className="uppercase text-white text-xs sm:text-sm font-medium">Застрахователна премия след отстъпка от {customPackageStatistics.discount_percent}%</span>
                       </div>
-                      <div className="text-[#ffcc00] font-semibold text-base sm:text-lg ml-2">{customPackageStatistics.statistics.discounted_premium} {currencySymbol}</div>
+                      <div className="text-[#ffcc00] font-semibold text-base sm:text-lg sm:ml-2 self-end sm:self-auto">{customPackageStatistics.statistics.discounted_premium} {currencySymbol}</div>
                     </div>
                   </div>
                   <div className="border-b border-white/10 bg-white/5 p-3">
-                    <div className="flex justify-between items-center">
-                      <div className="flex items-center">
-                        <span className="inline-block w-2 h-2 bg-yellow-400 rounded-full mr-2"></span>
+                    <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center">
+                      <div className="flex items-center mb-1 sm:mb-0">
+                        <span className="inline-block w-2 h-2 bg-yellow-400 rounded-full mr-2 flex-shrink-0"></span>
                         <span className="uppercase text-white text-xs sm:text-sm font-medium">{customPackageStatistics.tax_percent}% данък върху застрахователната премия</span>
                       </div>
-                      <div className="text-[#ffcc00] font-semibold text-base sm:text-lg ml-2">{customPackageStatistics.statistics.tax_amount} {currencySymbol}</div>
+                      <div className="text-[#ffcc00] font-semibold text-base sm:text-lg sm:ml-2 self-end sm:self-auto">{customPackageStatistics.statistics.tax_amount} {currencySymbol}</div>
                     </div>
                   </div>
                   <div className="bg-[#8b2131]/70 p-3">
-                    <div className="flex justify-between items-center">
-                      <div className="flex items-center">
-                        <span className="inline-block w-3 h-3 bg-red-500 rounded-full mr-2 animate-pulse"></span>
+                    <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center">
+                      <div className="flex items-center mb-1 sm:mb-0">
+                        <span className="inline-block w-3 h-3 bg-red-500 rounded-full mr-2 animate-pulse flex-shrink-0"></span>
                         <span className="uppercase text-white text-sm sm:text-base font-bold">Общо дължима сума за една година</span>
                       </div>
-                      <div className="text-white font-bold text-lg sm:text-xl ml-2" style={{animation: 'colorPulse 2s ease-in-out infinite'}}>{customPackageStatistics.statistics.total_amount} {currencySymbol}</div>
+                      <div className="text-white font-bold text-lg sm:text-xl sm:ml-2 self-end sm:self-auto" style={{animation: 'colorPulse 2s ease-in-out infinite'}}>{customPackageStatistics.statistics.total_amount} {currencySymbol}</div>
                     </div>
                   </div>
                 </div>
