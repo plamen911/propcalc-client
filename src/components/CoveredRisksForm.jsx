@@ -340,11 +340,11 @@ const CoveredRisksForm = ({ formData, nextStep, prevStep, lastOpenedAccordion, s
                   <div className="flex flex-col sm:flex-row sm:items-center">
                     <span className="text-white font-medium text-base sm:text-lg sm:mr-3">{preset.name}</span>
                     <div className="flex items-center mt-1 sm:mt-0">
-                      <span className="text-[#ffcc00] text-md font-semibold whitespace-nowrap" style={{animation: 'colorPulse 2s ease-in-out infinite'}}>
+                      <span className="text-white text-md font-semibold whitespace-nowrap">
                         {preset.tariff_preset_clauses.find(clause => clause.insurance_clause.id === 1)?.tariff_amount || "0"} {currencySymbol}
                       </span>
                       <ArrowForward className="mx-2 text-white" fontSize="small" />
-                      <span className="text-[#ffcc00] text-md font-semibold whitespace-nowrap" style={{animation: 'colorPulse 2s ease-in-out infinite'}}>{preset.statistics.total_amount} {currencySymbol}</span>
+                      <span className="text-white text-md font-semibold whitespace-nowrap">{preset.statistics.total_amount} {currencySymbol}</span>
                     </div>
                   </div>
                 </div>
