@@ -176,7 +176,7 @@ const EstateDataForm = ({ formData, handleChange, nextStep }) => {
           </label>
           <div className="relative">
             <div className="absolute inset-y-0 left-0 pl-2 sm:pl-3 flex items-center pointer-events-none">
-              <svg className="h-4 w-4 sm:h-5 sm:w-5 text-[#8B2131]" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
+              <svg className="h-4 w-4 sm:h-5 sm:w-5 text-primary" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
                 <path fillRule="evenodd" d="M5.05 4.05a7 7 0 119.9 9.9L10 18.9l-4.95-4.95a7 7 0 010-9.9zM10 11a2 2 0 100-4 2 2 0 000 4z" clipRule="evenodd" />
               </svg>
             </div>
@@ -192,7 +192,7 @@ const EstateDataForm = ({ formData, handleChange, nextStep }) => {
                 }
               }}
               placeholder="Въведете населено място"
-              className="pl-8 sm:pl-10 py-3.5 sm:py-2.5 block w-full rounded-md border-gray-300 shadow-sm focus:ring-[#8B2131] focus:border-[#8B2131] text-base sm:text-base text-black touch-manipulation"
+              className="pl-8 sm:pl-10 py-3.5 sm:py-2.5 block w-full rounded-md border-gray-300 shadow-sm focus:ring-primary focus:border-primary text-base sm:text-base text-black touch-manipulation"
               autoComplete="off"
               required
             />
@@ -225,7 +225,7 @@ const EstateDataForm = ({ formData, handleChange, nextStep }) => {
                 name="estate_type_id"
                 value={formData.estate_type_id}
                 onChange={handleChange}
-                className="appearance-none mt-1 block w-full pl-3 pr-10 py-3.5 sm:py-2.5 text-base sm:text-base border-gray-300 focus:outline-none focus:ring-[#8B2131] focus:border-[#8B2131] rounded-md text-black touch-manipulation"
+                className="appearance-none mt-1 block w-full pl-3 pr-10 py-3.5 sm:py-2.5 text-base sm:text-base border-gray-300 focus:outline-none focus:ring-primary focus:border-primary rounded-md text-black touch-manipulation"
                 required
               >
                 <option value="">Изберете тип имот</option>
@@ -252,7 +252,7 @@ const EstateDataForm = ({ formData, handleChange, nextStep }) => {
                 name="estate_subtype_id"
                 value={formData.estate_subtype_id}
                 onChange={handleChange}
-                className="appearance-none mt-1 block w-full pl-3 pr-10 py-3.5 sm:py-2.5 text-base sm:text-base border-gray-300 focus:outline-none focus:ring-[#8B2131] focus:border-[#8B2131] rounded-md text-black touch-manipulation"
+                className="appearance-none mt-1 block w-full pl-3 pr-10 py-3.5 sm:py-2.5 text-base sm:text-base border-gray-300 focus:outline-none focus:ring-primary focus:border-primary rounded-md text-black touch-manipulation"
                 required
               >
                 <option value="">Изберете вид имот</option>
@@ -278,7 +278,7 @@ const EstateDataForm = ({ formData, handleChange, nextStep }) => {
               name="distance_to_water_id"
               value={formData.distance_to_water_id}
               onChange={handleChange}
-              className="appearance-none mt-1 block w-full pl-3 pr-10 py-3.5 sm:py-2.5 text-base sm:text-base border-gray-300 focus:outline-none focus:ring-[#8B2131] focus:border-[#8B2131] rounded-md text-black touch-manipulation"
+              className="appearance-none mt-1 block w-full pl-3 pr-10 py-3.5 sm:py-2.5 text-base sm:text-base border-gray-300 focus:outline-none focus:ring-primary focus:border-primary rounded-md text-black touch-manipulation"
               required
             >
               <option value="">Изберете отстояние</option>
@@ -306,7 +306,7 @@ const EstateDataForm = ({ formData, handleChange, nextStep }) => {
               placeholder="Въведете площ"
               min="1"
               max="1000000"
-              className="block w-full pr-16 py-3.5 sm:py-2.5 text-base sm:text-base border-gray-300 rounded-md focus:ring-[#8B2131] focus:border-[#8B2131] text-black touch-manipulation"
+              className="block w-full pr-16 py-3.5 sm:py-2.5 text-base sm:text-base border-gray-300 rounded-md focus:ring-primary focus:border-primary text-black touch-manipulation"
               required
             />
             <div className="absolute inset-y-0 right-0 pr-3 flex items-center pointer-events-none">
@@ -319,7 +319,7 @@ const EstateDataForm = ({ formData, handleChange, nextStep }) => {
       <div className="flex justify-end pt-3 sm:pt-4">
         <button
           type="submit"
-          className="inline-flex items-center justify-center py-4 sm:py-3 px-6 sm:px-6 border border-transparent shadow-md text-base sm:text-base font-medium rounded-full text-white bg-[#6b1021] hover:bg-[#5a0d1c] active:bg-[#4a0b19] focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-[#6b1021] transition-all duration-200 hover:scale-105 touch-manipulation w-full sm:w-auto min-h-[56px] sm:min-h-0"
+          className="inline-flex items-center justify-center py-4 sm:py-3 px-6 sm:px-6 border border-transparent shadow-md text-base sm:text-base font-medium rounded-full text-white bg-primary-dark hover:bg-primary-darker active:bg-primary-darkest focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-dark transition-all duration-200 hover:scale-105 touch-manipulation w-full sm:w-auto min-h-[56px] sm:min-h-0"
         >
           ПРОДЪЛЖИ <ArrowForward className="ml-1.5 h-4 w-4 sm:h-5 sm:w-5" />
         </button>
