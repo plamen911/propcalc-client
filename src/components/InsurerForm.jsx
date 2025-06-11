@@ -987,6 +987,7 @@ const InsurerForm = ({
                 }}
                 placeholder="Въведете населено място"
                 className={`pl-10 block w-full rounded-md shadow-sm focus:ring-[#8B2131] focus:border-[#8B2131] sm:text-sm text-black ${isFieldInvalid('insurer_settlement_id') ? 'border-red-500' : 'border-gray-300'}`}
+                autoComplete="off"
                 required
               />
               {isFieldInvalid('insurer_settlement_id') && (
