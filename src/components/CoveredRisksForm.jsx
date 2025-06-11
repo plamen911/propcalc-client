@@ -460,16 +460,16 @@ const CoveredRisksForm = ({ formData, nextStep, prevStep, lastOpenedAccordion, s
                   )}
 
                   {/* Choose button - enhanced for mobile */}
-                  <div className="flex justify-center mt-5">
+                  <div className="flex w-full sm:justify-center mt-5">
                     <button
                       type="button"
                       onClick={(e) => {
                         e.stopPropagation();
                         handleRiskChange(preset.id);
                       }}
-                      className={`inline-flex items-center justify-center py-3.5 sm:py-2.5 px-6 sm:px-8 border ${selectedRisks[preset.id] ? 'border-white text-[#8b2131] bg-white' : 'border-transparent text-white bg-[#6b1021]'} rounded-full font-medium focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-[#6b1021] transition-all duration-200 hover:scale-105 text-base sm:text-base shadow-md touch-manipulation min-h-[52px] sm:min-h-0`}
+                      className={`w-full sm:w-auto inline-flex items-center justify-center py-3.5 sm:py-2.5 px-6 sm:px-8 border ${selectedRisks[preset.id] ? 'border-white text-[#8b2131] bg-white' : 'border-transparent text-white bg-[#6b1021]'} rounded-full font-medium focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-[#6b1021] transition-all duration-200 hover:scale-105 text-base sm:text-base shadow-md touch-manipulation min-h-[52px] sm:min-h-0`}
                     >
-                      {selectedRisks[preset.id] ? 'ИЗБРАНО ✓' : 'ИЗБЕРИ'}
+                      {selectedRisks[preset.id] ? 'ИЗБРАНО ✓' : 'ИЗБЕРИ'} {!selectedRisks[preset.id] && <ArrowForward className="ml-1.5 h-4 w-4 sm:h-5 sm:w-5" />}
                     </button>
                   </div>
                 </div>
@@ -515,7 +515,7 @@ const CoveredRisksForm = ({ formData, nextStep, prevStep, lastOpenedAccordion, s
                   {allClauses.map((clause) => (
                     <div key={clause.id} className="flex justify-between items-center border-b border-white/10 py-2">
                       <div className="text-white text-sm sm:text-base pr-2 flex-1">{clause.name}</div>
-                      <div className="w-36 sm:w-40">
+                      <div className="w-full sm:w-40">
                         {clause.allow_custom_amount && (
                           <div className="relative rounded-md shadow-sm">
                             {(clause.id === 14 || clause.id === 16) && (
@@ -602,18 +602,18 @@ const CoveredRisksForm = ({ formData, nextStep, prevStep, lastOpenedAccordion, s
                 </div>
 
                 {/* Choose button for custom package */}
-                <div className="flex flex-col items-center mt-5">
+                <div className="flex w-full sm:justify-center mt-5">
                   {validationError && (
-                    <div className="mb-3 text-red-300 text-sm text-center">
+                    <div className="mb-3 text-red-300 text-sm text-center w-full">
                       {validationError}
                     </div>
                   )}
                   <button
                     type="button"
                     onClick={handleCustomPackageSelect}
-                    className={`inline-flex items-center justify-center py-3.5 sm:py-2.5 px-6 sm:px-8 border ${isCustomPackageSelected ? 'border-white text-[#8b2131] bg-white' : 'border-transparent text-white bg-[#6b1021]'} rounded-full font-medium focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-[#6b1021] transition-all duration-200 hover:scale-105 text-base sm:text-base shadow-md touch-manipulation min-h-[52px] sm:min-h-0`}
+                    className={`w-full sm:w-auto inline-flex items-center justify-center py-3.5 sm:py-2.5 px-6 sm:px-8 border ${isCustomPackageSelected ? 'border-white text-[#8b2131] bg-white' : 'border-transparent text-white bg-[#6b1021]'} rounded-full font-medium focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-[#6b1021] transition-all duration-200 hover:scale-105 text-base sm:text-base shadow-md touch-manipulation min-h-[52px] sm:min-h-0`}
                   >
-                    {isCustomPackageSelected ? 'ИЗБРАНО ✓' : 'ИЗБЕРИ'}
+                    {isCustomPackageSelected ? 'ИЗБРАНО ✓' : 'ИЗБЕРИ'} {!isCustomPackageSelected && <ArrowForward className="ml-1.5 h-4 w-4 sm:h-5 sm:w-5" />}
                   </button>
                 </div>
               </div>
@@ -622,7 +622,7 @@ const CoveredRisksForm = ({ formData, nextStep, prevStep, lastOpenedAccordion, s
         </div>
       </div>
 
-      <div className="flex justify-between mt-4 sm:mt-6">
+      <div className="flex flex-col sm:flex-row justify-between gap-3 sm:gap-0 mt-4 sm:mt-6">
         <button
           type="button"
           onClick={prevStep}
