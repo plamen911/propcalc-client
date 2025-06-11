@@ -97,7 +97,7 @@ const CoveredRisksForm = ({ formData, nextStep, prevStep, lastOpenedAccordion, s
         setAllClauses(uniqueClauses);
 
         // Initialize custom clause amounts only if they're empty
-        if (Object.keys(customClauseAmounts).length === 0) {
+        /*if (Object.keys(customClauseAmounts).length === 0) {
           const initialCustomAmounts = {};
           uniqueClauses.forEach(clause => {
             // Set default values for specific clauses
@@ -112,7 +112,7 @@ const CoveredRisksForm = ({ formData, nextStep, prevStep, lastOpenedAccordion, s
             }
           });
           setCustomClauseAmounts(initialCustomAmounts);
-        }
+        }*/
 
         setLoading(false);
       } catch (err) {
