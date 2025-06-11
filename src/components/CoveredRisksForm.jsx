@@ -12,6 +12,12 @@ const CoveredRisksForm = ({ formData, nextStep, prevStep, lastOpenedAccordion, s
   // State for expanded accordion items
   const [expandedItems, setExpandedItems] = useState({});
 
+  // State for checkboxes for clauses 14 and 16
+  const [clauseCheckboxes, setClauseCheckboxes] = useState({
+    14: false,
+    16: false
+  });
+
   // State for expanded accordion items
   const [isCustomPackageExpanded, setIsCustomPackageExpanded] = useState(false);
   const [validationError, setValidationError] = useState('');
@@ -219,6 +225,26 @@ const CoveredRisksForm = ({ formData, nextStep, prevStep, lastOpenedAccordion, s
     debouncedCalculate();
   };
 
+  const handleClauseCheckboxChange = (clauseId) => {
+    // Get the current state of the clicked checkbox
+    const newCheckedState = !clauseCheckboxes[clauseId];
+
+    // Update both checkboxes to the same state
+    setClauseCheckboxes({
+      14: newCheckedState,
+      16: newCheckedState
+    });
+
+    // If unchecking, clear the input values for both clauses
+    if (!newCheckedState) {
+      setCustomClauseAmounts(prev => ({
+        ...prev,
+        14: '',
+        16: ''
+      }));
+    }
+  };
+
   const handleCustomPackageSelect = () => {
     // Validate the required clause and that at least one field is filled in
     // Check if-clause id = 1 has a valid value between 100,000 and 600,000
@@ -228,6 +254,18 @@ const CoveredRisksForm = ({ formData, nextStep, prevStep, lastOpenedAccordion, s
     if (!clause1Value || clause1Value === '' || clause1Value === '0' || isNaN(clause1ValueNum) || clause1ValueNum < 100000 || clause1ValueNum > 600000) {
       setValidationError('Клауза "Пожар и щети - Недвижимо имущество" е задължителна и стойността трябва да бъде между 100000 и 600000.');
       return; // Don't proceed if validation fails
+    }
+
+    // Check if clauses 14 and 16 are filled when both checkboxes are checked
+    if (clauseCheckboxes[14] && clauseCheckboxes[16]) {
+      const clause14Value = customClauseAmounts[14];
+      const clause16Value = customClauseAmounts[16];
+
+      if (!clause14Value || clause14Value === '' || clause14Value === '0' || 
+          !clause16Value || clause16Value === '' || clause16Value === '0') {
+        setValidationError('Моля, попълнете стойности за клаузите за отключване на брава и издаване на документи.');
+        return; // Don't proceed if validation fails
+      }
     }
 
     // Check if at least one input field has a valid value
@@ -482,12 +520,23 @@ const CoveredRisksForm = ({ formData, nextStep, prevStep, lastOpenedAccordion, s
                       <div className="w-36 sm:w-40">
                         {clause.allow_custom_amount && (
                           <div className="relative rounded-md shadow-sm">
+                            {(clause.id === 14 || clause.id === 16) && (
+                              <div className="absolute left-0 top-0 bottom-0 flex items-center pl-2 z-10">
+                                <input
+                                  type="checkbox"
+                                  checked={clauseCheckboxes[clause.id]}
+                                  onChange={() => handleClauseCheckboxChange(clause.id)}
+                                  className="h-4 w-4 text-[#8B2131] focus:ring-[#8B2131] border-gray-300 rounded"
+                                />
+                              </div>
+                            )}
                             <input
                               type="number"
                               value={customClauseAmounts[clause.id]}
                               onChange={(e) => handleClauseAmountChange(clause.id, e.target.value)}
                               placeholder="Сума"
-                              className="w-full pr-12 px-3 py-3.5 sm:py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-[#8B2131] focus:border-[#8B2131] text-black text-base sm:text-base touch-manipulation"
+                              className={`w-full pr-12 ${(clause.id === 14 || clause.id === 16) ? 'pl-8' : 'px-3'} py-3.5 sm:py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-[#8B2131] focus:border-[#8B2131] text-black text-base sm:text-base touch-manipulation ${((clause.id === 14 || clause.id === 16) && !clauseCheckboxes[clause.id]) ? 'bg-gray-100' : ''}`}
+                              readOnly={(clause.id === 14 || clause.id === 16) && !clauseCheckboxes[clause.id]}
                               {...(clause.id === 1 ? {
                                 min: "100000",
                                 max: "600000",
@@ -498,6 +547,8 @@ const CoveredRisksForm = ({ formData, nextStep, prevStep, lastOpenedAccordion, s
                               } : clause.id === 3 ? {
                                 min: "0",
                                 max: "15000"
+                              } : (clause.id === 14 || clause.id === 16) && clauseCheckboxes[14] && clauseCheckboxes[16] ? {
+                                required: true
                               } : {})}
                             />
                             <div className="absolute inset-y-0 right-0 pr-3 flex items-center pointer-events-none">
