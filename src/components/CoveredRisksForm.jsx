@@ -56,15 +56,13 @@ const CoveredRisksForm = ({ formData, nextStep, prevStep, lastOpenedAccordion, s
         const data = Array.isArray(response.data) ? response.data : [];
         setTariffPresets(data);
 
-        // Use lastOpenedAccordion if available, otherwise set the first item to be expanded by default
+        // Use lastOpenedAccordion if available, otherwise all items will be collapsed by default
         if (lastOpenedAccordion) {
           if (lastOpenedAccordion === 'custom') {
             setIsCustomPackageExpanded(true);
           } else {
             setExpandedItems({ [lastOpenedAccordion]: true });
           }
-        } else if (data.length > 0) {
-          setExpandedItems({ [data[0].id]: true });
         }
 
         // Initialize selected risks only if they're empty
@@ -521,13 +519,15 @@ const CoveredRisksForm = ({ formData, nextStep, prevStep, lastOpenedAccordion, s
                         {clause.allow_custom_amount && (
                           <div className="relative rounded-md shadow-sm">
                             {(clause.id === 14 || clause.id === 16) && (
-                              <div className="absolute left-0 top-0 bottom-0 flex items-center pl-2 z-10">
-                                <input
-                                  type="checkbox"
-                                  checked={clauseCheckboxes[clause.id]}
-                                  onChange={() => handleClauseCheckboxChange(clause.id)}
-                                  className="h-4 w-4 text-[#8B2131] focus:ring-[#8B2131] border-gray-300 rounded"
-                                />
+                              <div className="absolute left-0 top-0 bottom-0 flex items-center pl-2.5 sm:pl-2 z-10">
+                                <div className="p-1.5 sm:p-0.5 -m-1.5 sm:-m-0.5">
+                                  <input
+                                    type="checkbox"
+                                    checked={clauseCheckboxes[clause.id]}
+                                    onChange={() => handleClauseCheckboxChange(clause.id)}
+                                    className="h-5 w-5 sm:h-4 sm:w-4 text-[#8B2131] focus:ring-[#8B2131] border-gray-300 rounded touch-manipulation"
+                                  />
+                                </div>
                               </div>
                             )}
                             <input
@@ -535,7 +535,7 @@ const CoveredRisksForm = ({ formData, nextStep, prevStep, lastOpenedAccordion, s
                               value={customClauseAmounts[clause.id]}
                               onChange={(e) => handleClauseAmountChange(clause.id, e.target.value)}
                               placeholder="Сума"
-                              className={`w-full pr-12 ${(clause.id === 14 || clause.id === 16) ? 'pl-8' : 'px-3'} py-3.5 sm:py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-[#8B2131] focus:border-[#8B2131] text-black text-base sm:text-base touch-manipulation ${((clause.id === 14 || clause.id === 16) && !clauseCheckboxes[clause.id]) ? 'bg-gray-100' : ''}`}
+                              className={`w-full pr-12 ${(clause.id === 14 || clause.id === 16) ? 'pl-10 sm:pl-8' : 'px-3'} py-3.5 sm:py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-[#8B2131] focus:border-[#8B2131] text-black text-base sm:text-base touch-manipulation ${((clause.id === 14 || clause.id === 16) && !clauseCheckboxes[clause.id]) ? 'bg-gray-100' : ''}`}
                               readOnly={(clause.id === 14 || clause.id === 16) && !clauseCheckboxes[clause.id]}
                               {...(clause.id === 1 ? {
                                 min: "100000",
