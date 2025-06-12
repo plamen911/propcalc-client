@@ -109,14 +109,8 @@ const CoveredRisksForm = ({ formData, nextStep, prevStep, lastOpenedAccordion, s
         if (Object.keys(customClauseAmounts).length === 0) {
           const initialCustomAmounts = {};
           uniqueClauses.forEach(clause => {
-            // Set default values only for clauses 14 and 16, all others should be empty
-            if (clause.id === 14 || clause.id === 16) {
-              // Set default value = 150 for clauses 14 and 16
-              initialCustomAmounts[clause.id] = '150';
-            } else {
-              // All other clauses should be empty by default
-              initialCustomAmounts[clause.id] = '';
-            }
+            // All clauses should be empty by default
+            initialCustomAmounts[clause.id] = '';
           });
           setCustomClauseAmounts(initialCustomAmounts);
         }
@@ -240,12 +234,18 @@ const CoveredRisksForm = ({ formData, nextStep, prevStep, lastOpenedAccordion, s
     });
 
     // If checking, set the input values for both clauses to 150
-    // Do not clear values when unchecked
+    // If unchecking, clear the values
     if (newCheckedState) {
       setCustomClauseAmounts(prev => ({
         ...prev,
         14: '150',
         16: '150'
+      }));
+    } else {
+      setCustomClauseAmounts(prev => ({
+        ...prev,
+        14: '',
+        16: ''
       }));
     }
   };
@@ -559,7 +559,7 @@ const CoveredRisksForm = ({ formData, nextStep, prevStep, lastOpenedAccordion, s
                               type="text"
                               value={customClauseAmounts[clause.id]}
                               onChange={(e) => handleClauseAmountChange(clause.id, e.target.value)}
-                              placeholder="Сума"
+                              placeholder={(clause.id === 14 || clause.id === 16) ? "150" : "Сума"}
                               className={`w-full pr-12 ${(clause.id === 14 || clause.id === 16) ? 'pl-10 sm:pl-8' : 'px-3'} py-3.5 sm:py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-[#8B2131] focus:border-[#8B2131] text-black text-base sm:text-base touch-manipulation ${((clause.id === 14 || clause.id === 16) && clauseCheckboxes[clause.id]) ? 'bg-gray-100' : ''}`}
                               readOnly={(clause.id === 14 || clause.id === 16) && clauseCheckboxes[clause.id]}
                               {...(clause.id === 1 ? {
