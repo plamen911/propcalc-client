@@ -246,8 +246,15 @@ const CoveredRisksForm = ({ formData, nextStep, prevStep, lastOpenedAccordion, s
       16: newCheckedState
     });
 
+    // If checking, set the input values for both clauses to 150
     // If unchecking, clear the input values for both clauses
-    if (!newCheckedState) {
+    if (newCheckedState) {
+      setCustomClauseAmounts(prev => ({
+        ...prev,
+        14: '150',
+        16: '150'
+      }));
+    } else {
       setCustomClauseAmounts(prev => ({
         ...prev,
         14: '',
@@ -550,8 +557,8 @@ const CoveredRisksForm = ({ formData, nextStep, prevStep, lastOpenedAccordion, s
                               value={customClauseAmounts[clause.id]}
                               onChange={(e) => handleClauseAmountChange(clause.id, e.target.value)}
                               placeholder="Сума"
-                              className={`w-full pr-12 ${(clause.id === 14 || clause.id === 16) ? 'pl-10 sm:pl-8' : 'px-3'} py-3.5 sm:py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-[#8B2131] focus:border-[#8B2131] text-black text-base sm:text-base touch-manipulation ${((clause.id === 14 || clause.id === 16) && !clauseCheckboxes[clause.id]) ? 'bg-gray-100' : ''}`}
-                              readOnly={(clause.id === 14 || clause.id === 16) && !clauseCheckboxes[clause.id]}
+                              className={`w-full pr-12 ${(clause.id === 14 || clause.id === 16) ? 'pl-10 sm:pl-8' : 'px-3'} py-3.5 sm:py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-[#8B2131] focus:border-[#8B2131] text-black text-base sm:text-base touch-manipulation ${((clause.id === 14 || clause.id === 16) && clauseCheckboxes[clause.id]) ? 'bg-gray-100' : ''}`}
+                              readOnly={(clause.id === 14 || clause.id === 16) && clauseCheckboxes[clause.id]}
                               {...(clause.id === 1 ? {
                                 min: "100000",
                                 max: "600000",
