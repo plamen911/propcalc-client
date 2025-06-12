@@ -3,6 +3,19 @@ import { ArrowForward, ArrowBack } from '@mui/icons-material';
 import api from '../services/api';
 import { debounce } from 'lodash';
 
+// Helper function to format currency with thousand separators (spaces)
+const formatCurrency = (amount) => {
+  if (!amount) return '0';
+  // Convert to string if it's not already
+  const amountStr = amount.toString();
+  // Split by decimal point if exists
+  const parts = amountStr.split('.');
+  // Format the integer part with spaces as thousand separators
+  parts[0] = parts[0].replace(/\B(?=(\d{3})+(?!\d))/g, ' ');
+  // Join back with decimal part if it exists
+  return parts.join('.');
+};
+
 const CoveredRisksForm = ({ formData, nextStep, prevStep, lastOpenedAccordion, setLastOpenedAccordion, customClauseAmounts, setCustomClauseAmounts, selectedRisks, setSelectedRisks, isCustomPackageSelected, setIsCustomPackageSelected, setSelectedTariff, currencySymbol }) => {
   // State for API data
   const [tariffPresets, setTariffPresets] = useState([]);
@@ -377,10 +390,10 @@ const CoveredRisksForm = ({ formData, nextStep, prevStep, lastOpenedAccordion, s
                     <span className="text-white font-medium text-base sm:text-lg sm:mr-3">{preset.name}</span>
                     <div className="flex items-center mt-1 sm:mt-0">
                       <span className="text-white text-md font-semibold whitespace-nowrap">
-                        {preset.tariff_preset_clauses.find(clause => clause.insurance_clause.id === 1)?.tariff_amount || "0"} {currencySymbol}
+                        {formatCurrency(preset.tariff_preset_clauses.find(clause => clause.insurance_clause.id === 1)?.tariff_amount || "0")} {currencySymbol}
                       </span>
                       <ArrowForward className="mx-2 text-white" fontSize="small" />
-                      <span className="text-white text-md font-semibold whitespace-nowrap">{preset.statistics.total_amount} {currencySymbol}</span>
+                      <span className="text-white text-md font-semibold whitespace-nowrap">{formatCurrency(preset.statistics.total_amount)} {currencySymbol}</span>
                     </div>
                   </div>
                 </div>
@@ -412,7 +425,9 @@ const CoveredRisksForm = ({ formData, nextStep, prevStep, lastOpenedAccordion, s
                       .map((clause) => (
                       <div key={clause.id} className="flex justify-between items-center border-b border-white/10 py-2">
                         <div className="text-white text-sm sm:text-base pr-2 flex-1">{clause.insurance_clause.name}</div>
-                        <div className="text-white text-sm sm:text-base text-right font-semibold text-[#ffcc00] whitespace-nowrap" style={{animation: 'colorPulse 2s ease-in-out infinite'}}>{clause.tariff_amount} {currencySymbol}</div>
+                        <div className="text-white text-sm sm:text-base text-right font-semibold text-[#ffcc00] whitespace-nowrap" style={{animation: 'colorPulse 2s ease-in-out infinite'}}>
+                          {formatCurrency(clause.tariff_amount)} {currencySymbol}
+                        </div>
                       </div>
                     ))}
                   </div>
@@ -426,7 +441,7 @@ const CoveredRisksForm = ({ formData, nextStep, prevStep, lastOpenedAccordion, s
                             <span className="inline-block w-2 h-2 bg-blue-400 rounded-full mr-2 flex-shrink-0"></span>
                             <span className="uppercase text-white text-xs sm:text-sm font-medium">Застрахователна премия</span>
                           </div>
-                          <div className="text-[#ffcc00] font-semibold text-base sm:text-lg sm:ml-2 self-end sm:self-auto">{preset.statistics.total_premium} {currencySymbol}</div>
+                          <div className="text-[#ffcc00] font-semibold text-base sm:text-lg sm:ml-2 self-end sm:self-auto">{formatCurrency(preset.statistics.total_premium)} {currencySymbol}</div>
                         </div>
                       </div>
                       <div className="border-b border-white/10 bg-white/5 p-3">
@@ -435,7 +450,7 @@ const CoveredRisksForm = ({ formData, nextStep, prevStep, lastOpenedAccordion, s
                             <span className="inline-block w-2 h-2 bg-green-400 rounded-full mr-2 flex-shrink-0"></span>
                             <span className="uppercase text-white text-xs sm:text-sm font-medium">Застрахователна премия след отстъпка от {preset.discount_percent}%</span>
                           </div>
-                          <div className="text-[#ffcc00] font-semibold text-base sm:text-lg sm:ml-2 self-end sm:self-auto">{preset.statistics.discounted_premium} {currencySymbol}</div>
+                          <div className="text-[#ffcc00] font-semibold text-base sm:text-lg sm:ml-2 self-end sm:self-auto">{formatCurrency(preset.statistics.discounted_premium)} {currencySymbol}</div>
                         </div>
                       </div>
                       <div className="border-b border-white/10 bg-white/5 p-3">
@@ -444,7 +459,7 @@ const CoveredRisksForm = ({ formData, nextStep, prevStep, lastOpenedAccordion, s
                             <span className="inline-block w-2 h-2 bg-yellow-400 rounded-full mr-2 flex-shrink-0"></span>
                             <span className="uppercase text-white text-xs sm:text-sm font-medium">{preset.tax_percent}% данък върху застрахователната премия</span>
                           </div>
-                          <div className="text-[#ffcc00] font-semibold text-base sm:text-lg sm:ml-2 self-end sm:self-auto">{preset.statistics.tax_amount} {currencySymbol}</div>
+                          <div className="text-[#ffcc00] font-semibold text-base sm:text-lg sm:ml-2 self-end sm:self-auto">{formatCurrency(preset.statistics.tax_amount)} {currencySymbol}</div>
                         </div>
                       </div>
                       <div className="bg-[#8b2131]/70 p-3">
@@ -453,7 +468,7 @@ const CoveredRisksForm = ({ formData, nextStep, prevStep, lastOpenedAccordion, s
                             <span className="inline-block w-3 h-3 bg-red-500 rounded-full mr-2 animate-pulse flex-shrink-0"></span>
                             <span className="uppercase text-white text-sm sm:text-base font-bold">Общо дължима сума за една година</span>
                           </div>
-                          <div className="text-white font-bold text-lg sm:text-xl sm:ml-2 self-end sm:self-auto" style={{animation: 'colorPulse 2s ease-in-out infinite'}}>{preset.statistics.total_amount} {currencySymbol}</div>
+                          <div className="text-white font-bold text-lg sm:text-xl sm:ml-2 self-end sm:self-auto" style={{animation: 'colorPulse 2s ease-in-out infinite'}}>{formatCurrency(preset.statistics.total_amount)} {currencySymbol}</div>
                         </div>
                       </div>
                     </div>
@@ -569,7 +584,7 @@ const CoveredRisksForm = ({ formData, nextStep, prevStep, lastOpenedAccordion, s
                         <span className="inline-block w-2 h-2 bg-blue-400 rounded-full mr-2 flex-shrink-0"></span>
                         <span className="uppercase text-white text-xs sm:text-sm font-medium">Застрахователна премия</span>
                       </div>
-                      <div className="text-[#ffcc00] font-semibold text-base sm:text-lg sm:ml-2 self-end sm:self-auto">{customPackageStatistics.statistics.total_premium} {currencySymbol}</div>
+                      <div className="text-[#ffcc00] font-semibold text-base sm:text-lg sm:ml-2 self-end sm:self-auto">{formatCurrency(customPackageStatistics.statistics.total_premium)} {currencySymbol}</div>
                     </div>
                   </div>
                   <div className="border-b border-white/10 bg-white/5 p-3">
@@ -578,7 +593,7 @@ const CoveredRisksForm = ({ formData, nextStep, prevStep, lastOpenedAccordion, s
                         <span className="inline-block w-2 h-2 bg-green-400 rounded-full mr-2 flex-shrink-0"></span>
                         <span className="uppercase text-white text-xs sm:text-sm font-medium">Застрахователна премия след отстъпка от {customPackageStatistics.discount_percent}%</span>
                       </div>
-                      <div className="text-[#ffcc00] font-semibold text-base sm:text-lg sm:ml-2 self-end sm:self-auto">{customPackageStatistics.statistics.discounted_premium} {currencySymbol}</div>
+                      <div className="text-[#ffcc00] font-semibold text-base sm:text-lg sm:ml-2 self-end sm:self-auto">{formatCurrency(customPackageStatistics.statistics.discounted_premium)} {currencySymbol}</div>
                     </div>
                   </div>
                   <div className="border-b border-white/10 bg-white/5 p-3">
@@ -587,7 +602,7 @@ const CoveredRisksForm = ({ formData, nextStep, prevStep, lastOpenedAccordion, s
                         <span className="inline-block w-2 h-2 bg-yellow-400 rounded-full mr-2 flex-shrink-0"></span>
                         <span className="uppercase text-white text-xs sm:text-sm font-medium">{customPackageStatistics.tax_percent}% данък върху застрахователната премия</span>
                       </div>
-                      <div className="text-[#ffcc00] font-semibold text-base sm:text-lg sm:ml-2 self-end sm:self-auto">{customPackageStatistics.statistics.tax_amount} {currencySymbol}</div>
+                      <div className="text-[#ffcc00] font-semibold text-base sm:text-lg sm:ml-2 self-end sm:self-auto">{formatCurrency(customPackageStatistics.statistics.tax_amount)} {currencySymbol}</div>
                     </div>
                   </div>
                   <div className="bg-[#8b2131]/70 p-3">
@@ -596,7 +611,7 @@ const CoveredRisksForm = ({ formData, nextStep, prevStep, lastOpenedAccordion, s
                         <span className="inline-block w-3 h-3 bg-red-500 rounded-full mr-2 animate-pulse flex-shrink-0"></span>
                         <span className="uppercase text-white text-sm sm:text-base font-bold">Общо дължима сума за една година</span>
                       </div>
-                      <div className="text-white font-bold text-lg sm:text-xl sm:ml-2 self-end sm:self-auto" style={{animation: 'colorPulse 2s ease-in-out infinite'}}>{customPackageStatistics.statistics.total_amount} {currencySymbol}</div>
+                      <div className="text-white font-bold text-lg sm:text-xl sm:ml-2 self-end sm:self-auto" style={{animation: 'colorPulse 2s ease-in-out infinite'}}>{formatCurrency(customPackageStatistics.statistics.total_amount)} {currencySymbol}</div>
                     </div>
                   </div>
                 </div>
