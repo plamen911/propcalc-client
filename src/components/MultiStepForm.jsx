@@ -43,6 +43,12 @@ const MultiStepForm = () => {
   });
   const [checkedItems, setCheckedItems] = useState({});
 
+  // State for clause checkboxes (for clauses 14 and 16)
+  const [clauseCheckboxes, setClauseCheckboxes] = useState({
+    14: false,
+    16: false
+  });
+
   // State for tracking loading and error states
   const [isLoading, setIsLoading] = useState(true);
   const [loadError, setLoadError] = useState(null);
@@ -154,6 +160,10 @@ const MultiStepForm = () => {
       gender: ''
     });
     setCheckedItems({});
+    setClauseCheckboxes({
+      14: false,
+      16: false
+    });
   };
 
   const renderStep = () => {
@@ -215,6 +225,8 @@ const MultiStepForm = () => {
             setIsCustomPackageSelected={setIsCustomPackageSelected}
             setSelectedTariff={setSelectedTariff}
             currencySymbol={currencySymbol}
+            clauseCheckboxes={clauseCheckboxes}
+            setClauseCheckboxes={setClauseCheckboxes}
           />
         );
       case 2:

@@ -16,7 +16,7 @@ const formatCurrency = (amount) => {
   return parts.join('.');
 };
 
-const CoveredRisksForm = ({ formData, nextStep, prevStep, lastOpenedAccordion, setLastOpenedAccordion, customClauseAmounts, setCustomClauseAmounts, selectedRisks, setSelectedRisks, isCustomPackageSelected, setIsCustomPackageSelected, setSelectedTariff, currencySymbol }) => {
+const CoveredRisksForm = ({ formData, nextStep, prevStep, lastOpenedAccordion, setLastOpenedAccordion, customClauseAmounts, setCustomClauseAmounts, selectedRisks, setSelectedRisks, isCustomPackageSelected, setIsCustomPackageSelected, setSelectedTariff, currencySymbol, clauseCheckboxes, setClauseCheckboxes }) => {
   // State for API data
   const [tariffPresets, setTariffPresets] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -24,14 +24,6 @@ const CoveredRisksForm = ({ formData, nextStep, prevStep, lastOpenedAccordion, s
 
   // State for expanded accordion items
   const [expandedItems, setExpandedItems] = useState({});
-
-  // State for checkboxes for clauses 14 and 16
-  const [clauseCheckboxes, setClauseCheckboxes] = useState({
-    14: false,
-    16: false
-  });
-
-  // State for expanded accordion items
   const [isCustomPackageExpanded, setIsCustomPackageExpanded] = useState(false);
   const [validationError, setValidationError] = useState('');
 
@@ -114,22 +106,20 @@ const CoveredRisksForm = ({ formData, nextStep, prevStep, lastOpenedAccordion, s
         setAllClauses(uniqueClauses);
 
         // Initialize custom clause amounts only if they're empty
-        /*if (Object.keys(customClauseAmounts).length === 0) {
+        if (Object.keys(customClauseAmounts).length === 0) {
           const initialCustomAmounts = {};
           uniqueClauses.forEach(clause => {
-            // Set default values for specific clauses
-            if (clause.id === 1) {
-              initialCustomAmounts[clause.id] = '150000';
-            } else if (clause.id === 2) {
-              initialCustomAmounts[clause.id] = '18000';
-            } else if (clause.id === 3) {
-              initialCustomAmounts[clause.id] = '0';
+            // Set default values only for clauses 14 and 16, all others should be empty
+            if (clause.id === 14 || clause.id === 16) {
+              // Set default value = 150 for clauses 14 and 16
+              initialCustomAmounts[clause.id] = '150';
             } else {
+              // All other clauses should be empty by default
               initialCustomAmounts[clause.id] = '';
             }
           });
           setCustomClauseAmounts(initialCustomAmounts);
-        }*/
+        }
 
         setLoading(false);
       } catch (err) {
@@ -228,12 +218,15 @@ const CoveredRisksForm = ({ formData, nextStep, prevStep, lastOpenedAccordion, s
   }, [debouncedCalculate]);
 
   const handleClauseAmountChange = (clauseId, value) => {
-    setCustomClauseAmounts(prev => ({
-      ...prev,
-      [clauseId]: value
-    }));
-    // Call the debounced function directly to ensure immediate update
-    debouncedCalculate();
+    // Only allow numeric values (digits and decimal point)
+    if (value === '' || /^\d*\.?\d*$/.test(value)) {
+      setCustomClauseAmounts(prev => ({
+        ...prev,
+        [clauseId]: value
+      }));
+      // Call the debounced function directly to ensure immediate update
+      debouncedCalculate();
+    }
   };
 
   const handleClauseCheckboxChange = (clauseId) => {
@@ -247,18 +240,12 @@ const CoveredRisksForm = ({ formData, nextStep, prevStep, lastOpenedAccordion, s
     });
 
     // If checking, set the input values for both clauses to 150
-    // If unchecking, clear the input values for both clauses
+    // Do not clear values when unchecked
     if (newCheckedState) {
       setCustomClauseAmounts(prev => ({
         ...prev,
         14: '150',
         16: '150'
-      }));
-    } else {
-      setCustomClauseAmounts(prev => ({
-        ...prev,
-        14: '',
-        16: ''
       }));
     }
   };
@@ -308,10 +295,26 @@ const CoveredRisksForm = ({ formData, nextStep, prevStep, lastOpenedAccordion, s
     // Create a custom clauses array for the selected tariff
     const customClauses = [];
     Object.entries(customClauseAmounts).forEach(([clauseId, amount]) => {
-      // Only include clauses with non-zero amounts
-      if (amount && parseFloat(amount) > 0) {
+      const clauseIdInt = parseInt(clauseId);
+
+      // Special handling for clauses 14 and 16
+      if (clauseIdInt === 14 || clauseIdInt === 16) {
         // Find the clause in allClauses
-        const clause = allClauses.find(c => c.id === parseInt(clauseId));
+        const clause = allClauses.find(c => c.id === clauseIdInt);
+        if (clause) {
+          // If checkbox is checked, include with value (which should be 150)
+          // If checkbox is unchecked, include with empty value
+          customClauses.push({
+            id: `custom-${clauseId}`,
+            insurance_clause: clause,
+            tariff_amount: clauseCheckboxes[clauseIdInt] ? amount : ''
+          });
+        }
+      } 
+      // For all other clauses, only include those with non-zero amounts
+      else if (amount && parseFloat(amount) > 0) {
+        // Find the clause in allClauses
+        const clause = allClauses.find(c => c.id === clauseIdInt);
         if (clause) {
           customClauses.push({
             id: `custom-${clauseId}`,
@@ -553,7 +556,7 @@ const CoveredRisksForm = ({ formData, nextStep, prevStep, lastOpenedAccordion, s
                               </div>
                             )}
                             <input
-                              type="number"
+                              type="text"
                               value={customClauseAmounts[clause.id]}
                               onChange={(e) => handleClauseAmountChange(clause.id, e.target.value)}
                               placeholder="Сума"
