@@ -685,7 +685,7 @@ const InsurerForm = ({
               {/* Clause rows - mobile optimized */}
               <div className="space-y-1">
                 {selectedTariff.tariff_preset_clauses
-                  .filter(clause => parseFloat(clause.tariff_amount) !== 0)
+                  .filter(clause => parseFloat(clause.tariff_amount) !== 0 && clause.tariff_amount !== '')
                   .map((clause) => (
                   <div key={clause.id} className="flex justify-between items-center border-b border-white/10 py-2">
                     <div className="text-white text-sm sm:text-base pr-2 flex-1">{clause.insurance_clause.name}</div>
