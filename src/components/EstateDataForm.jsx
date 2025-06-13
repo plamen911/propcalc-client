@@ -1,5 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import api from '../services/api';
+import LoadingSpinner from './LoadingSpinner';
+import ErrorDisplay from './ErrorDisplay';
 import { ArrowForward } from '@mui/icons-material';
 
 const EstateDataForm = ({ formData, handleChange, nextStep }) => {
@@ -146,23 +148,16 @@ const EstateDataForm = ({ formData, handleChange, nextStep }) => {
   }, [showSettlementOptions]);
 
   if (loading) {
-    return (
-      <div className="flex justify-center items-center h-64">
-        <div className="text-white">Loading form data...</div>
-      </div>
-    );
+    return <LoadingSpinner />;
   }
 
   if (error) {
     return (
-      <div className="flex justify-center items-center p-4 sm:p-6 min-h-[10rem] sm:h-64">
-        <div className="flex items-center bg-red-900/20 border border-red-300/30 rounded-lg p-3 sm:p-4 max-w-full">
-          <svg className="w-5 h-5 sm:w-6 sm:h-6 text-red-300 mr-2 sm:mr-3 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
-          </svg>
-          <span className="text-sm sm:text-base text-red-300">{error}</span>
-        </div>
-      </div>
+      <ErrorDisplay 
+        error={error} 
+        centered={true} 
+        className="p-4 sm:p-6 min-h-[10rem] sm:h-64" 
+      />
     );
   }
 

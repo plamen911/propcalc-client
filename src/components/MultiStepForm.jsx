@@ -5,6 +5,8 @@ import InsurerForm from './InsurerForm';
 import OrderPreviewForm from './OrderPreviewForm';
 import api from '../services/api';
 import AuthService from '../services/auth';
+import LoadingSpinner from './LoadingSpinner';
+import ErrorDisplay from './ErrorDisplay';
 
 const MultiStepForm = () => {
   const [currentStep, setCurrentStep] = useState(0);
@@ -169,33 +171,19 @@ const MultiStepForm = () => {
   const renderStep = () => {
     // Show loading indicator while data is being fetched
     if (isLoading) {
-      return (
-        <div className="flex justify-center items-center h-64">
-          <div className="text-white text-center">
-            <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-white mx-auto mb-4"></div>
-            <p>Loading form data...</p>
-          </div>
-        </div>
-      );
+      return <LoadingSpinner />;
     }
 
     // Show error message if there was an error loading data
     if (loadError) {
       return (
-        <div className="flex justify-center items-center h-64">
-          <div className="bg-red-900/20 border border-red-300/30 rounded-lg p-4 max-w-md text-center">
-            <svg className="w-12 h-12 text-red-300 mx-auto mb-3" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
-            </svg>
-            <p className="text-red-300 mb-4">{loadError}</p>
-            <button 
-              onClick={() => window.location.reload()} 
-              className="px-4 py-2 bg-white text-[#8b2131] rounded-full hover:bg-gray-100 transition-colors"
-            >
-              Refresh Page
-            </button>
-          </div>
-        </div>
+        <ErrorDisplay 
+          error={loadError} 
+          centered={true} 
+          className="h-64" 
+          showRefreshButton={true}
+          iconSize="large"
+        />
       );
     }
 

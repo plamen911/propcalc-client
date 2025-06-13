@@ -2,6 +2,8 @@ import React, { useState, useEffect, useRef } from 'react';
 import { ArrowForward, ArrowBack, CalendarMonth, Close } from '@mui/icons-material';
 import { Dialog, DialogContent, DialogTitle, IconButton } from '@mui/material';
 import api from '../services/api';
+import LoadingSpinner from './LoadingSpinner';
+import ErrorDisplay from './ErrorDisplay';
 
 const InsurerForm = ({ 
   nextStep, 
@@ -489,11 +491,7 @@ const InsurerForm = ({
 
   // Display loading indicator
   if (loading) {
-    return (
-      <div className="flex justify-center items-center h-64">
-        <div className="text-white">Loading form data...</div>
-      </div>
-    );
+    return <LoadingSpinner />;
   }
 
   // Generate arrays for years, months, and days
@@ -1143,19 +1141,10 @@ const InsurerForm = ({
 
       {errors.length > 0 && (
         <div className="mb-4">
-          <div className="bg-red-900/20 border border-red-300/30 rounded-lg p-3 sm:p-4 max-w-full">
-            <div className="flex items-center mb-2">
-              <svg className="w-5 h-5 sm:w-6 sm:h-6 text-red-300 mr-2 sm:mr-3 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
-              </svg>
-              <span className="text-sm sm:text-base text-red-300 font-medium">Моля, коригирайте следните грешки:</span>
-            </div>
-            <ul className="list-disc pl-10 space-y-1">
-              {errors.map((error, index) => (
-                <li key={index} className="text-sm sm:text-base text-red-300">{error}</li>
-              ))}
-            </ul>
-          </div>
+          <ErrorDisplay 
+            error={errors} 
+            title="Моля, коригирайте следните грешки:" 
+          />
         </div>
       )}
 
