@@ -621,6 +621,8 @@ const CoveredRisksForm = ({ formData, nextStep, prevStep, lastOpenedAccordion, s
                 {/* Clause rows with input fields - mobile optimized */}
                 <div className="space-y-1">
                   {allClauses.map((clause) => (
+                    // Hide clause with id = 3 if estate_type_id is not 4
+                    (clause.id !== 3 || formData.estate_type_id === '4') ? (
                     <div key={clause.id} className="flex justify-between items-center border-b border-white/10 py-2">
                       <div className="text-white text-sm sm:text-base pr-2 flex-1">{clause.name}</div>
                       <div className="w-full sm:w-40">
@@ -668,6 +670,7 @@ const CoveredRisksForm = ({ formData, nextStep, prevStep, lastOpenedAccordion, s
                         )}
                       </div>
                     </div>
+                    ) : null
                   ))}
                 </div>
 
