@@ -331,8 +331,8 @@ const CoveredRisksForm = ({ formData, nextStep, prevStep, lastOpenedAccordion, s
     const clause1Value = customClauseAmounts[1];
     const clause1ValueNum = parseFloat(clause1Value);
 
-    if (!clause1Value || clause1Value === '' || clause1Value === '0' || isNaN(clause1ValueNum) || clause1ValueNum < 100000 || clause1ValueNum > 600000) {
-      setValidationError('Клауза "Пожар и щети - Недвижимо имущество" е задължителна и стойността трябва да бъде между 100000 и 600000.');
+    if (!clause1Value || clause1Value === '' || clause1Value === '0' || isNaN(clause1ValueNum) || clause1ValueNum < 100000 || clause1ValueNum > 2000000) {
+      setValidationError('Клауза "Пожар и щети - Недвижимо имущество" е задължителна и стойността трябва да бъде между 100000 и 2000000.');
       return; // Don't proceed if validation fails
     }
 
@@ -644,7 +644,7 @@ const CoveredRisksForm = ({ formData, nextStep, prevStep, lastOpenedAccordion, s
                               readOnly={clause.id === 6 || clause.id === 14 || clause.id === 16}
                               {...(clause.id === 1 ? {
                                 min: "100000",
-                                max: "600000",
+                                max: "2000000",
                                 required: true
                               } : clause.id === 2 ? {
                                 min: "0",
