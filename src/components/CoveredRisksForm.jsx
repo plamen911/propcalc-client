@@ -214,10 +214,39 @@ const CoveredRisksForm = ({ formData, nextStep, prevStep, lastOpenedAccordion, s
   const handleClauseAmountChange = (clauseId, value) => {
     // Only allow numeric values (digits and decimal point)
     if (value === '' || /^\d*\.?\d*$/.test(value)) {
-      setCustomClauseAmounts(prev => ({
-        ...prev,
-        [clauseId]: value
-      }));
+      // Update the value for the current clause
+      setCustomClauseAmounts(prev => {
+        const updatedAmounts = {
+          ...prev,
+          [clauseId]: value
+        };
+
+        // If clause 1 or 2 was changed and clause 6 checkbox is checked, update clause 6 value
+        if ((clauseId === 1 || clauseId === 2) && clauseCheckboxes[6]) {
+          const clause1Value = clauseId === 1 ? value : prev[1];
+          const clause2Value = clauseId === 2 ? value : prev[2];
+
+          // If both clause 1 and clause 2 have values, calculate their sum
+          if (clause1Value && clause2Value && 
+              clause1Value !== '' && clause2Value !== '' && 
+              !isNaN(parseFloat(clause1Value)) && !isNaN(parseFloat(clause2Value))) {
+            // Calculate the sum of clause 1 and clause 2
+            const sum = parseFloat(clause1Value) + parseFloat(clause2Value);
+            updatedAmounts[6] = sum.toString();
+          }
+          // If only clause 1 has a value, use that value
+          else if (clause1Value && clause1Value !== '' && !isNaN(parseFloat(clause1Value))) {
+            updatedAmounts[6] = clause1Value;
+          }
+          // If only clause 2 has a value, use that value
+          else if (clause2Value && clause2Value !== '' && !isNaN(parseFloat(clause2Value))) {
+            updatedAmounts[6] = clause2Value;
+          }
+        }
+
+        return updatedAmounts;
+      });
+
       // Call the debounced function directly to ensure immediate update
       debouncedCalculate();
     }
@@ -227,26 +256,70 @@ const CoveredRisksForm = ({ formData, nextStep, prevStep, lastOpenedAccordion, s
     // Get the current state of the clicked checkbox
     const newCheckedState = !clauseCheckboxes[clauseId];
 
-    // Update both checkboxes to the same state
-    setClauseCheckboxes({
-      14: newCheckedState,
-      16: newCheckedState
-    });
+    if (clauseId === 6) {
+      // Only update checkbox 6
+      setClauseCheckboxes(prev => ({
+        ...prev,
+        6: newCheckedState
+      }));
 
-    // If checking, set the input values for both clauses to 150
-    // If unchecking, clear the values
-    if (newCheckedState) {
-      setCustomClauseAmounts(prev => ({
-        ...prev,
-        14: '150',
-        16: '150'
-      }));
+      // If checking checkbox 6, calculate sum of clause 1 and 2
+      if (newCheckedState) {
+        let clause6Value = '';
+        const clause1Value = customClauseAmounts[1];
+        const clause2Value = customClauseAmounts[2];
+
+        // If both clause 1 and clause 2 have values, calculate their sum
+        if (clause1Value && clause2Value && 
+            clause1Value !== '' && clause2Value !== '' && 
+            !isNaN(parseFloat(clause1Value)) && !isNaN(parseFloat(clause2Value))) {
+          // Calculate the sum of clause 1 and clause 2
+          const sum = parseFloat(clause1Value) + parseFloat(clause2Value);
+          clause6Value = sum.toString();
+        } 
+        // If only clause 1 has a value, use that value
+        else if (clause1Value && clause1Value !== '' && !isNaN(parseFloat(clause1Value))) {
+          clause6Value = clause1Value;
+        }
+        // If only clause 2 has a value, use that value
+        else if (clause2Value && clause2Value !== '' && !isNaN(parseFloat(clause2Value))) {
+          clause6Value = clause2Value;
+        }
+
+        setCustomClauseAmounts(prev => ({
+          ...prev,
+          6: clause6Value
+        }));
+      } else {
+        // If unchecking, clear the value of clause 6
+        setCustomClauseAmounts(prev => ({
+          ...prev,
+          6: ''
+        }));
+      }
     } else {
-      setCustomClauseAmounts(prev => ({
+      // For checkboxes 14 and 16, update both to the same state
+      setClauseCheckboxes(prev => ({
         ...prev,
-        14: '',
-        16: ''
+        14: newCheckedState,
+        16: newCheckedState
       }));
+
+      // If checking, set the input values for clauses 14 and 16
+      if (newCheckedState) {
+        setCustomClauseAmounts(prev => ({
+          ...prev,
+          14: '150',
+          16: '150'
+        }));
+      } else {
+        // If unchecking, clear the values for clauses 14 and 16
+        setCustomClauseAmounts(prev => ({
+          ...prev,
+          14: '',
+          16: ''
+        }));
+      }
     }
   };
 
@@ -261,6 +334,16 @@ const CoveredRisksForm = ({ formData, nextStep, prevStep, lastOpenedAccordion, s
       return; // Don't proceed if validation fails
     }
 
+    // Check if clause 6 is filled when its checkbox is checked
+    if (clauseCheckboxes[6]) {
+      const clause6Value = customClauseAmounts[6];
+
+      if (!clause6Value || clause6Value === '' || clause6Value === '0') {
+        setValidationError('Моля, попълнете стойност за клауза 6.');
+        return; // Don't proceed if validation fails
+      }
+    }
+
     // Check if clauses 14 and 16 are filled when both checkboxes are checked
     if (clauseCheckboxes[14] && clauseCheckboxes[16]) {
       const clause14Value = customClauseAmounts[14];
@@ -268,7 +351,7 @@ const CoveredRisksForm = ({ formData, nextStep, prevStep, lastOpenedAccordion, s
 
       if (!clause14Value || clause14Value === '' || clause14Value === '0' || 
           !clause16Value || clause16Value === '' || clause16Value === '0') {
-        setValidationError('Моля, попълнете стойности за клаузите за отключване на брава и издаване на документи.');
+        setValidationError('Моля, попълнете стойности за клаузи 14 и 16.');
         return; // Don't proceed if validation fails
       }
     }
@@ -297,8 +380,8 @@ const CoveredRisksForm = ({ formData, nextStep, prevStep, lastOpenedAccordion, s
     Object.entries(customClauseAmounts).forEach(([clauseId, amount]) => {
       const clauseIdInt = parseInt(clauseId);
 
-      // Special handling for clauses 14 and 16
-      if (clauseIdInt === 14 || clauseIdInt === 16) {
+      // Special handling for clauses 6, 14 and 16
+      if (clauseIdInt === 6 || clauseIdInt === 14 || clauseIdInt === 16) {
         // Find the clause in allClauses
         const clause = allClauses.find(c => c.id === clauseIdInt);
         if (clause) {
@@ -310,7 +393,7 @@ const CoveredRisksForm = ({ formData, nextStep, prevStep, lastOpenedAccordion, s
             tariff_amount: clauseCheckboxes[clauseIdInt] ? amount : ''
           });
         }
-      } 
+      }
       // For all other clauses, only include those with non-zero amounts
       else if (amount && parseFloat(amount) > 0) {
         // Find the clause in allClauses
@@ -543,7 +626,7 @@ const CoveredRisksForm = ({ formData, nextStep, prevStep, lastOpenedAccordion, s
                       <div className="w-full sm:w-40">
                         {clause.allow_custom_amount && (
                           <div className="relative rounded-md shadow-sm">
-                            {(clause.id === 14 || clause.id === 16) && (
+                            {(clause.id === 6 || clause.id === 14 || clause.id === 16) && (
                               <div className="absolute left-0 top-0 bottom-0 flex items-center pl-2.5 sm:pl-2 z-10">
                                 <div className="p-1.5 sm:p-0.5 -m-1.5 sm:-m-0.5">
                                   <input
@@ -560,8 +643,8 @@ const CoveredRisksForm = ({ formData, nextStep, prevStep, lastOpenedAccordion, s
                               value={customClauseAmounts[clause.id]}
                               onChange={(e) => handleClauseAmountChange(clause.id, e.target.value)}
                               placeholder={(clause.id === 14 || clause.id === 16) ? "150" : "Сума"}
-                              className={`w-full pr-12 ${(clause.id === 14 || clause.id === 16) ? 'pl-10 sm:pl-8' : 'px-3'} py-3.5 sm:py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-[#8B2131] focus:border-[#8B2131] text-black text-base sm:text-base touch-manipulation ${((clause.id === 14 || clause.id === 16) && clauseCheckboxes[clause.id]) ? 'bg-gray-100' : ''}`}
-                              readOnly={(clause.id === 14 || clause.id === 16) && clauseCheckboxes[clause.id]}
+                              className={`w-full pr-12 ${(clause.id === 6 || clause.id === 14 || clause.id === 16) ? 'pl-10 sm:pl-8' : 'px-3'} py-3.5 sm:py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-[#8B2131] focus:border-[#8B2131] text-black text-base sm:text-base touch-manipulation ${(clause.id === 6 || clause.id === 14 || clause.id === 16) ? 'bg-gray-100' : ''}`}
+                              readOnly={clause.id === 6 || clause.id === 14 || clause.id === 16}
                               {...(clause.id === 1 ? {
                                 min: "100000",
                                 max: "600000",
@@ -572,6 +655,8 @@ const CoveredRisksForm = ({ formData, nextStep, prevStep, lastOpenedAccordion, s
                               } : clause.id === 3 ? {
                                 min: "0",
                                 max: "15000"
+                              } : clause.id === 6 && clauseCheckboxes[6] ? {
+                                required: true
                               } : (clause.id === 14 || clause.id === 16) && clauseCheckboxes[14] && clauseCheckboxes[16] ? {
                                 required: true
                               } : {})}
