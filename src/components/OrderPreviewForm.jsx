@@ -11,11 +11,12 @@ import {
   Stack
 } from '@mui/material';
 import { styled } from '@mui/material/styles';
-import ArrowForward from '@mui/icons-material/ArrowForward';
-import ArrowBack from '@mui/icons-material/ArrowBack';
+import BackButton from './BackButton';
+import ProceedButton from './ProceedButton';
 import CheckCircleOutlineIcon from '@mui/icons-material/CheckCircleOutline';
 import api from '../services/api';
 import ErrorDisplay from './ErrorDisplay';
+import { formatCurrency } from '../utils/formatters';
 
 // Styled Paper component for the preview section
 const PreviewPaper = styled(Paper)(({ theme }) => ({
@@ -373,7 +374,7 @@ const OrderPreviewForm = ({ prevStep, selectedTariff, insurerData, checkedItems,
                         .map((clause) => (
                         <div key={clause.id} className="flex justify-between items-center border-b border-white/10 py-2">
                           <div className="text-white text-sm sm:text-base pr-2 flex-1">{clause.insurance_clause.name}</div>
-                          <div className="text-white text-sm sm:text-base text-right font-semibold text-[#ffcc00] whitespace-nowrap" style={{animation: 'colorPulse 2s ease-in-out infinite'}}>{clause.tariff_amount} {currencySymbol}</div>
+                          <div className="text-white text-sm sm:text-base text-right font-semibold text-[#ffcc00] whitespace-nowrap" style={{animation: 'colorPulse 2s ease-in-out infinite'}}>{formatCurrency(clause.tariff_amount)} {currencySymbol}</div>
                         </div>
                       ))}
                     </div>
@@ -390,7 +391,7 @@ const OrderPreviewForm = ({ prevStep, selectedTariff, insurerData, checkedItems,
                             <span className="inline-block w-2 h-2 bg-blue-400 rounded-full mr-1.5 sm:mr-2 flex-shrink-0"></span>
                             <span className="uppercase text-white text-xs sm:text-sm font-medium">Застрахователна премия</span>
                           </div>
-                          <div className="text-[#ffcc00] font-semibold text-sm sm:text-base md:text-lg ml-2 flex-shrink-0">{selectedTariff.statistics.total_premium} {currencySymbol}</div>
+                          <div className="text-[#ffcc00] font-semibold text-sm sm:text-base md:text-lg ml-2 flex-shrink-0">{formatCurrency(selectedTariff.statistics.total_premium)} {currencySymbol}</div>
                         </div>
                       </div>
                     )}
@@ -402,7 +403,7 @@ const OrderPreviewForm = ({ prevStep, selectedTariff, insurerData, checkedItems,
                             <span className="inline-block w-2 h-2 bg-green-400 rounded-full mr-1.5 sm:mr-2 flex-shrink-0"></span>
                             <span className="uppercase text-white text-xs sm:text-sm font-medium">Застрахователна премия след отстъпка от {selectedTariff.discount_percent}%</span>
                           </div>
-                          <div className="text-[#ffcc00] font-semibold text-sm sm:text-base md:text-lg ml-2 flex-shrink-0">{selectedTariff.statistics.discounted_premium} {currencySymbol}</div>
+                          <div className="text-[#ffcc00] font-semibold text-sm sm:text-base md:text-lg ml-2 flex-shrink-0">{formatCurrency(selectedTariff.statistics.discounted_premium)} {currencySymbol}</div>
                         </div>
                       </div>
                     )}
@@ -414,7 +415,7 @@ const OrderPreviewForm = ({ prevStep, selectedTariff, insurerData, checkedItems,
                             <span className="inline-block w-2 h-2 bg-yellow-400 rounded-full mr-1.5 sm:mr-2 flex-shrink-0"></span>
                             <span className="uppercase text-white text-xs sm:text-sm font-medium">{selectedTariff.tax_percent}% данък върху застрахователната премия</span>
                           </div>
-                          <div className="text-[#ffcc00] font-semibold text-sm sm:text-base md:text-lg ml-2 flex-shrink-0">{selectedTariff.statistics.tax_amount} {currencySymbol}</div>
+                          <div className="text-[#ffcc00] font-semibold text-sm sm:text-base md:text-lg ml-2 flex-shrink-0">{formatCurrency(selectedTariff.statistics.tax_amount)} {currencySymbol}</div>
                         </div>
                       </div>
                     )}
@@ -425,7 +426,7 @@ const OrderPreviewForm = ({ prevStep, selectedTariff, insurerData, checkedItems,
                           <span className="inline-block w-2.5 sm:w-3 h-2.5 sm:h-3 bg-red-500 rounded-full mr-1.5 sm:mr-2 flex-shrink-0"></span>
                           <span className="uppercase text-white text-xs sm:text-sm md:text-base font-bold">Общо дължима сума за една година</span>
                         </div>
-                        <div className="text-white font-bold text-base sm:text-lg md:text-xl ml-2 flex-shrink-0" style={{animation: 'colorPulse 2s ease-in-out infinite'}}>{selectedTariff.statistics.total_amount} {currencySymbol}</div>
+                        <div className="text-white font-bold text-base sm:text-lg md:text-xl ml-2 flex-shrink-0" style={{animation: 'colorPulse 2s ease-in-out infinite'}}>{formatCurrency(selectedTariff.statistics.total_amount)} {currencySymbol}</div>
                       </div>
                     </div>
                   </div>
@@ -530,7 +531,7 @@ const OrderPreviewForm = ({ prevStep, selectedTariff, insurerData, checkedItems,
               id="terms-checkbox"
               checked={termsAccepted}
               onChange={handleTermsChange}
-              className="mt-1 mr-2 sm:mr-3 h-5 w-5 sm:h-4 sm:w-4 text-[#8b2131] border-white/50 rounded focus:ring-[#8b2131]"
+              className="mt-1 mr-2 sm:mr-3 h-5 w-5 sm:h-4 sm:w-4 text-primary border-white/50 rounded focus:ring-primary"
             />
             <label htmlFor="terms-checkbox" className="text-white text-sm sm:text-base leading-tight">
               Декларирам, че съм съгласен/а предоставените от мен лични данни по смисъла на чл.2 от Закона за защита на личните данни, да бъдат обработвани от ЗБ "Дженерал Брокер Клуб" ООД за предоставяне на застрахователни услуги, предоставяни на Асоциацията на българските застрахователи и Комисията за финансов надзор.
@@ -544,20 +545,13 @@ const OrderPreviewForm = ({ prevStep, selectedTariff, insurerData, checkedItems,
           )}
 
           <div className="flex flex-col sm:flex-row justify-between gap-4 sm:gap-3 mt-5 sm:mt-6">
-            <button
-              type="button"
-              onClick={prevStep}
-              className="inline-flex items-center justify-center py-4 sm:py-2.5 px-6 sm:px-5 border border-white rounded-full text-[#8b2131] bg-white hover:bg-white/90 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-white transition-all duration-200 hover:scale-105 text-base sm:text-base order-2 sm:order-1 min-h-[56px] sm:min-h-0 touch-manipulation"
-            >
-              <ArrowBack className="mr-2 sm:mr-1.5" fontSize="small" /> НАЗАД
-            </button>
-            <button
+            <BackButton onClick={prevStep} className="order-2 sm:order-1" />
+            <ProceedButton
               type="submit"
               disabled={isSubmitted}
-              className={`inline-flex items-center justify-center py-4 sm:py-2.5 px-6 sm:px-5 border border-transparent shadow-sm text-base sm:text-base font-medium rounded-full text-white bg-[#6b1021] hover:bg-[#5a0d1c] focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-[#6b1021] transition-all duration-200 hover:scale-105 order-1 sm:order-2 min-h-[56px] sm:min-h-0 touch-manipulation ${isSubmitted ? 'opacity-50 cursor-not-allowed' : ''}`}
-            >
-              {isSubmitted ? 'Изпратено' : 'ЗАВЪРШИ'} <ArrowForward className="ml-2 sm:ml-1.5" fontSize="small" />
-            </button>
+              text={isSubmitted ? 'Изпратено' : 'ЗАВЪРШИ'}
+              className="order-1 sm:order-2"
+            />
           </div>
         </>
       )}

@@ -272,19 +272,19 @@ const MultiStepForm = () => {
   };
 
   return (
-    <div className="bg-[#8b2131] text-white rounded-lg shadow-lg overflow-hidden transition-all duration-300 hover:shadow-xl">
+    <div className="bg-primary text-white rounded-lg shadow-lg overflow-hidden transition-all duration-300 hover:shadow-xl">
       {/* Header with title and step indicator - improved for mobile */}
-      <div className="p-4 sm:p-6 md:p-8 border-b border-[#8b2131]/30 flex flex-col sm:flex-row justify-between items-center gap-3 sm:gap-0">
+      <div className="p-4 sm:p-6 md:p-8 border-b border-primary/30 flex flex-col sm:flex-row justify-between items-center gap-3 sm:gap-0">
         <h2 className="text-xl sm:text-2xl font-medium text-center sm:text-left">
           ЗАСТРАХОВКА ИМУЩЕСТВО
         </h2>
-        <span className="px-3 sm:px-4 py-1.5 sm:py-2 bg-white text-[#8b2131] rounded-full border-2 border-white text-sm sm:text-base font-medium whitespace-nowrap">
+        <span className="px-3 sm:px-4 py-1.5 sm:py-2 bg-white text-primary rounded-full border-2 border-white text-sm sm:text-base font-medium whitespace-nowrap">
           Стъпка {currentStep + 1} от {steps.length}
         </span>
       </div>
 
       {/* Stepper - improved for mobile */}
-      <div className="p-4 sm:p-6 md:p-8 bg-[#8b2131]/90 border-b border-[#8b2131]/30">
+      <div className="p-4 sm:p-6 md:p-8 bg-primary/90 border-b border-primary/30">
         <div className="flex items-center justify-between">
           {steps.map((label, index) => (
             <div key={label} className="flex flex-col items-center">
@@ -293,7 +293,7 @@ const MultiStepForm = () => {
                   currentStep > index || (index === 3 && currentStep === 3)
                     ? 'bg-green-500 text-white' 
                     : currentStep === index 
-                      ? 'bg-white text-[#8b2131]' 
+                      ? 'bg-white text-primary' 
                       : 'bg-white/30 text-white'
                 }`}>
                   {currentStep > index || (index === 3 && currentStep === 3) ? (
@@ -319,7 +319,7 @@ const MultiStepForm = () => {
       </div>
 
       {/* Form content - improved for mobile with fancy animation */}
-      <div className="p-4 sm:p-6 md:p-8 bg-[#8b2131] relative overflow-hidden">
+      <div className="p-4 sm:p-6 md:p-8 bg-primary relative overflow-hidden">
         <div 
           ref={formContainerRef}
           className={`transform transition-all duration-700 ease-out ${getAnimationClasses()}`}

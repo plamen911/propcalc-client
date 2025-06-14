@@ -1,22 +1,12 @@
 import React, { useState, useEffect, useCallback } from 'react';
-import { ArrowForward, ArrowBack } from '@mui/icons-material';
+import BackButton from './BackButton';
+import ProceedButton from './ProceedButton';
 import api from '../services/api';
 import { debounce } from 'lodash';
 import LoadingSpinner from './LoadingSpinner';
 import ErrorDisplay from './ErrorDisplay';
-
-// Helper function to format currency with thousand separators (spaces)
-const formatCurrency = (amount) => {
-  if (!amount) return '0';
-  // Convert to string if it's not already
-  const amountStr = amount.toString();
-  // Split by decimal point if exists
-  const parts = amountStr.split('.');
-  // Format the integer part with spaces as thousand separators
-  parts[0] = parts[0].replace(/\B(?=(\d{3})+(?!\d))/g, ' ');
-  // Join back with decimal part if it exists
-  return parts.join('.');
-};
+import { formatCurrency } from '../utils/formatters';
+import ArrowForward from "@mui/icons-material/ArrowForward";
 
 const CoveredRisksForm = ({ formData, nextStep, prevStep, lastOpenedAccordion, setLastOpenedAccordion, customClauseAmounts, setCustomClauseAmounts, selectedRisks, setSelectedRisks, isCustomPackageSelected, setIsCustomPackageSelected, setSelectedTariff, currencySymbol, clauseCheckboxes, setClauseCheckboxes }) => {
   // State for API data
@@ -564,16 +554,15 @@ const CoveredRisksForm = ({ formData, nextStep, prevStep, lastOpenedAccordion, s
 
                   {/* Choose button - enhanced for mobile */}
                   <div className="flex w-full sm:justify-center mt-5">
-                    <button
-                      type="button"
+                    <ProceedButton
                       onClick={(e) => {
                         e.stopPropagation();
                         handleRiskChange(preset.id);
                       }}
-                      className={`w-full sm:w-auto inline-flex items-center justify-center py-3.5 sm:py-2.5 px-6 sm:px-8 border ${selectedRisks[preset.id] ? 'border-white text-[#8b2131] bg-white' : 'border-transparent text-white bg-[#6b1021]'} rounded-full font-medium focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-[#6b1021] transition-all duration-200 hover:scale-105 text-base sm:text-base shadow-md touch-manipulation min-h-[52px] sm:min-h-0`}
-                    >
-                      {selectedRisks[preset.id] ? 'ИЗБРАНО ✓' : 'ИЗБЕРИ'} {!selectedRisks[preset.id] && <ArrowForward className="ml-1.5 h-4 w-4 sm:h-5 sm:w-5" />}
-                    </button>
+                      text={selectedRisks[preset.id] ? 'ИЗБРАНО ✓' : 'ИЗБЕРИ'}
+                      showIcon={!selectedRisks[preset.id]}
+                      className={`w-full sm:w-auto px-6 sm:px-8 ${selectedRisks[preset.id] ? 'border-white text-primary bg-white' : ''} shadow-md min-h-[52px] sm:min-h-0`}
+                    />
                   </div>
                 </div>
               )}
@@ -630,7 +619,7 @@ const CoveredRisksForm = ({ formData, nextStep, prevStep, lastOpenedAccordion, s
                                     type="checkbox"
                                     checked={clauseCheckboxes[clause.id]}
                                     onChange={() => handleClauseCheckboxChange(clause.id)}
-                                    className="h-5 w-5 sm:h-4 sm:w-4 text-[#8B2131] focus:ring-[#8B2131] border-gray-300 rounded touch-manipulation"
+                                    className="h-5 w-5 sm:h-4 sm:w-4 text-primary focus:ring-primary border-gray-300 rounded touch-manipulation"
                                   />
                                 </div>
                               </div>
@@ -716,13 +705,12 @@ const CoveredRisksForm = ({ formData, nextStep, prevStep, lastOpenedAccordion, s
                       {validationError}
                     </div>
                   )}
-                  <button
-                    type="button"
+                  <ProceedButton
                     onClick={handleCustomPackageSelect}
-                    className={`w-full sm:w-auto inline-flex items-center justify-center py-3.5 sm:py-2.5 px-6 sm:px-8 border ${isCustomPackageSelected ? 'border-white text-[#8b2131] bg-white' : 'border-transparent text-white bg-[#6b1021]'} rounded-full font-medium focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-[#6b1021] transition-all duration-200 hover:scale-105 text-base sm:text-base shadow-md touch-manipulation min-h-[52px] sm:min-h-0`}
-                  >
-                    {isCustomPackageSelected ? 'ИЗБРАНО ✓' : 'ИЗБЕРИ'} {!isCustomPackageSelected && <ArrowForward className="ml-1.5 h-4 w-4 sm:h-5 sm:w-5" />}
-                  </button>
+                    text={isCustomPackageSelected ? 'ИЗБРАНО ✓' : 'ИЗБЕРИ'}
+                    showIcon={!isCustomPackageSelected}
+                    className={`w-full sm:w-auto px-6 sm:px-8 ${isCustomPackageSelected ? 'border-white text-primary bg-white' : ''} shadow-md min-h-[52px] sm:min-h-0`}
+                  />
                 </div>
               </div>
             )}
@@ -731,13 +719,7 @@ const CoveredRisksForm = ({ formData, nextStep, prevStep, lastOpenedAccordion, s
       </div>
 
       <div className="flex flex-col sm:flex-row justify-between gap-3 sm:gap-0 mt-4 sm:mt-6">
-        <button
-          type="button"
-          onClick={prevStep}
-          className="inline-flex items-center justify-center py-3.5 sm:py-2.5 px-5 sm:px-6 border border-white rounded-full text-[#8b2131] bg-white hover:bg-white/90 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-white transition-all duration-200 hover:scale-105 text-base sm:text-base shadow-md touch-manipulation min-h-[52px] sm:min-h-0"
-        >
-          <ArrowBack className="mr-1.5" fontSize="small" /> НАЗАД
-        </button>
+        <BackButton onClick={prevStep} className="shadow-md" />
       </div>
     </form>
   );

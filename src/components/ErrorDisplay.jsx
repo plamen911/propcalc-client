@@ -21,10 +21,10 @@ const ErrorDisplay = ({
   iconSize = 'small'
 }) => {
   if (!error) return null;
-  
+
   // Determine if error is a single message or an array of messages
   const isErrorArray = Array.isArray(error);
-  
+
   // Determine icon size classes
   let iconClasses = 'text-red-300 flex-shrink-0';
   switch (iconSize) {
@@ -37,17 +37,17 @@ const ErrorDisplay = ({
     default: // small
       iconClasses += ' w-5 h-5 sm:w-6 sm:h-6 mr-2 sm:mr-3';
   }
-  
+
   // Container classes
   const containerClasses = centered 
     ? `flex justify-center items-center ${className}` 
     : className;
-  
+
   // Inner container classes
   const innerContainerClasses = centered && iconSize === 'large'
     ? 'bg-red-900/20 border border-red-300/30 rounded-lg p-4 max-w-md text-center'
     : 'bg-red-900/20 border border-red-300/30 rounded-lg p-3 sm:p-4 max-w-full';
-  
+
   return (
     <div className={containerClasses}>
       <div className={innerContainerClasses}>
@@ -73,11 +73,11 @@ const ErrorDisplay = ({
             <span className="text-sm sm:text-base text-red-300">{error}</span>
           </div>
         )}
-        
+
         {showRefreshButton && (
           <button 
             onClick={() => window.location.reload()} 
-            className="px-4 py-2 mt-4 bg-white text-[#8b2131] rounded-full hover:bg-gray-100 transition-colors"
+            className="px-4 py-2 mt-4 bg-white text-primary rounded-full hover:bg-gray-100 transition-colors"
           >
             Refresh Page
           </button>
