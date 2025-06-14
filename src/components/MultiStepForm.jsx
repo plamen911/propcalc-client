@@ -291,7 +291,7 @@ const MultiStepForm = () => {
               <div className="relative flex items-center">
                 <div className={`w-8 h-8 sm:w-10 sm:h-10 rounded-full flex items-center justify-center ${
                   currentStep > index || (index === 3 && currentStep === 3)
-                    ? 'bg-green-500 text-white' 
+                    ? 'bg-white text-primary' 
                     : currentStep === index 
                       ? 'bg-white text-primary' 
                       : 'bg-white/30 text-white'
@@ -306,7 +306,7 @@ const MultiStepForm = () => {
                 </div>
                 {index < steps.length - 1 && (
                   <div className={`absolute top-4 sm:top-5 w-full h-0.5 left-8 -right-8 sm:left-10 sm:-right-10 ${
-                    currentStep > index ? 'bg-green-500' : 'bg-white/30'
+                    currentStep > index ? 'bg-primary' : 'bg-white/30'
                   }`}></div>
                 )}
               </div>
