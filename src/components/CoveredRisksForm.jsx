@@ -65,17 +65,17 @@ const CoveredRisksForm = ({ formData, nextStep, prevStep, lastOpenedAccordion, s
         // Initialize selected risks only if they're empty
         if (Object.keys(selectedRisks).length === 0) {
           const initialSelectedRisks = {};
-          data.forEach(preset => {
+          data.filter(preset => preset.active).forEach(preset => {
             initialSelectedRisks[preset.id] = false;
           });
           setSelectedRisks(initialSelectedRisks);
         }
 
-        // Extract all unique clauses from all presets
+        // Extract all unique clauses from all presets (active only)
         const uniqueClauses = [];
         const clauseMap = {};
 
-        data.forEach(preset => {
+        data.filter(preset => preset.active).forEach(preset => {
           preset.tariff_preset_clauses.forEach(clause => {
             if (!clauseMap[clause.insurance_clause.id]) {
               clauseMap[clause.insurance_clause.id] = true;
@@ -456,7 +456,7 @@ const CoveredRisksForm = ({ formData, nextStep, prevStep, lastOpenedAccordion, s
         </h3>
 
         <div className="space-y-2 sm:space-y-3">
-          {tariffPresets.map((preset) => (
+          {tariffPresets.filter(preset => preset.active).map((preset) => (
             <div key={preset.id} className="border border-white/20 rounded-lg overflow-hidden shadow-sm">
               {/* Accordion Header - enhanced for mobile */}
               <div 
