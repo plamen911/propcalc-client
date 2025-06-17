@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
-import {ArrowForward, CalendarMonth, Close} from '@mui/icons-material';
+import {ArrowForward, CalendarMonth, CheckCircle, Close, LocalOffer} from '@mui/icons-material';
 import BackButton from './BackButton';
 import ProceedButton from './ProceedButton';
 import { Dialog, DialogContent, DialogTitle, IconButton } from '@mui/material';
@@ -16,8 +16,21 @@ const InsurerForm = ({
   setInsurerData, 
   checkedItems, 
   setCheckedItems,
-  currencySymbol
+  currencySymbol,
+  promoCode,
+  setPromoCode,
+  promoCodeValid,
+  setPromoCodeValid,
+  promoCodeError,
+  setPromoCodeError,
+  promoDiscount,
+  setPromoDiscount,
+  promoDiscountedAmount,
+  setPromoDiscountedAmount,
+  validatingPromo,
+  setValidatingPromo
 }) => {
+  const [showPromoSuccess, setShowPromoSuccess] = useState(false);
   const [propertyChecklistItems, setPropertyChecklistItems] = useState([]);
   const [personRoleOptions, setPersonRoleOptions] = useState([]);
   const [idNumberTypeOptions, setIdNumberTypeOptions] = useState([]);
@@ -45,6 +58,34 @@ const InsurerForm = ({
       });
     }
   }, [insurerData.birth_date]);
+
+  // Hide promo success message after 5 seconds
+  useEffect(() => {
+    if (showPromoSuccess) {
+      const timer = setTimeout(() => {
+        setShowPromoSuccess(false);
+      }, 5000);
+
+      return () => clearTimeout(timer);
+    }
+  }, [showPromoSuccess]);
+
+  // Recalculate promoDiscountedAmount when selectedTariff changes
+  useEffect(() => {
+    if (promoCodeValid && promoDiscount && selectedTariff && selectedTariff.statistics && selectedTariff.statistics.total_premium) {
+      // Get the original premium
+      const originalPremium = selectedTariff.statistics.total_premium;
+      // Calculate promo discount amount based on the original premium
+      const promoDiscountAmount = Math.round((originalPremium * (promoDiscount / 100)) * 100) / 100;
+      // Calculate premium after both discounts
+      const premiumAfterBothDiscounts = selectedTariff.statistics.discounted_premium - promoDiscountAmount;
+      // Calculate tax on the premium after both discounts
+      const taxAmount = Math.round((premiumAfterBothDiscounts * (selectedTariff.tax_percent / 100)) * 100) / 100;
+      // Calculate total amount (premium after both discounts + tax)
+      const totalAmount = premiumAfterBothDiscounts + taxAmount;
+      setPromoDiscountedAmount(totalAmount);
+    }
+  }, [selectedTariff, promoCodeValid, promoDiscount]);
 
   // Fetch form data when the component mounts
   useEffect(() => {
@@ -266,6 +307,65 @@ const InsurerForm = ({
       ...prev,
       [id]: value
     }));
+  };
+
+  const handlePromoCodeChange = (e) => {
+    setPromoCode(e.target.value);
+    // Reset validation state when the code changes
+    if (promoCodeValid) {
+      setPromoCodeValid(false);
+      setPromoDiscount(null);
+      setPromoDiscountedAmount(null);
+    }
+    if (promoCodeError) {
+      setPromoCodeError('');
+    }
+    // Hide success message when the code changes
+    setShowPromoSuccess(false);
+  };
+
+  const validatePromoCode = async () => {
+    if (!promoCode.trim()) {
+      setPromoCodeError('Моля, въведете промоционален код');
+      return;
+    }
+
+    setValidatingPromo(true);
+    setPromoCodeError('');
+
+    try {
+      const response = await api.post('/api/v1/promotional-codes/validate', { code: promoCode });
+
+      if (response.data.valid) {
+        setPromoCodeValid(true);
+        setPromoDiscount(response.data.discountPercentage);
+        setShowPromoSuccess(true);
+
+        // Calculate discounted amount
+        if (selectedTariff && selectedTariff.statistics && selectedTariff.statistics.total_premium) {
+          // Get the original premium
+          const originalPremium = selectedTariff.statistics.total_premium;
+          // Calculate promo discount amount based on the original premium
+          const promoDiscountAmount = Math.round((originalPremium * (response.data.discountPercentage / 100)) * 100) / 100;
+          // Calculate premium after both discounts
+          const premiumAfterBothDiscounts = selectedTariff.statistics.discounted_premium - promoDiscountAmount;
+          // Calculate tax on the premium after both discounts
+          const taxAmount = Math.round((premiumAfterBothDiscounts * (selectedTariff.tax_percent / 100)) * 100) / 100;
+          // Calculate total amount (premium after both discounts + tax)
+          const totalAmount = premiumAfterBothDiscounts + taxAmount;
+          setPromoDiscountedAmount(totalAmount);
+        }
+      } else {
+        setPromoCodeValid(false);
+        setPromoCodeError(response.data.message || 'Невалиден промоционален код');
+      }
+    } catch (error) {
+      console.error('Error validating promotional code:', error);
+      setPromoCodeError('Грешка при валидиране на кода. Моля, опитайте отново.');
+      setPromoCodeValid(false);
+    } finally {
+      setValidatingPromo(false);
+    }
   };
 
   const areAllItemsChecked = () => {
@@ -717,9 +817,24 @@ const InsurerForm = ({
                   <div className="flex justify-between items-center">
                     <div className="flex items-center">
                       <span className="inline-block w-2 h-2 bg-green-400 rounded-full mr-2"></span>
-                      <span className="uppercase text-white text-xs sm:text-sm font-medium">Застрахователна премия след отстъпка от {selectedTariff.discount_percent}%</span>
+                      <span className="uppercase text-white text-xs sm:text-sm font-medium">Застрахователна премия след отстъпка {selectedTariff.discount_percent}%</span>
                     </div>
                     <div className="text-[#ffcc00] font-semibold text-base sm:text-lg ml-2">{formatCurrency(selectedTariff.statistics.discounted_premium)} {currencySymbol}</div>
+                  </div>
+                </div>
+              )}
+
+              {/* Show premium after promo code if a valid promo code is applied */}
+              {promoCodeValid && promoDiscount && selectedTariff.statistics.discounted_premium && (
+                <div className="border-b border-white/10 bg-white/5 p-3">
+                  <div className="flex justify-between items-center">
+                    <div className="flex items-center">
+                      <span className="inline-block w-2 h-2 bg-green-400 rounded-full mr-2"></span>
+                      <span className="uppercase text-white text-xs sm:text-sm font-medium">Застрахователна премия след приложен промо код {promoDiscount}%</span>
+                    </div>
+                    <div className="text-[#ffcc00] font-semibold text-base sm:text-lg ml-2">
+                      {formatCurrency(selectedTariff.statistics.discounted_premium - (selectedTariff.statistics.total_premium * promoDiscount / 100))} {currencySymbol}
+                    </div>
                   </div>
                 </div>
               )}
@@ -729,9 +844,14 @@ const InsurerForm = ({
                   <div className="flex justify-between items-center">
                     <div className="flex items-center">
                       <span className="inline-block w-2 h-2 bg-yellow-400 rounded-full mr-2"></span>
-                      <span className="uppercase text-white text-xs sm:text-sm font-medium">{selectedTariff.tax_percent}% данък върху застрахователната премия</span>
+                      <span className="uppercase text-white text-xs sm:text-sm font-medium">Данък върху застрахователната премия {selectedTariff.tax_percent}% </span>
                     </div>
-                    <div className="text-[#ffcc00] font-semibold text-base sm:text-lg ml-2">{formatCurrency(selectedTariff.statistics.tax_amount)} {currencySymbol}</div>
+                    <div className="text-[#ffcc00] font-semibold text-base sm:text-lg ml-2">
+                      {promoCodeValid && promoDiscount 
+                        ? formatCurrency((selectedTariff.statistics.discounted_premium - (selectedTariff.statistics.total_premium * promoDiscount / 100)) * (selectedTariff.tax_percent / 100)) 
+                        : formatCurrency(selectedTariff.statistics.tax_amount)} 
+                      {currencySymbol}
+                    </div>
                   </div>
                 </div>
               )}
@@ -742,11 +862,65 @@ const InsurerForm = ({
                     <span className="inline-block w-3 h-3 bg-red-500 rounded-full mr-2"></span>
                     <span className="uppercase text-white text-sm sm:text-base font-bold">Общо дължима сума за една година</span>
                   </div>
-                  <div className="text-white font-bold text-lg sm:text-xl ml-2" style={{animation: 'colorPulse 2s ease-in-out infinite'}}>{formatCurrency(selectedTariff.statistics.total_amount)} {currencySymbol}</div>
+                  <div className="text-white font-bold text-lg sm:text-xl ml-2" style={{animation: 'colorPulse 2s ease-in-out infinite'}}>
+                    {promoCodeValid && promoDiscount 
+                      ? formatCurrency(promoDiscountedAmount)
+                      : formatCurrency(selectedTariff.statistics.total_amount)} 
+                    {currencySymbol}
+                  </div>
                 </div>
               </div>
             </div>
           )}
+
+          {/* Promotional Code Section */}
+          <div className="mt-4 p-3 bg-white/5 rounded-lg border border-white/20">
+            <div className="flex items-center mb-2">
+              <LocalOffer className="text-[#ffcc00] mr-2" />
+              <h4 className="text-white text-sm sm:text-base font-medium">Имате промоционален код?</h4>
+            </div>
+
+            <div className="flex flex-col sm:flex-row gap-2">
+              <div className="flex-grow relative">
+                <div className="relative w-full">
+                  <input
+                    type="text"
+                    value={promoCode}
+                    onChange={handlePromoCodeChange}
+                    placeholder="Въведете промоционален код"
+                    className={`w-full p-2 rounded-md border ${promoCodeError ? 'border-red-500' : 'border-gray-300'} focus:outline-none focus:ring-[#8B2131] focus:border-[#8B2131] text-black`}
+                    disabled={promoCodeValid || validatingPromo}
+                  />
+                  {promoCodeError && (
+                    <div className="absolute top-1/2 transform -translate-y-1/2 right-0 pr-3 flex items-center pointer-events-none">
+                      <svg className="h-5 w-5 text-red-500" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
+                        <path fillRule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z" clipRule="evenodd" />
+                      </svg>
+                    </div>
+                  )}
+                </div>
+                {promoCodeError && (
+                  <div className="text-red-300 text-xs mt-1">{promoCodeError}</div>
+                )}
+              </div>
+              <button
+                onClick={validatePromoCode}
+                disabled={promoCodeValid || validatingPromo || !promoCode.trim()}
+                className={`px-4 py-2 rounded-md font-medium ${promoCodeValid ? 'bg-green-600 text-white' : 'bg-[#8B2131] text-white hover:bg-[#a02639] disabled:bg-gray-400 disabled:cursor-not-allowed'} transition-colors self-start`}
+              >
+                {validatingPromo ? 'Проверка...' : promoCodeValid ? 'Приложен' : 'Приложи'}
+              </button>
+            </div>
+
+            {promoCodeValid && promoDiscount && showPromoSuccess && (
+              <div className="mt-4 p-3 bg-green-600/20 rounded-lg border border-green-500/30">
+                <div className="flex items-center">
+                  <CheckCircle className="text-green-500 mr-2" />
+                  <span className="text-white text-sm">Промоционален код приложен успешно! Отстъпката от {promoDiscount}% е отразена в крайната цена.</span>
+                </div>
+              </div>
+            )}
+          </div>
         </div>
       )}
       <div className="bg-white/10 p-6 rounded-xl mb-6 border border-white/20">
@@ -776,7 +950,7 @@ const InsurerForm = ({
                 ))}
               </select>
               {isFieldInvalid('person_role_id') && (
-                <div className="absolute inset-y-0 right-0 pr-10 flex items-center pointer-events-none">
+                <div className="absolute top-1/2 transform -translate-y-1/2 right-0 pr-10 flex items-center pointer-events-none">
                   <svg className="h-5 w-5 text-red-500" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
                     <path fillRule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z" clipRule="evenodd" />
                   </svg>
@@ -801,7 +975,7 @@ const InsurerForm = ({
                 className={`block w-full rounded-md shadow-sm focus:ring-[#8B2131] focus:border-[#8B2131] sm:text-sm text-black ${isFieldInvalid('full_name') ? 'border-red-500' : 'border-gray-300'}`}
               />
               {isFieldInvalid('full_name') && (
-                <div className="absolute inset-y-0 right-0 pr-3 flex items-center pointer-events-none">
+                <div className="absolute top-1/2 transform -translate-y-1/2 right-0 pr-3 flex items-center pointer-events-none">
                   <svg className="h-5 w-5 text-red-500" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
                     <path fillRule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z" clipRule="evenodd" />
                   </svg>
@@ -831,7 +1005,7 @@ const InsurerForm = ({
                   ))}
                 </select>
                 {isFieldInvalid('id_number_type_id') && (
-                  <div className="absolute inset-y-0 right-0 pr-10 flex items-center pointer-events-none">
+                  <div className="absolute top-1/2 transform -translate-y-1/2 right-0 pr-10 flex items-center pointer-events-none">
                     <svg className="h-5 w-5 text-red-500" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
                       <path fillRule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z" clipRule="evenodd" />
                     </svg>
@@ -849,7 +1023,7 @@ const InsurerForm = ({
                   className={`pl-3 block w-full rounded-r-md border-l-0 shadow-sm focus:ring-[#8B2131] focus:border-[#8B2131] focus:z-10 py-2.5 sm:py-2 text-sm sm:text-base text-black ${isFieldInvalid('id_number') ? 'border-red-500' : 'border-gray-300'}`}
                 />
                 {isFieldInvalid('id_number') && (
-                  <div className="absolute inset-y-0 right-0 pr-3 flex items-center pointer-events-none">
+                  <div className="absolute top-1/2 transform -translate-y-1/2 right-0 pr-3 flex items-center pointer-events-none">
                     <svg className="h-5 w-5 text-red-500" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
                       <path fillRule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z" clipRule="evenodd" />
                     </svg>
@@ -868,7 +1042,7 @@ const InsurerForm = ({
                   Дата на раждане <span className="text-red-300">*</span>
                 </label>
                 <div className="relative">
-                  <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                  <div className="absolute top-1/2 transform -translate-y-1/2 left-0 pl-3 flex items-center pointer-events-none">
                     <svg className="h-5 w-5 text-primary" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
                       <path fillRule="evenodd" d="M6 2a1 1 0 00-1 1v1H4a2 2 0 00-2 2v10a2 2 0 002 2h12a2 2 0 002-2V6a2 2 0 00-2-2h-1V3a1 1 0 10-2 0v1H7V3a1 1 0 00-1-1zm0 5a1 1 0 000 2h8a1 1 0 100-2H6z" clipRule="evenodd" />
                     </svg>
@@ -885,7 +1059,7 @@ const InsurerForm = ({
                     className={`pl-10 block w-full rounded-md shadow-sm focus:ring-primary focus:border-primary sm:text-sm text-black cursor-pointer ${isFieldInvalid('birth_date') ? 'border-red-500' : 'border-gray-300'}`}
                   />
                   {isFieldInvalid('birth_date') && (
-                    <div className="absolute inset-y-0 right-0 pr-3 flex items-center pointer-events-none">
+                    <div className="absolute top-1/2 transform -translate-y-1/2 right-0 pr-3 flex items-center pointer-events-none">
                       <svg className="h-5 w-5 text-red-500" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
                         <path fillRule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z" clipRule="evenodd" />
                       </svg>
@@ -916,7 +1090,7 @@ const InsurerForm = ({
                     ))}
                   </select>
                   {isFieldInvalid('insurer_nationality_id') && (
-                    <div className="absolute inset-y-0 right-0 pr-10 flex items-center pointer-events-none">
+                    <div className="absolute top-1/2 transform -translate-y-1/2 right-0 pr-10 flex items-center pointer-events-none">
                       <svg className="h-5 w-5 text-red-500" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
                         <path fillRule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z" clipRule="evenodd" />
                       </svg>
@@ -970,7 +1144,7 @@ const InsurerForm = ({
               Населено място <span className="text-red-300">*</span>
             </label>
             <div className="relative">
-              <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+              <div className="absolute top-1/2 transform -translate-y-1/2 left-0 pl-3 flex items-center pointer-events-none">
                 <svg className="h-5 w-5 text-primary" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
                   <path fillRule="evenodd" d="M5.05 4.05a7 7 0 119.9 9.9L10 18.9l-4.95-4.95a7 7 0 010-9.9zM10 11a2 2 0 100-4 2 2 0 000 4z" clipRule="evenodd" />
                 </svg>
@@ -992,7 +1166,7 @@ const InsurerForm = ({
                 required
               />
               {isFieldInvalid('insurer_settlement_id') && (
-                <div className="absolute inset-y-0 right-0 pr-3 flex items-center pointer-events-none">
+                <div className="absolute top-1/2 transform -translate-y-1/2 right-0 pr-3 flex items-center pointer-events-none">
                   <svg className="h-5 w-5 text-red-500" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
                     <path fillRule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z" clipRule="evenodd" />
                   </svg>
@@ -1031,7 +1205,7 @@ const InsurerForm = ({
                 className={`block w-full rounded-md shadow-sm focus:ring-[#8B2131] focus:border-[#8B2131] sm:text-sm text-black ${isFieldInvalid('permanent_address') ? 'border-red-500' : 'border-gray-300'}`}
               />
               {isFieldInvalid('permanent_address') && (
-                <div className="absolute inset-y-0 right-0 pr-3 flex items-center pointer-events-none">
+                <div className="absolute top-1/2 transform -translate-y-1/2 right-0 pr-3 flex items-center pointer-events-none">
                   <svg className="h-5 w-5 text-red-500" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
                     <path fillRule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z" clipRule="evenodd" />
                   </svg>
@@ -1045,7 +1219,7 @@ const InsurerForm = ({
               Телефон <span className="text-red-300">*</span>
             </label>
             <div className="relative">
-              <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+              <div className="absolute top-1/2 transform -translate-y-1/2 left-0 pl-3 flex items-center pointer-events-none">
                 <svg className="h-5 w-5 text-primary" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
                   <path d="M2 3a1 1 0 011-1h2.153a1 1 0 01.986.836l.74 4.435a1 1 0 01-.54 1.06l-1.548.773a11.037 11.037 0 006.105 6.105l.774-1.548a1 1 0 011.059-.54l4.435.74a1 1 0 01.836.986V17a1 1 0 01-1 1h-2C7.82 18 2 12.18 2 5V3z" />
                 </svg>
@@ -1061,7 +1235,7 @@ const InsurerForm = ({
                 className={`pl-10 block w-full rounded-md shadow-sm focus:ring-primary focus:border-primary sm:text-sm text-black ${isFieldInvalid('phone') ? 'border-red-500' : 'border-gray-300'}`}
               />
               {isFieldInvalid('phone') && (
-                <div className="absolute inset-y-0 right-0 pr-3 flex items-center pointer-events-none">
+                <div className="absolute top-1/2 transform -translate-y-1/2 right-0 pr-3 flex items-center pointer-events-none">
                   <svg className="h-5 w-5 text-red-500" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
                     <path fillRule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z" clipRule="evenodd" />
                   </svg>
@@ -1075,7 +1249,7 @@ const InsurerForm = ({
               Имейл <span className="text-red-300">*</span>
             </label>
             <div className="relative">
-              <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+              <div className="absolute top-1/2 transform -translate-y-1/2 left-0 pl-3 flex items-center pointer-events-none">
                 <svg className="h-5 w-5 text-primary" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
                   <path d="M2.003 5.884L10 9.882l7.997-3.998A2 2 0 0016 4H4a2 2 0 00-1.997 1.884z" />
                   <path d="M18 8.118l-8 4-8-4V14a2 2 0 002 2h12a2 2 0 002-2V8.118z" />
@@ -1092,7 +1266,7 @@ const InsurerForm = ({
                 className={`pl-10 block w-full rounded-md shadow-sm focus:ring-primary focus:border-primary sm:text-sm text-black ${isFieldInvalid('email') ? 'border-red-500' : 'border-gray-300'}`}
               />
               {isFieldInvalid('email') && (
-                <div className="absolute inset-y-0 right-0 pr-3 flex items-center pointer-events-none">
+                <div className="absolute top-1/2 transform -translate-y-1/2 right-0 pr-3 flex items-center pointer-events-none">
                   <svg className="h-5 w-5 text-red-500" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
                     <path fillRule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z" clipRule="evenodd" />
                   </svg>

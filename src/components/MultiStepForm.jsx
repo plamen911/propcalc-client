@@ -51,6 +51,14 @@ const MultiStepForm = () => {
     16: false
   });
 
+  // State for promotional code
+  const [promoCode, setPromoCode] = useState('');
+  const [promoCodeValid, setPromoCodeValid] = useState(false);
+  const [promoCodeError, setPromoCodeError] = useState('');
+  const [promoDiscount, setPromoDiscount] = useState(null);
+  const [promoDiscountedAmount, setPromoDiscountedAmount] = useState(null);
+  const [validatingPromo, setValidatingPromo] = useState(false);
+
   // State for tracking loading and error states
   const [isLoading, setIsLoading] = useState(true);
   const [loadError, setLoadError] = useState(null);
@@ -166,6 +174,14 @@ const MultiStepForm = () => {
       14: false,
       16: false
     });
+
+    // Reset promotional code state
+    setPromoCode('');
+    setPromoCodeValid(false);
+    setPromoCodeError('');
+    setPromoDiscount(null);
+    setPromoDiscountedAmount(null);
+    setValidatingPromo(false);
   };
 
   const renderStep = () => {
@@ -228,6 +244,18 @@ const MultiStepForm = () => {
             checkedItems={checkedItems}
             setCheckedItems={setCheckedItems}
             currencySymbol={currencySymbol}
+            promoCode={promoCode}
+            setPromoCode={setPromoCode}
+            promoCodeValid={promoCodeValid}
+            setPromoCodeValid={setPromoCodeValid}
+            promoCodeError={promoCodeError}
+            setPromoCodeError={setPromoCodeError}
+            promoDiscount={promoDiscount}
+            setPromoDiscount={setPromoDiscount}
+            promoDiscountedAmount={promoDiscountedAmount}
+            setPromoDiscountedAmount={setPromoDiscountedAmount}
+            validatingPromo={validatingPromo}
+            setValidatingPromo={setValidatingPromo}
           />
         );
       case 3:
@@ -240,6 +268,9 @@ const MultiStepForm = () => {
             formData={formData}
             currencySymbol={currencySymbol}
             resetForm={resetForm}
+            promoCodeValid={promoCodeValid}
+            promoDiscount={promoDiscount}
+            promoDiscountedAmount={promoDiscountedAmount}
           />
         );
       default:

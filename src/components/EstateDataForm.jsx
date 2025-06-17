@@ -189,6 +189,7 @@ const EstateDataForm = ({ formData, handleChange, nextStep }) => {
               placeholder="Въведете населено място"
               className="pl-8 sm:pl-10 py-3.5 sm:py-2.5 block w-full rounded-md border-gray-300 shadow-sm focus:ring-primary focus:border-primary text-base sm:text-base text-black touch-manipulation"
               autoComplete="off"
+              autoFocus={true}
               required
             />
             <input type="hidden" name="settlement_id" value={formData.settlement_id || ''} />

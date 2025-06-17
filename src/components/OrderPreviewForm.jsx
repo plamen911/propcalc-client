@@ -52,7 +52,7 @@ const SuccessAlert = styled(Alert)(({ theme }) => ({
   }
 }));
 
-const OrderPreviewForm = ({ prevStep, selectedTariff, insurerData, checkedItems, formData, currencySymbol, resetForm }) => {
+const OrderPreviewForm = ({ prevStep, selectedTariff, insurerData, checkedItems, formData, currencySymbol, resetForm, promoCodeValid, promoDiscount, promoDiscountedAmount }) => {
   const [termsAccepted, setTermsAccepted] = useState(false);
   const [error, setError] = useState(null);
   const [isSubmitted, setIsSubmitted] = useState(false);
@@ -383,50 +383,75 @@ const OrderPreviewForm = ({ prevStep, selectedTariff, insurerData, checkedItems,
 
                 {/* Statistics section */}
                 {selectedTariff.statistics && (
-                  <div className="mt-3 sm:mt-4 rounded-lg overflow-hidden border border-white/20 shadow-md">
+                  <div className="mt-4 rounded-lg overflow-hidden border border-white/20 shadow-md">
                     {selectedTariff.statistics.total_premium && (
-                      <div className="border-b border-white/10 bg-white/5 p-2 sm:p-3">
+                      <div className="border-b border-white/10 bg-white/5 p-3">
                         <div className="flex justify-between items-center">
-                          <div className="flex items-center flex-1">
-                            <span className="inline-block w-2 h-2 bg-blue-400 rounded-full mr-1.5 sm:mr-2 flex-shrink-0"></span>
-                            <span className="uppercase text-white text-xs sm:text-sm font-medium">Застрахователна премия</span>
+                          <div className="flex items-center">
+                            <span className="inline-block w-3 h-3 bg-blue-400 rounded-full mr-2"></span>
+                            <span className="uppercase text-white text-sm sm:text-base font-medium">Застрахователна премия</span>
                           </div>
-                          <div className="text-[#ffcc00] font-semibold text-sm sm:text-base md:text-lg ml-2 flex-shrink-0">{formatCurrency(selectedTariff.statistics.total_premium)} {currencySymbol}</div>
+                          <div className="text-[#ffcc00] font-semibold text-base sm:text-lg ml-2">{formatCurrency(selectedTariff.statistics.total_premium)} {currencySymbol}</div>
                         </div>
                       </div>
                     )}
 
                     {selectedTariff.statistics.discounted_premium && selectedTariff.discount_percent && (
-                      <div className="border-b border-white/10 bg-white/5 p-2 sm:p-3">
+                      <div className="border-b border-white/10 bg-white/5 p-3">
                         <div className="flex justify-between items-center">
-                          <div className="flex items-center flex-1">
-                            <span className="inline-block w-2 h-2 bg-green-400 rounded-full mr-1.5 sm:mr-2 flex-shrink-0"></span>
-                            <span className="uppercase text-white text-xs sm:text-sm font-medium">Застрахователна премия след отстъпка от {selectedTariff.discount_percent}%</span>
+                          <div className="flex items-center">
+                            <span className="inline-block w-3 h-3 bg-green-400 rounded-full mr-2"></span>
+                            <span className="uppercase text-white text-sm sm:text-base font-medium">Застрахователна премия след отстъпка от {selectedTariff.discount_percent}%</span>
                           </div>
-                          <div className="text-[#ffcc00] font-semibold text-sm sm:text-base md:text-lg ml-2 flex-shrink-0">{formatCurrency(selectedTariff.statistics.discounted_premium)} {currencySymbol}</div>
+                          <div className="text-[#ffcc00] font-semibold text-base sm:text-lg ml-2">{formatCurrency(selectedTariff.statistics.discounted_premium)} {currencySymbol}</div>
+                        </div>
+                      </div>
+                    )}
+
+                    {/* Show premium after promo code if a valid promo code is applied */}
+                    {promoCodeValid && promoDiscount && selectedTariff.statistics.discounted_premium && (
+                      <div className="border-b border-white/10 bg-white/5 p-3">
+                        <div className="flex justify-between items-center">
+                          <div className="flex items-center">
+                            <span className="inline-block w-3 h-3 bg-green-400 rounded-full mr-2"></span>
+                            <span className="uppercase text-white text-sm sm:text-base font-medium">Застрахователна премия след приложен промо код {promoDiscount}%</span>
+                          </div>
+                          <div className="text-[#ffcc00] font-semibold text-base sm:text-lg ml-2">
+                            {formatCurrency(selectedTariff.statistics.discounted_premium - (selectedTariff.statistics.total_premium * promoDiscount / 100))} {currencySymbol}
+                          </div>
                         </div>
                       </div>
                     )}
 
                     {selectedTariff.statistics.tax_amount && selectedTariff.tax_percent && (
-                      <div className="border-b border-white/10 bg-white/5 p-2 sm:p-3">
+                      <div className="border-b border-white/10 bg-white/5 p-3">
                         <div className="flex justify-between items-center">
-                          <div className="flex items-center flex-1">
-                            <span className="inline-block w-2 h-2 bg-yellow-400 rounded-full mr-1.5 sm:mr-2 flex-shrink-0"></span>
-                            <span className="uppercase text-white text-xs sm:text-sm font-medium">{selectedTariff.tax_percent}% данък върху застрахователната премия</span>
+                          <div className="flex items-center">
+                            <span className="inline-block w-3 h-3 bg-yellow-400 rounded-full mr-2"></span>
+                            <span className="uppercase text-white text-sm sm:text-base font-medium">{selectedTariff.tax_percent}% данък върху застрахователната премия</span>
                           </div>
-                          <div className="text-[#ffcc00] font-semibold text-sm sm:text-base md:text-lg ml-2 flex-shrink-0">{formatCurrency(selectedTariff.statistics.tax_amount)} {currencySymbol}</div>
+                          <div className="text-[#ffcc00] font-semibold text-base sm:text-lg ml-2">
+                            {promoCodeValid && promoDiscount 
+                              ? formatCurrency((selectedTariff.statistics.discounted_premium - (selectedTariff.statistics.total_premium * promoDiscount / 100)) * (selectedTariff.tax_percent / 100)) 
+                              : formatCurrency(selectedTariff.statistics.tax_amount)} 
+                            {currencySymbol}
+                          </div>
                         </div>
                       </div>
                     )}
 
-                    <div className="bg-[#8b2131]/70 p-2 sm:p-3">
+                    <div className="bg-[#8b2131]/70 p-3">
                       <div className="flex justify-between items-center">
-                        <div className="flex items-center flex-1">
-                          <span className="inline-block w-2.5 sm:w-3 h-2.5 sm:h-3 bg-red-500 rounded-full mr-1.5 sm:mr-2 flex-shrink-0"></span>
-                          <span className="uppercase text-white text-xs sm:text-sm md:text-base font-bold">Общо дължима сума за една година</span>
+                        <div className="flex items-center">
+                          <span className="inline-block w-3 h-3 bg-red-500 rounded-full mr-2"></span>
+                          <span className="uppercase text-white text-sm sm:text-base font-bold">Общо дължима сума за една година</span>
                         </div>
-                        <div className="text-white font-bold text-base sm:text-lg md:text-xl ml-2 flex-shrink-0" style={{animation: 'colorPulse 2s ease-in-out infinite'}}>{formatCurrency(selectedTariff.statistics.total_amount)} {currencySymbol}</div>
+                        <div className="text-white font-bold text-lg sm:text-xl ml-2" style={{animation: 'colorPulse 2s ease-in-out infinite'}}>
+                          {promoCodeValid && promoDiscount 
+                            ? formatCurrency(promoDiscountedAmount)
+                            : formatCurrency(selectedTariff.statistics.total_amount)} 
+                          {currencySymbol}
+                        </div>
                       </div>
                     </div>
                   </div>
