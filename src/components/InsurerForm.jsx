@@ -906,7 +906,7 @@ const InsurerForm = ({
               <button
                 onClick={validatePromoCode}
                 disabled={promoCodeValid || validatingPromo || !promoCode.trim()}
-                className={`px-4 py-2 rounded-md font-medium ${promoCodeValid ? 'bg-green-600 text-white' : 'bg-[#8B2131] text-white hover:bg-[#a02639] disabled:bg-gray-400 disabled:cursor-not-allowed'} transition-colors self-start`}
+                className={`inline-flex items-center justify-center py-4 sm:py-2.5 px-6 sm:px-5 border border-transparent shadow-sm text-base sm:text-base font-medium rounded-full text-white ${promoCodeValid ? 'bg-green-600' : 'bg-[#6b1021] hover:bg-[#5a0d1c] focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-[#6b1021] transition-all duration-200 hover:scale-105'} disabled:opacity-50 disabled:cursor-not-allowed self-start touch-manipulation min-h-[56px] sm:min-h-0`}
               >
                 {validatingPromo ? 'Проверка...' : promoCodeValid ? 'Приложен' : 'Приложи'}
               </button>
