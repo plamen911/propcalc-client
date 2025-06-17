@@ -28,7 +28,9 @@ const InsurerForm = ({
   promoDiscountedAmount,
   setPromoDiscountedAmount,
   validatingPromo,
-  setValidatingPromo
+  setValidatingPromo,
+  promoCodeId,
+  setPromoCodeId
 }) => {
   const [showPromoSuccess, setShowPromoSuccess] = useState(false);
   const [propertyChecklistItems, setPropertyChecklistItems] = useState([]);
@@ -339,6 +341,7 @@ const InsurerForm = ({
       if (response.data.valid) {
         setPromoCodeValid(true);
         setPromoDiscount(response.data.discountPercentage);
+        setPromoCodeId(response.data.id);
         setShowPromoSuccess(true);
 
         // Calculate discounted amount

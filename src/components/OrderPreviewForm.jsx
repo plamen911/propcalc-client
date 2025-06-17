@@ -52,7 +52,7 @@ const SuccessAlert = styled(Alert)(({ theme }) => ({
   }
 }));
 
-const OrderPreviewForm = ({ prevStep, selectedTariff, insurerData, checkedItems, formData, currencySymbol, resetForm, promoCodeValid, promoDiscount, promoDiscountedAmount }) => {
+const OrderPreviewForm = ({ prevStep, selectedTariff, insurerData, checkedItems, formData, currencySymbol, resetForm, promoCodeValid, promoDiscount, promoDiscountedAmount, promoCodeId }) => {
   const [termsAccepted, setTermsAccepted] = useState(false);
   const [error, setError] = useState(null);
   const [isSubmitted, setIsSubmitted] = useState(false);
@@ -245,6 +245,16 @@ const OrderPreviewForm = ({ prevStep, selectedTariff, insurerData, checkedItems,
           policyData.discount = selectedTariff.discount_percent || 0;
           policyData.subtotal_tax = selectedTariff.statistics?.tax_amount || 0;
           policyData.total = selectedTariff.statistics?.total_amount || 0;
+
+          // Add promotional code data if a valid promo code is applied
+          if (promoCodeValid && promoDiscount && promoCodeId) {
+            policyData.promotional_code_id = promoCodeId;
+            policyData.promotional_code_discount = promoDiscount;
+            // If promo discount is applied, update the total
+            if (promoDiscountedAmount) {
+              policyData.total = promoDiscountedAmount;
+            }
+          }
         } else {
           // Set default financial values for custom offers
           policyData.subtotal = 0;

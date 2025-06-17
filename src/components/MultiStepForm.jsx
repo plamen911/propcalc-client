@@ -58,6 +58,7 @@ const MultiStepForm = () => {
   const [promoDiscount, setPromoDiscount] = useState(null);
   const [promoDiscountedAmount, setPromoDiscountedAmount] = useState(null);
   const [validatingPromo, setValidatingPromo] = useState(false);
+  const [promoCodeId, setPromoCodeId] = useState(null);
 
   // State for tracking loading and error states
   const [isLoading, setIsLoading] = useState(true);
@@ -256,6 +257,8 @@ const MultiStepForm = () => {
             setPromoDiscountedAmount={setPromoDiscountedAmount}
             validatingPromo={validatingPromo}
             setValidatingPromo={setValidatingPromo}
+            promoCodeId={promoCodeId}
+            setPromoCodeId={setPromoCodeId}
           />
         );
       case 3:
@@ -271,6 +274,7 @@ const MultiStepForm = () => {
             promoCodeValid={promoCodeValid}
             promoDiscount={promoDiscount}
             promoDiscountedAmount={promoDiscountedAmount}
+            promoCodeId={promoCodeId}
           />
         );
       default:
