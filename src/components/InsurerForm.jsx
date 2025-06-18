@@ -1036,10 +1036,60 @@ const InsurerForm = ({
         </h3>
 
         <div className="space-y-4">
+          {/* Property Settlement (readonly) */}
+          <div>
+            <label htmlFor="property_settlement" className="block text-sm font-medium text-white mb-1">
+              Нас. място на имота
+            </label>
+            <div className="relative">
+              <input
+                type="text"
+                id="property_settlement"
+                value={propertySettlement ? `${propertySettlement.name}, ${propertySettlement.post_code}` : ''}
+                readOnly
+                className="block w-full rounded-md shadow-sm focus:ring-[#8B2131] focus:border-[#8B2131] sm:text-sm text-black bg-gray-100 border-gray-300"
+              />
+            </div>
+          </div>
+
+          {/* Property Address */}
+          <div>
+            <label htmlFor="property_address" className="block text-sm font-medium text-white mb-1">
+              Адрес на имота <span className="text-red-300">*</span>
+            </label>
+            <div className="relative">
+              <input
+                type="text"
+                id="property_address"
+                name="property_address"
+                value={insurerData.property_address || ''}
+                onChange={handleChange}
+                placeholder="Въведете адрес на имота"
+                required
+                className={`block w-full rounded-md shadow-sm focus:ring-primary focus:border-primary sm:text-sm text-black ${isFieldInvalid('property_address') ? 'border-error' : 'border-gray-300'}`}
+              />
+              {isFieldInvalid('property_address') && (
+                <div className="absolute top-1/2 transform -translate-y-1/2 right-0 pr-3 flex items-center pointer-events-none">
+                  <svg className="h-5 w-5 text-red-500" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
+                    <path fillRule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z" clipRule="evenodd" />
+                  </svg>
+                </div>
+              )}
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div className="bg-white/10 p-6 rounded-xl mb-6 border border-white/20">
+        <h3 className="text-lg font-medium text-white mb-4">
+          Собственик
+        </h3>
+
+        <div className="space-y-4">
           {/* Property Owner Name */}
           <div>
             <label htmlFor="property_owner_name" className="block text-sm font-medium text-white mb-1">
-              Имена на собственика по документи за самоличност <span className="text-red-300">*</span>
+              Имена по документи за самоличност <span className="text-red-300">*</span>
             </label>
             <div className="relative">
               <input
@@ -1048,7 +1098,7 @@ const InsurerForm = ({
                 name="property_owner_name"
                 value={insurerData.property_owner_name || ''}
                 onChange={handleChange}
-                placeholder="Въведете имена на собственика по документи за самоличност"
+                placeholder="Въведете имена по документи за самоличност"
                 required
                 className={`block w-full rounded-md shadow-sm focus:ring-primary focus:border-primary sm:text-sm text-black ${isFieldInvalid('property_owner_name') ? 'border-error' : 'border-gray-300'}`}
               />
@@ -1062,8 +1112,8 @@ const InsurerForm = ({
             </div>
           </div>
 
-          {/* Property Owner ID Number */}
-          <div>
+           {/* Property Owner ID Number */}
+           <div>
             <label htmlFor="property_owner_id_number_type_id" className="block text-sm font-medium text-white mb-1">
               ЕГН/ЛНЧ/Паспорт №: <span className="text-red-300">*</span>
             </label>
@@ -1111,49 +1161,9 @@ const InsurerForm = ({
               </div>
             </div>
           </div>
-
-          {/* Property Settlement (readonly) */}
-          <div>
-            <label htmlFor="property_settlement" className="block text-sm font-medium text-white mb-1">
-              Нас. място на имота
-            </label>
-            <div className="relative">
-              <input
-                type="text"
-                id="property_settlement"
-                value={propertySettlement ? `${propertySettlement.name}, ${propertySettlement.post_code}` : ''}
-                readOnly
-                className="block w-full rounded-md shadow-sm focus:ring-[#8B2131] focus:border-[#8B2131] sm:text-sm text-black bg-gray-100 border-gray-300"
-              />
-            </div>
-          </div>
-
-          {/* Property Address */}
-          <div>
-            <label htmlFor="property_address" className="block text-sm font-medium text-white mb-1">
-              Адрес на имота <span className="text-red-300">*</span>
-            </label>
-            <div className="relative">
-              <input
-                type="text"
-                id="property_address"
-                name="property_address"
-                value={insurerData.property_address || ''}
-                onChange={handleChange}
-                placeholder="Въведете адрес на имота"
-                required
-                className={`block w-full rounded-md shadow-sm focus:ring-primary focus:border-primary sm:text-sm text-black ${isFieldInvalid('property_address') ? 'border-error' : 'border-gray-300'}`}
-              />
-              {isFieldInvalid('property_address') && (
-                <div className="absolute top-1/2 transform -translate-y-1/2 right-0 pr-3 flex items-center pointer-events-none">
-                  <svg className="h-5 w-5 text-red-500" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
-                    <path fillRule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z" clipRule="evenodd" />
-                  </svg>
-                </div>
-              )}
-            </div>
-          </div>
         </div>
+
+
       </div>
       <div className="bg-white/10 p-6 rounded-xl mb-6 border border-white/20">
         <h3 className="text-lg font-medium text-white mb-4">
