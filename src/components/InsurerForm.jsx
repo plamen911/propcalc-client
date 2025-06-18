@@ -30,7 +30,8 @@ const InsurerForm = ({
   validatingPromo,
   setValidatingPromo,
   promoCodeId,
-  setPromoCodeId
+  setPromoCodeId,
+  formData
 }) => {
   const [showPromoSuccess, setShowPromoSuccess] = useState(false);
   const [propertyChecklistItems, setPropertyChecklistItems] = useState([]);
@@ -41,6 +42,7 @@ const InsurerForm = ({
   const [filteredSettlements, setFilteredSettlements] = useState([]);
   // eslint-disable-next-line no-unused-vars
   const [selectedSettlement, setSelectedSettlement] = useState(null);
+  const [propertySettlement, setPropertySettlement] = useState(null);
   const [settlementInput, setSettlementInput] = useState('');
   const [errors, setErrors] = useState([]);
   const [invalidFields, setInvalidFields] = useState([]);
@@ -96,7 +98,8 @@ const InsurerForm = ({
         // Fetch person role options
         const personRoleResponse = await api.get('/api/v1/form-data/person-role');
         const personRoleData = Array.isArray(personRoleResponse.data) ? personRoleResponse.data : [];
-        setPersonRoleOptions(personRoleData);
+        // Add empty option with label "Изберете"
+        setPersonRoleOptions([{ id: "", name: "Изберете" }, ...personRoleData]);
 
         // Fetch id number type options
         const idNumberTypeResponse = await api.get('/api/v1/form-data/id-number-type');
@@ -200,29 +203,51 @@ const InsurerForm = ({
 
   // Fetch selected settlement when insurer_settlement_id changes
   useEffect(() => {
-    if (insurerData.insurer_settlement_id) {
-      const fetchSelectedSettlement = async () => {
-        try {
-          const response = await api.get(`/api/v1/form-data/settlements`, {
-            params: { id: insurerData.insurer_settlement_id }
-          });
-          const data = Array.isArray(response.data) && response.data.length > 0 ? response.data[0] : null;
-          setSelectedSettlement(data);
-          if (data) {
-            setSettlementInput(`${data.name}, ${data.post_code}`);
-          }
-        } catch (err) {
-          console.error('Error fetching selected settlement:', err);
-          setSelectedSettlement(null);
+    const fetchSelectedSettlement = async (settlementId) => {
+      try {
+        const response = await api.get(`/api/v1/form-data/settlements`, {
+          params: { id: settlementId }
+        });
+        const data = Array.isArray(response.data) && response.data.length > 0 ? response.data[0] : null;
+        setSelectedSettlement(data);
+        if (data) {
+          setSettlementInput(`${data.name}, ${data.post_code}`);
         }
-      };
+      } catch (err) {
+        console.error('Error fetching selected settlement:', err);
+        setSelectedSettlement(null);
+      }
+    };
 
-      fetchSelectedSettlement();
+    if (insurerData.insurer_settlement_id) {
+      fetchSelectedSettlement(insurerData.insurer_settlement_id);
     } else {
       setSelectedSettlement(null);
       setSettlementInput('');
     }
   }, [insurerData.insurer_settlement_id]);
+
+  // Fetch property settlement when formData.settlement_id changes
+  useEffect(() => {
+    const fetchPropertySettlement = async (settlementId) => {
+      try {
+        const response = await api.get(`/api/v1/form-data/settlements`, {
+          params: { id: settlementId }
+        });
+        const data = Array.isArray(response.data) && response.data.length > 0 ? response.data[0] : null;
+        setPropertySettlement(data);
+      } catch (err) {
+        console.error('Error fetching property settlement:', err);
+        setPropertySettlement(null);
+      }
+    };
+
+    if (formData && formData.settlement_id) {
+      fetchPropertySettlement(formData.settlement_id);
+    } else {
+      setPropertySettlement(null);
+    }
+  }, [formData]);
 
   // Handle click outside to dismiss settlement options
   useEffect(() => {
@@ -243,10 +268,54 @@ const InsurerForm = ({
 
   const handleChange = (e) => {
     const { name, value } = e.target;
-    setInsurerData(prev => ({
-      ...prev,
+
+    // Create a new state object with the updated field
+    const newState = {
+      ...insurerData,
       [name]: value
-    }));
+    };
+
+    // If the person_role_id is changed to "1" and certain fields are empty, copy values from property owner
+    if (name === 'person_role_id' && value === '1') {
+      // Check if the fields are empty
+      const isFullNameEmpty = !insurerData.full_name || insurerData.full_name.trim() === '';
+      const isIdNumberEmpty = !insurerData.id_number || insurerData.id_number.trim() === '';
+      const isSettlementEmpty = !insurerData.insurer_settlement_id;
+      const isPhoneEmpty = !insurerData.phone || insurerData.phone.trim() === '';
+      const isEmailEmpty = !insurerData.email || insurerData.email.trim() === '';
+
+      // If all fields are empty, copy values from property owner
+      if (isFullNameEmpty && isIdNumberEmpty && isSettlementEmpty && isPhoneEmpty && isEmailEmpty) {
+        // Copy property_owner_name to full_name if available
+        if (insurerData.property_owner_name && insurerData.property_owner_name.trim() !== '') {
+          newState.full_name = insurerData.property_owner_name;
+        }
+
+        // Copy property_owner_id_number to id_number if available
+        if (insurerData.property_owner_id_number && insurerData.property_owner_id_number.trim() !== '') {
+          newState.id_number = insurerData.property_owner_id_number;
+        }
+
+        // Copy property_owner_id_number_type_id to id_number_type_id if available
+        if (insurerData.property_owner_id_number_type_id) {
+          newState.id_number_type_id = insurerData.property_owner_id_number_type_id;
+        }
+
+        // Copy property_settlement to settlement_input if available
+        if (propertySettlement) {
+          setSettlementInput(`${propertySettlement.name}, ${propertySettlement.post_code}`);
+          newState.insurer_settlement_id = formData.settlement_id;
+        }
+
+        // Copy property_address to permanent_address if available
+        if (insurerData.property_address && insurerData.property_address.trim() !== '') {
+          newState.permanent_address = insurerData.property_address;
+        }
+      }
+    }
+
+    // Update the state with the new values
+    setInsurerData(newState);
 
     // Clear the field from invalidFields when the user changes its value
     if (invalidFields.includes(name)) {
@@ -486,7 +555,11 @@ const InsurerForm = ({
       'insurer_settlement_id': 'Населено място',
       'permanent_address': 'Постоянен адрес',
       'phone': 'Телефон',
-      'email': 'Имейл'
+      'email': 'Имейл',
+      'property_owner_name': 'Имена на собственика по документи за самоличност',
+      'property_owner_id_number_type_id': 'Тип на документ за самоличност на собственика',
+      'property_owner_id_number': 'ЕГН/ЛНЧ/Паспорт №',
+      'property_address': 'Адрес на имота'
     };
 
     // Validate person_role_id
@@ -571,6 +644,36 @@ const InsurerForm = ({
     if (!insurerData.email.trim() || !insurerData.email.includes('@')) {
       newInvalidFields.push('email');
       errorMessages.push(`Моля, въведете валиден ${fieldLabels['email'].toLowerCase()} адрес`);
+    }
+
+    // Validate property owner name
+    if (!insurerData.property_owner_name?.trim()) {
+      newInvalidFields.push('property_owner_name');
+      errorMessages.push(`Моля, въведете ${fieldLabels['property_owner_name'].toLowerCase()}`);
+    } else if (!validateFullName(insurerData.property_owner_name)) {
+      newInvalidFields.push('property_owner_name');
+      errorMessages.push(`Полето "${fieldLabels['property_owner_name']}" трябва да съдържа две или повече имена на кирилица.`);
+    }
+
+    // Validate property owner ID number type
+    if (!insurerData.property_owner_id_number_type_id) {
+      newInvalidFields.push('property_owner_id_number_type_id');
+      errorMessages.push(`Моля, изберете ${fieldLabels['property_owner_id_number_type_id'].toLowerCase()}`);
+    }
+
+    // Validate property owner ID number
+    if (!insurerData.property_owner_id_number?.trim()) {
+      newInvalidFields.push('property_owner_id_number');
+      errorMessages.push(`Моля, въведете ${fieldLabels['property_owner_id_number'].toLowerCase()}`);
+    }
+
+    // Validate property address
+    if (!insurerData.property_address?.trim()) {
+      newInvalidFields.push('property_address');
+      errorMessages.push(`Моля, въведете ${fieldLabels['property_address'].toLowerCase()}`);
+    } else if (!validatePermanentAddress(insurerData.property_address)) {
+      newInvalidFields.push('property_address');
+      errorMessages.push(`Позволени символи за полето "${fieldLabels['property_address']}" - букви на кирилица, букви I, V, X на латиница, цифри от 0 до 9, препинателни знаци – точка, двуеточие, точка и запетая, кавички и символи - № ( ) /.`);
     }
 
     // Update state with invalid fields and error messages
@@ -876,6 +979,7 @@ const InsurerForm = ({
             </div>
           )}
 
+
           {/* Promotional Code Section */}
           <div className="mt-4 p-3 bg-white/5 rounded-lg border border-white/20">
             <div className="flex items-center mb-2">
@@ -926,6 +1030,131 @@ const InsurerForm = ({
           </div>
         </div>
       )}
+      <div className="bg-white/10 p-6 rounded-xl mb-6 border border-white/20">
+        <h3 className="text-lg font-medium text-white mb-4">
+          Данни за имота
+        </h3>
+
+        <div className="space-y-4">
+          {/* Property Owner Name */}
+          <div>
+            <label htmlFor="property_owner_name" className="block text-sm font-medium text-white mb-1">
+              Имена на собственика по документи за самоличност <span className="text-red-300">*</span>
+            </label>
+            <div className="relative">
+              <input
+                type="text"
+                id="property_owner_name"
+                name="property_owner_name"
+                value={insurerData.property_owner_name || ''}
+                onChange={handleChange}
+                placeholder="Въведете имена на собственика по документи за самоличност"
+                required
+                className={`block w-full rounded-md shadow-sm focus:ring-[#8B2131] focus:border-[#8B2131] sm:text-sm text-black ${isFieldInvalid('property_owner_name') ? 'border-red-500' : 'border-gray-300'}`}
+              />
+              {isFieldInvalid('property_owner_name') && (
+                <div className="absolute top-1/2 transform -translate-y-1/2 right-0 pr-3 flex items-center pointer-events-none">
+                  <svg className="h-5 w-5 text-red-500" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
+                    <path fillRule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z" clipRule="evenodd" />
+                  </svg>
+                </div>
+              )}
+            </div>
+          </div>
+
+          {/* Property Owner ID Number */}
+          <div>
+            <label htmlFor="property_owner_id_number_type_id" className="block text-sm font-medium text-white mb-1">
+              ЕГН/ЛНЧ/Паспорт №: <span className="text-red-300">*</span>
+            </label>
+            <div className="flex items-center mt-1">
+              <div className="relative w-1/3">
+                <select
+                  id="property_owner_id_number_type_id"
+                  name="property_owner_id_number_type_id"
+                  value={insurerData.property_owner_id_number_type_id || ''}
+                  onChange={handleChange}
+                  className={`appearance-none block w-full pl-3 pr-10 py-2.5 sm:py-2 text-sm sm:text-base border-r-0 focus:outline-none focus:ring-[#8B2131] focus:border-[#8B2131] rounded-l-md text-black ${isFieldInvalid('property_owner_id_number_type_id') ? 'border-red-500' : 'border-gray-300'}`}
+                  required
+                >
+                  {idNumberTypeOptions.map(option => (
+                    <option key={option.id} value={option.id}>
+                      {option.name}
+                    </option>
+                  ))}
+                </select>
+                {isFieldInvalid('property_owner_id_number_type_id') && (
+                  <div className="absolute top-1/2 transform -translate-y-1/2 right-0 pr-10 flex items-center pointer-events-none">
+                    <svg className="h-5 w-5 text-red-500" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
+                      <path fillRule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z" clipRule="evenodd" />
+                    </svg>
+                  </div>
+                )}
+              </div>
+              <div className="relative w-2/3">
+                <input
+                  type="text"
+                  id="property_owner_id_number"
+                  name="property_owner_id_number"
+                  value={insurerData.property_owner_id_number || ''}
+                  onChange={handleChange}
+                  required
+                  className={`pl-3 block w-full rounded-r-md border-l-0 shadow-sm focus:ring-[#8B2131] focus:border-[#8B2131] focus:z-10 py-2.5 sm:py-2 text-sm sm:text-base text-black ${isFieldInvalid('property_owner_id_number') ? 'border-red-500' : 'border-gray-300'}`}
+                />
+                {isFieldInvalid('property_owner_id_number') && (
+                  <div className="absolute top-1/2 transform -translate-y-1/2 right-0 pr-3 flex items-center pointer-events-none">
+                    <svg className="h-5 w-5 text-red-500" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
+                      <path fillRule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z" clipRule="evenodd" />
+                    </svg>
+                  </div>
+                )}
+              </div>
+            </div>
+          </div>
+
+          {/* Property Settlement (readonly) */}
+          <div>
+            <label htmlFor="property_settlement" className="block text-sm font-medium text-white mb-1">
+              Нас. място на имота
+            </label>
+            <div className="relative">
+              <input
+                type="text"
+                id="property_settlement"
+                value={propertySettlement ? `${propertySettlement.name}, ${propertySettlement.post_code}` : ''}
+                readOnly
+                className="block w-full rounded-md shadow-sm focus:ring-[#8B2131] focus:border-[#8B2131] sm:text-sm text-black bg-gray-100 border-gray-300"
+              />
+            </div>
+          </div>
+
+          {/* Property Address */}
+          <div>
+            <label htmlFor="property_address" className="block text-sm font-medium text-white mb-1">
+              Адрес на имота <span className="text-red-300">*</span>
+            </label>
+            <div className="relative">
+              <input
+                type="text"
+                id="property_address"
+                name="property_address"
+                value={insurerData.property_address || ''}
+                onChange={handleChange}
+                placeholder="Въведете адрес на имота"
+                required
+                className={`block w-full rounded-md shadow-sm focus:ring-[#8B2131] focus:border-[#8B2131] sm:text-sm text-black ${isFieldInvalid('property_address') ? 'border-red-500' : 'border-gray-300'}`}
+              />
+              {isFieldInvalid('property_address') && (
+                <div className="absolute top-1/2 transform -translate-y-1/2 right-0 pr-3 flex items-center pointer-events-none">
+                  <svg className="h-5 w-5 text-red-500" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
+                    <path fillRule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z" clipRule="evenodd" />
+                  </svg>
+                </div>
+              )}
+            </div>
+          </div>
+        </div>
+      </div>
       <div className="bg-white/10 p-6 rounded-xl mb-6 border border-white/20">
         <h3 className="text-lg font-medium text-white mb-4">
           Застраховащ

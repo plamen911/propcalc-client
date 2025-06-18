@@ -38,10 +38,14 @@ const MultiStepForm = () => {
     permanent_address: '',
     phone: '',
     email: '',
-    person_role_id: '1',
+    person_role_id: '',
     birth_date: '',
     insurer_nationality_id: '',
-    gender: ''
+    gender: '',
+    property_owner_id_number_type_id: '1',
+    property_owner_name: '',
+    property_owner_id_number: '',
+    property_address: ''
   });
   const [checkedItems, setCheckedItems] = useState({});
 
@@ -165,10 +169,14 @@ const MultiStepForm = () => {
       permanent_address: '',
       phone: '',
       email: '',
-      person_role_id: '1',
+      person_role_id: '',
       birth_date: '',
       insurer_nationality_id: '',
-      gender: ''
+      gender: '',
+      property_owner_id_number_type_id: '1',
+      property_owner_name: '',
+      property_owner_id_number: '',
+      property_address: ''
     });
     setCheckedItems({});
     setClauseCheckboxes({
@@ -259,6 +267,7 @@ const MultiStepForm = () => {
             setValidatingPromo={setValidatingPromo}
             promoCodeId={promoCodeId}
             setPromoCodeId={setPromoCodeId}
+            formData={formData}
           />
         );
       case 3:

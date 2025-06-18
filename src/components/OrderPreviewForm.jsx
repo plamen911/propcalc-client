@@ -88,6 +88,17 @@ const OrderPreviewForm = ({ prevStep, selectedTariff, insurerData, checkedItems,
     return selectedType ? `${selectedType.name}:` : "ЕГН/ЛНЧ/Паспорт №:";
   };
 
+  // Helper function to get the property owner ID number type text based on the ID
+  const getPropertyOwnerIdNumberTypeText = () => {
+    if (!insurerData || !insurerData.property_owner_id_number_type_id || idNumberTypeOptions.length === 0) {
+      return "ЕГН/ЛНЧ/Паспорт №:"; // Default fallback
+    }
+
+    // Convert both IDs to strings before comparing to avoid type mismatch
+    const selectedType = idNumberTypeOptions.find(type => String(type.id) === String(insurerData.property_owner_id_number_type_id));
+    return selectedType ? `${selectedType.name}:` : "ЕГН/ЛНЧ/Паспорт №:";
+  };
+
   // Helper function to get the settlement text
   const getSettlementText = () => {
     if (!settlementData) {
@@ -159,6 +170,7 @@ const OrderPreviewForm = ({ prevStep, selectedTariff, insurerData, checkedItems,
             : null;
           setSettlementData(settlementData);
         }
+
 
         // Fetch estate settlement data if settlement_id is available
         if (formData && formData.settlement_id) {
@@ -482,6 +494,13 @@ const OrderPreviewForm = ({ prevStep, selectedTariff, insurerData, checkedItems,
                       <div className="text-white text-sm sm:text-base pr-2 font-medium mb-0.5 sm:mb-0 sm:w-1/3">Населено място:</div>
                       <div className="text-white text-sm sm:text-base font-bold sm:w-2/3">{estateSettlementData ? estateSettlementData.name : 'Не е посочено'}</div>
                     </div>
+                    {/* Property Address */}
+                    {insurerData && insurerData.property_address && (
+                      <div className="flex flex-col sm:flex-row sm:items-center border-b border-white/10 py-1.5 sm:py-2">
+                        <div className="text-white text-sm sm:text-base pr-2 font-medium mb-0.5 sm:mb-0 sm:w-1/3">Адрес на имота:</div>
+                        <div className="text-white text-sm sm:text-base font-bold sm:w-2/3">{insurerData.property_address}</div>
+                      </div>
+                    )}
                     <div className="flex flex-col sm:flex-row sm:items-center border-b border-white/10 py-1.5 sm:py-2">
                       <div className="text-white text-sm sm:text-base pr-2 font-medium mb-0.5 sm:mb-0 sm:w-1/3">Тип имот:</div>
                       <div className="text-white text-sm sm:text-base font-bold sm:w-2/3">{getEstateTypeName()}</div>
@@ -498,6 +517,20 @@ const OrderPreviewForm = ({ prevStep, selectedTariff, insurerData, checkedItems,
                       <div className="text-white text-sm sm:text-base pr-2 font-medium mb-0.5 sm:mb-0 sm:w-1/3">РЗП:</div>
                       <div className="text-white text-sm sm:text-base font-bold sm:w-2/3">{formData.area_sq_meters ? `${formData.area_sq_meters} кв.м.` : 'Не е посочено'}</div>
                     </div>
+                    {/* Property Owner Name */}
+                    {insurerData && insurerData.property_owner_name && (
+                      <div className="flex flex-col sm:flex-row sm:items-center border-b border-white/10 py-1.5 sm:py-2">
+                        <div className="text-white text-sm sm:text-base pr-2 font-medium mb-0.5 sm:mb-0 sm:w-1/3">Имена на собственика:</div>
+                        <div className="text-white text-sm sm:text-base font-bold sm:w-2/3">{insurerData.property_owner_name}</div>
+                      </div>
+                    )}
+                    {/* Property Owner ID Number */}
+                    {insurerData && insurerData.property_owner_id_number && (
+                      <div className="flex flex-col sm:flex-row sm:items-center border-b border-white/10 py-1.5 sm:py-2">
+                        <div className="text-white text-sm sm:text-base pr-2 font-medium mb-0.5 sm:mb-0 sm:w-1/3">{getPropertyOwnerIdNumberTypeText()}</div>
+                        <div className="text-white text-sm sm:text-base font-bold sm:w-2/3">{insurerData.property_owner_id_number}</div>
+                      </div>
+                    )}
                   </div>
                 </div>
 
