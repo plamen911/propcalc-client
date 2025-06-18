@@ -199,7 +199,7 @@ const MultiStepForm = () => {
       return <LoadingSpinner />;
     }
 
-    // Show error message if there was an error loading data
+    // Show an error message if there was an error loading data
     if (loadError) {
       return (
         <ErrorDisplay 

@@ -189,7 +189,7 @@ const InsurerForm = ({
       insurer_settlement_id: settlement.id
     }));
     setSelectedSettlement(settlement);
-    setSettlementInput(`${settlement.name}, ${settlement.post_code}`);
+    setSettlementInput(`${settlement.name}`);
     setShowSettlementOptions(false);
 
     // Clear the field from invalidFields when the user selects a settlement
@@ -1414,7 +1414,7 @@ const InsurerForm = ({
                     onClick={() => handleSettlementSelect(settlement)}
                     className="cursor-pointer select-none relative py-3.5 sm:py-3 px-4 sm:pl-10 sm:pr-4 hover:bg-gray-100 active:bg-gray-200 touch-manipulation border-b border-gray-100 last:border-b-0"
                   >
-                    {settlement.name}, {settlement.post_code}
+                    {settlement.name}
                   </div>
                 ))}
               </div>

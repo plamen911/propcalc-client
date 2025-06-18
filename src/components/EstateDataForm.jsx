@@ -100,7 +100,7 @@ const EstateDataForm = ({ formData, handleChange, nextStep }) => {
   const handleSettlementSelect = (settlement) => {
     handleChange({ target: { name: 'settlement_id', value: settlement.id } });
     setSelectedSettlement(settlement);
-    setSettlementInput(`${settlement.name}, ${settlement.post_code}`);
+    setSettlementInput(`${settlement.name}`);
     setShowSettlementOptions(false);
   };
 
@@ -167,7 +167,7 @@ const EstateDataForm = ({ formData, handleChange, nextStep }) => {
         {/* Settlement autocomplete */}
         <div className="relative" ref={settlementRef}>
           <label htmlFor="settlement_id" className="block text-sm sm:text-base font-medium text-white mb-1 sm:mb-2">
-            Нас. място на имота <span className="text-red-300">*</span>
+            Населено място на имота <span className="text-red-300">*</span>
           </label>
           <div className="relative">
             <div className="absolute inset-y-0 left-0 pl-2 sm:pl-3 flex items-center pointer-events-none">
@@ -202,7 +202,7 @@ const EstateDataForm = ({ formData, handleChange, nextStep }) => {
                   onClick={() => handleSettlementSelect(settlement)}
                   className="cursor-pointer select-none relative py-4 sm:py-3 px-4 sm:pl-10 sm:pr-4 hover:bg-gray-100 active:bg-gray-200 touch-manipulation border-b border-gray-100 last:border-b-0 text-base"
                 >
-                  {settlement.name}, {settlement.post_code}
+                  {settlement.name}
                 </div>
               ))}
             </div>
