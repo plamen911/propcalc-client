@@ -152,7 +152,7 @@ const OrderPreviewForm = ({ prevStep, selectedTariff, insurerData, checkedItems,
         } else {
           // If initialFormData is not available, show error
           console.error('Initial form data not available');
-          setError('Failed to load form data. Please refresh the page.');
+          setError('Неуспешно зареждане на данните. Моля, обновете страницата.');
           setPersonRoleOptions([]);
           setIdNumberTypeOptions([]);
           setPropertyChecklistItems([]);
@@ -234,6 +234,7 @@ const OrderPreviewForm = ({ prevStep, selectedTariff, insurerData, checkedItems,
           estate_subtype_id: formData.estate_subtype_id,
           distance_to_water_id: formData.distance_to_water_id,
           area_sq_meters: formData.area_sq_meters,
+          property_address: insurerData.property_address,
 
           // Insurer data
           person_role_id: insurerData.person_role_id,
@@ -242,9 +243,16 @@ const OrderPreviewForm = ({ prevStep, selectedTariff, insurerData, checkedItems,
           insurer_settlement_id: insurerData.insurer_settlement_id,
           full_name: insurerData.full_name,
           id_number: insurerData.id_number,
+          birth_date: insurerData.birth_date,
+          gender: insurerData.gender,
           permanent_address: insurerData.permanent_address,
           phone: insurerData.phone,
           email: insurerData.email,
+
+          // Property owner data
+          property_owner_name: insurerData.property_owner_name,
+          property_owner_id_number: insurerData.property_owner_id_number,
+          property_owner_id_number_type_id: insurerData.property_owner_id_number_type_id,
 
           // Property checklist items
           property_checklist_items: checkedItems
