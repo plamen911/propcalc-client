@@ -870,7 +870,7 @@ const InsurerForm = ({
         {`
           @keyframes colorPulse {
             0%, 100% { color: white; }
-            50% { color: #ffcc00; }
+            50% { color: theme('colors.accent'); }
           }
         `}
       </style>
@@ -896,7 +896,7 @@ const InsurerForm = ({
                   .map((clause) => (
                   <div key={clause.id} className="flex justify-between items-center border-b border-white/10 py-2">
                     <div className="text-white text-sm sm:text-base pr-2 flex-1">{clause.insurance_clause.name}</div>
-                    <div className="text-white text-sm sm:text-base text-right font-semibold text-[#ffcc00] whitespace-nowrap" style={{animation: 'colorPulse 2s ease-in-out infinite'}}>{formatCurrency(clause.tariff_amount)} {currencySymbol}</div>
+                    <div className="text-white text-sm sm:text-base text-right font-semibold text-accent whitespace-nowrap" style={{animation: 'colorPulse 2s ease-in-out infinite'}}>{formatCurrency(clause.tariff_amount)} {currencySymbol}</div>
                   </div>
                 ))}
               </div>
@@ -913,7 +913,7 @@ const InsurerForm = ({
                       <span className="inline-block w-2 h-2 bg-blue-400 rounded-full mr-2"></span>
                       <span className="uppercase text-white text-xs sm:text-sm font-medium">Застрахователна премия</span>
                     </div>
-                    <div className="text-[#ffcc00] font-semibold text-base sm:text-lg ml-2">{formatCurrency(selectedTariff.statistics.total_premium)} {currencySymbol}</div>
+                    <div className="text-accent font-semibold text-base sm:text-lg ml-2 whitespace-nowrap">{formatCurrency(selectedTariff.statistics.total_premium)} {currencySymbol}</div>
                   </div>
                 </div>
               )}
@@ -925,7 +925,7 @@ const InsurerForm = ({
                       <span className="inline-block w-2 h-2 bg-green-400 rounded-full mr-2"></span>
                       <span className="uppercase text-white text-xs sm:text-sm font-medium">Застрахователна премия след отстъпка {selectedTariff.discount_percent}%</span>
                     </div>
-                    <div className="text-[#ffcc00] font-semibold text-base sm:text-lg ml-2">{formatCurrency(selectedTariff.statistics.discounted_premium)} {currencySymbol}</div>
+                    <div className="text-accent font-semibold text-base sm:text-lg ml-2 whitespace-nowrap">{formatCurrency(selectedTariff.statistics.discounted_premium)} {currencySymbol}</div>
                   </div>
                 </div>
               )}
@@ -938,7 +938,7 @@ const InsurerForm = ({
                       <span className="inline-block w-2 h-2 bg-green-400 rounded-full mr-2"></span>
                       <span className="uppercase text-white text-xs sm:text-sm font-medium">Застрахователна премия след приложен промо код {promoDiscount}%</span>
                     </div>
-                    <div className="text-[#ffcc00] font-semibold text-base sm:text-lg ml-2">
+                    <div className="text-accent font-semibold text-base sm:text-lg ml-2 whitespace-nowrap">
                       {formatCurrency(selectedTariff.statistics.discounted_premium - (selectedTariff.statistics.total_premium * promoDiscount / 100))} {currencySymbol}
                     </div>
                   </div>
@@ -952,7 +952,7 @@ const InsurerForm = ({
                       <span className="inline-block w-2 h-2 bg-yellow-400 rounded-full mr-2"></span>
                       <span className="uppercase text-white text-xs sm:text-sm font-medium">Данък върху застрахователната премия {selectedTariff.tax_percent}% </span>
                     </div>
-                    <div className="text-[#ffcc00] font-semibold text-base sm:text-lg ml-2">
+                    <div className="text-accent font-semibold text-base sm:text-lg ml-2 whitespace-nowrap">
                       {promoCodeValid && promoDiscount 
                         ? formatCurrency((selectedTariff.statistics.discounted_premium - (selectedTariff.statistics.total_premium * promoDiscount / 100)) * (selectedTariff.tax_percent / 100)) 
                         : formatCurrency(selectedTariff.statistics.tax_amount)} 
@@ -962,13 +962,13 @@ const InsurerForm = ({
                 </div>
               )}
 
-              <div className="bg-[#8b2131]/70 p-3">
+              <div className="bg-primary/70 p-3">
                 <div className="flex justify-between items-center">
                   <div className="flex items-center">
                     <span className="inline-block w-3 h-3 bg-red-500 rounded-full mr-2"></span>
                     <span className="uppercase text-white text-sm sm:text-base font-bold">Общо дължима сума за една година</span>
                   </div>
-                  <div className="text-white font-bold text-lg sm:text-xl ml-2" style={{animation: 'colorPulse 2s ease-in-out infinite'}}>
+                  <div className="text-white font-bold text-lg sm:text-xl ml-2 whitespace-nowrap" style={{animation: 'colorPulse 2s ease-in-out infinite'}}>
                     {promoCodeValid && promoDiscount 
                       ? formatCurrency(promoDiscountedAmount)
                       : formatCurrency(selectedTariff.statistics.total_amount)} 
@@ -1013,7 +1013,7 @@ const InsurerForm = ({
               <button
                 onClick={validatePromoCode}
                 disabled={promoCodeValid || validatingPromo || !promoCode.trim()}
-                className={`inline-flex items-center justify-center py-4 sm:py-2.5 px-6 sm:px-5 border border-transparent shadow-sm text-base sm:text-base font-medium rounded-full text-white ${promoCodeValid ? 'bg-green-600' : 'bg-[#6b1021] hover:bg-[#5a0d1c] focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-[#6b1021] transition-all duration-200 hover:scale-105'} disabled:opacity-50 disabled:cursor-not-allowed self-start touch-manipulation min-h-[56px] sm:min-h-0`}
+                className={`inline-flex items-center justify-center py-4 sm:py-2.5 px-6 sm:px-5 border border-transparent shadow-sm text-base sm:text-base font-medium rounded-full text-white ${promoCodeValid ? 'bg-green-600' : 'bg-[#6b1021] hover:bg-[#5a0d1c] focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-[#6b1021] transition-all duration-200 hover:scale-105'} disabled:opacity-50 disabled:cursor-not-allowed w-full sm:w-auto touch-manipulation min-h-[56px] sm:min-h-0`}
               >
                 {validatingPromo ? 'Проверка...' : promoCodeValid ? 'Приложен' : 'Приложи'}
               </button>
@@ -1050,7 +1050,7 @@ const InsurerForm = ({
                 onChange={handleChange}
                 placeholder="Въведете имена на собственика по документи за самоличност"
                 required
-                className={`block w-full rounded-md shadow-sm focus:ring-[#8B2131] focus:border-[#8B2131] sm:text-sm text-black ${isFieldInvalid('property_owner_name') ? 'border-red-500' : 'border-gray-300'}`}
+                className={`block w-full rounded-md shadow-sm focus:ring-primary focus:border-primary sm:text-sm text-black ${isFieldInvalid('property_owner_name') ? 'border-error' : 'border-gray-300'}`}
               />
               {isFieldInvalid('property_owner_name') && (
                 <div className="absolute top-1/2 transform -translate-y-1/2 right-0 pr-3 flex items-center pointer-events-none">
@@ -1074,7 +1074,7 @@ const InsurerForm = ({
                   name="property_owner_id_number_type_id"
                   value={insurerData.property_owner_id_number_type_id || ''}
                   onChange={handleChange}
-                  className={`appearance-none block w-full pl-3 pr-10 py-2.5 sm:py-2 text-sm sm:text-base border-r-0 focus:outline-none focus:ring-[#8B2131] focus:border-[#8B2131] rounded-l-md text-black ${isFieldInvalid('property_owner_id_number_type_id') ? 'border-red-500' : 'border-gray-300'}`}
+                  className={`appearance-none block w-full pl-3 pr-10 py-2.5 sm:py-2 text-sm sm:text-base border-r-0 focus:outline-none focus:ring-primary focus:border-primary rounded-l-md text-black ${isFieldInvalid('property_owner_id_number_type_id') ? 'border-error' : 'border-gray-300'}`}
                   required
                 >
                   {idNumberTypeOptions.map(option => (
@@ -1099,7 +1099,7 @@ const InsurerForm = ({
                   value={insurerData.property_owner_id_number || ''}
                   onChange={handleChange}
                   required
-                  className={`pl-3 block w-full rounded-r-md border-l-0 shadow-sm focus:ring-[#8B2131] focus:border-[#8B2131] focus:z-10 py-2.5 sm:py-2 text-sm sm:text-base text-black ${isFieldInvalid('property_owner_id_number') ? 'border-red-500' : 'border-gray-300'}`}
+                  className={`pl-3 block w-full rounded-r-md border-l-0 shadow-sm focus:ring-primary focus:border-primary focus:z-10 py-2.5 sm:py-2 text-sm sm:text-base text-black ${isFieldInvalid('property_owner_id_number') ? 'border-error' : 'border-gray-300'}`}
                 />
                 {isFieldInvalid('property_owner_id_number') && (
                   <div className="absolute top-1/2 transform -translate-y-1/2 right-0 pr-3 flex items-center pointer-events-none">
@@ -1142,7 +1142,7 @@ const InsurerForm = ({
                 onChange={handleChange}
                 placeholder="Въведете адрес на имота"
                 required
-                className={`block w-full rounded-md shadow-sm focus:ring-[#8B2131] focus:border-[#8B2131] sm:text-sm text-black ${isFieldInvalid('property_address') ? 'border-red-500' : 'border-gray-300'}`}
+                className={`block w-full rounded-md shadow-sm focus:ring-primary focus:border-primary sm:text-sm text-black ${isFieldInvalid('property_address') ? 'border-error' : 'border-gray-300'}`}
               />
               {isFieldInvalid('property_address') && (
                 <div className="absolute top-1/2 transform -translate-y-1/2 right-0 pr-3 flex items-center pointer-events-none">
@@ -1172,7 +1172,7 @@ const InsurerForm = ({
                 name="person_role_id"
                 value={insurerData.person_role_id}
                 onChange={handleChange}
-                className={`appearance-none mt-1 block w-full pl-3 pr-10 py-2.5 sm:py-2 text-sm sm:text-base focus:outline-none focus:ring-[#8B2131] focus:border-[#8B2131] rounded-md text-black ${isFieldInvalid('person_role_id') ? 'border-red-500' : 'border-gray-300'}`}
+                className={`appearance-none mt-1 block w-full pl-3 pr-10 py-2.5 sm:py-2 text-sm sm:text-base focus:outline-none focus:ring-primary focus:border-primary rounded-md text-black ${isFieldInvalid('person_role_id') ? 'border-error' : 'border-gray-300'}`}
                 required
               >
                 {personRoleOptions.map(option => (
@@ -1204,7 +1204,7 @@ const InsurerForm = ({
                 onChange={handleChange}
                 placeholder="Въведете имена по документи за самоличност"
                 required
-                className={`block w-full rounded-md shadow-sm focus:ring-[#8B2131] focus:border-[#8B2131] sm:text-sm text-black ${isFieldInvalid('full_name') ? 'border-red-500' : 'border-gray-300'}`}
+                className={`block w-full rounded-md shadow-sm focus:ring-primary focus:border-primary sm:text-sm text-black ${isFieldInvalid('full_name') ? 'border-error' : 'border-gray-300'}`}
               />
               {isFieldInvalid('full_name') && (
                 <div className="absolute top-1/2 transform -translate-y-1/2 right-0 pr-3 flex items-center pointer-events-none">
@@ -1227,7 +1227,7 @@ const InsurerForm = ({
                   name="id_number_type_id"
                   value={insurerData.id_number_type_id}
                   onChange={handleChange}
-                  className={`appearance-none block w-full pl-3 pr-10 py-2.5 sm:py-2 text-sm sm:text-base border-r-0 focus:outline-none focus:ring-[#8B2131] focus:border-[#8B2131] rounded-l-md text-black ${isFieldInvalid('id_number_type_id') ? 'border-red-500' : 'border-gray-300'}`}
+                  className={`appearance-none block w-full pl-3 pr-10 py-2.5 sm:py-2 text-sm sm:text-base border-r-0 focus:outline-none focus:ring-primary focus:border-primary rounded-l-md text-black ${isFieldInvalid('id_number_type_id') ? 'border-error' : 'border-gray-300'}`}
                   required
                 >
                   {idNumberTypeOptions.map(option => (
@@ -1252,7 +1252,7 @@ const InsurerForm = ({
                   value={insurerData.id_number}
                   onChange={handleChange}
                   required
-                  className={`pl-3 block w-full rounded-r-md border-l-0 shadow-sm focus:ring-[#8B2131] focus:border-[#8B2131] focus:z-10 py-2.5 sm:py-2 text-sm sm:text-base text-black ${isFieldInvalid('id_number') ? 'border-red-500' : 'border-gray-300'}`}
+                  className={`pl-3 block w-full rounded-r-md border-l-0 shadow-sm focus:ring-primary focus:border-primary focus:z-10 py-2.5 sm:py-2 text-sm sm:text-base text-black ${isFieldInvalid('id_number') ? 'border-error' : 'border-gray-300'}`}
                 />
                 {isFieldInvalid('id_number') && (
                   <div className="absolute top-1/2 transform -translate-y-1/2 right-0 pr-3 flex items-center pointer-events-none">
@@ -1434,7 +1434,7 @@ const InsurerForm = ({
                 onChange={handleChange}
                 placeholder="Въведете постоянен адрес"
                 required
-                className={`block w-full rounded-md shadow-sm focus:ring-[#8B2131] focus:border-[#8B2131] sm:text-sm text-black ${isFieldInvalid('permanent_address') ? 'border-red-500' : 'border-gray-300'}`}
+                className={`block w-full rounded-md shadow-sm focus:ring-primary focus:border-primary sm:text-sm text-black ${isFieldInvalid('permanent_address') ? 'border-error' : 'border-gray-300'}`}
               />
               {isFieldInvalid('permanent_address') && (
                 <div className="absolute top-1/2 transform -translate-y-1/2 right-0 pr-3 flex items-center pointer-events-none">
