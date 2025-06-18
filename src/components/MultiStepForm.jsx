@@ -294,8 +294,8 @@ const MultiStepForm = () => {
   const steps = [
     'Данни за имота',
     'Покрити рискове',
-    'Застраховащ',
-    'Преглед'
+    'Застраховащ имота',
+    'Преглед на поръчката'
   ];
 
   // Define custom animation styles with enhanced effects
