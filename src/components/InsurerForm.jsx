@@ -559,7 +559,8 @@ const InsurerForm = ({
       'property_owner_name': 'Имена на собственика по документи за самоличност',
       'property_owner_id_number_type_id': 'Тип на документ за самоличност на собственика',
       'property_owner_id_number': 'ЕГН/ЛНЧ/Паспорт №',
-      'property_address': 'Адрес на имота'
+      'property_address': 'Точен адрес на имота',
+      'property_additional_info': 'Допълнителни данни за имота'
     };
 
     // Validate person_role_id
@@ -674,6 +675,12 @@ const InsurerForm = ({
     } else if (!validatePermanentAddress(insurerData.property_address)) {
       newInvalidFields.push('property_address');
       errorMessages.push(`Позволени символи за полето "${fieldLabels['property_address']}" - букви на кирилица, букви I, V, X на латиница, цифри от 0 до 9, препинателни знаци – точка, двуеточие, точка и запетая, кавички и символи - № ( ) /.`);
+    }
+
+    // Validate property additional info
+    if (!insurerData.property_additional_info?.trim()) {
+      newInvalidFields.push('property_additional_info');
+      errorMessages.push(`Моля, въведете ${fieldLabels['property_additional_info'].toLowerCase()}`);
     }
 
     // Update state with invalid fields and error messages
@@ -1055,7 +1062,7 @@ const InsurerForm = ({
           {/* Property Address */}
           <div>
             <label htmlFor="property_address" className="block text-sm font-medium text-white mb-1">
-              Адрес на имота <span className="text-red-300">*</span>
+              Точен адрес на имота <span className="text-red-300">*</span>
             </label>
             <div className="relative">
               <input
@@ -1064,7 +1071,7 @@ const InsurerForm = ({
                 name="property_address"
                 value={insurerData.property_address || ''}
                 onChange={handleChange}
-                placeholder="Въведете адрес на имота"
+                placeholder="Въведете Точен адрес на имота"
                 required
                 className={`block w-full rounded-md shadow-sm focus:ring-primary focus:border-primary sm:text-sm text-black ${isFieldInvalid('property_address') ? 'border-error' : 'border-gray-300'}`}
               />
@@ -1075,6 +1082,24 @@ const InsurerForm = ({
                   </svg>
                 </div>
               )}
+            </div>
+          </div>
+
+          {/* Property Additional Info */}
+          <div>
+            <label htmlFor="property_additional_info" className="block text-sm font-medium text-white mb-1">
+              Допълнителни данни за имота
+            </label>
+            <div className="relative">
+              <input
+                type="text"
+                id="property_additional_info"
+                name="property_additional_info"
+                value={insurerData.property_additional_info || ''}
+                onChange={handleChange}
+                placeholder="Въведете допълнителни данни"
+                className="block w-full rounded-md shadow-sm focus:ring-primary focus:border-primary sm:text-sm text-black border-gray-300"
+              />
             </div>
           </div>
         </div>
