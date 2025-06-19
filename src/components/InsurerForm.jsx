@@ -327,21 +327,23 @@ const InsurerForm = ({
   };
 
   // Handle opening the date picker dialog
-  const handleOpenDatePicker = () => {
-    // Initialize tempDate with current birth_date or today's date minus 18 years
-    if (insurerData.birth_date) {
-      const date = new Date(insurerData.birth_date);
+  const handleOpenDatePicker = (fieldName = 'birth_date') => {
+    // Initialize tempDate with current date value or today's date minus 18 years
+    if (insurerData[fieldName]) {
+      const date = new Date(insurerData[fieldName]);
       setTempDate({
         year: date.getFullYear(),
         month: date.getMonth(),
-        day: date.getDate()
+        day: date.getDate(),
+        fieldName: fieldName // Store which field is being edited
       });
     } else {
       const today = new Date();
       setTempDate({
         year: today.getFullYear() - 18,
         month: today.getMonth(),
-        day: today.getDate()
+        day: today.getDate(),
+        fieldName: fieldName // Store which field is being edited
       });
     }
     setDatePickerOpen(true);
@@ -354,12 +356,12 @@ const InsurerForm = ({
 
   // Handle selecting a date in the date picker
   const handleDateSelect = () => {
-    const { year, month, day } = tempDate;
+    const { year, month, day, fieldName = 'birth_date' } = tempDate;
     const newDate = new Date(year, month, day);
     const formattedDate = newDate.toISOString().split('T')[0]; // Format as YYYY-MM-DD
 
-    // Update insurerData with the new date
-    handleChange({ target: { name: 'birth_date', value: formattedDate } });
+    // Update insurerData with the new date for the correct field
+    handleChange({ target: { name: fieldName, value: formattedDate } });
 
     // Close the dialog
     setDatePickerOpen(false);
@@ -559,6 +561,9 @@ const InsurerForm = ({
       'property_owner_name': 'Имена на собственика по документи за самоличност',
       'property_owner_id_number_type_id': 'Тип на документ за самоличност на собственика',
       'property_owner_id_number': 'ЕГН/ЛНЧ/Паспорт №',
+      'property_owner_birth_date': 'Дата на раждане на собственика',
+      'property_owner_nationality_id': 'Националност на собственика',
+      'property_owner_gender': 'Пол на собственика',
       'property_address': 'Точен адрес на имота',
       'property_additional_info': 'Допълнителни данни за имота'
     };
@@ -662,10 +667,43 @@ const InsurerForm = ({
       errorMessages.push(`Моля, изберете ${fieldLabels['property_owner_id_number_type_id'].toLowerCase()}`);
     }
 
-    // Validate property owner ID number
+    // Validate property owner ID number based on type
     if (!insurerData.property_owner_id_number?.trim()) {
       newInvalidFields.push('property_owner_id_number');
       errorMessages.push(`Моля, въведете ${fieldLabels['property_owner_id_number'].toLowerCase()}`);
+    } else if (insurerData.property_owner_id_number_type_id === '1' && !validateEGN(insurerData.property_owner_id_number)) {
+      // Check if property_owner_id_number_type_id is ЕГН (assuming id 1 is for ЕГН)
+      newInvalidFields.push('property_owner_id_number');
+      errorMessages.push(`Невалиден номер на ЕГН в полето "${fieldLabels['property_owner_id_number']}".`);
+    } else if (insurerData.property_owner_id_number_type_id === '2' && !validateLNCh(insurerData.property_owner_id_number)) {
+      // For ЛНЧ, validate that it contains 10 digits
+      newInvalidFields.push('property_owner_id_number');
+      errorMessages.push(`Полето "ЛНЧ" трябва да съдържа 10 цифри.`);
+    }
+
+    // Check if property_owner_id_number_type_id is ЛНЧ (id 2) or Паспорт № (id 3)
+    if (insurerData.property_owner_id_number_type_id === '2' || insurerData.property_owner_id_number_type_id === '3') {
+      // Validate property owner birth date
+      if (!insurerData.property_owner_birth_date) {
+        newInvalidFields.push('property_owner_birth_date');
+        errorMessages.push(`Моля, въведете ${fieldLabels['property_owner_birth_date'].toLowerCase()}`);
+      } else if (!validateAge(insurerData.property_owner_birth_date)) {
+        // Validate age (must be at least 18 years old)
+        newInvalidFields.push('property_owner_birth_date');
+        errorMessages.push(`Собственикът трябва да е на възраст над 18 години в полето "${fieldLabels['property_owner_birth_date']}".`);
+      }
+
+      // Validate property owner nationality
+      if (!insurerData.property_owner_nationality_id) {
+        newInvalidFields.push('property_owner_nationality_id');
+        errorMessages.push(`Моля, изберете ${fieldLabels['property_owner_nationality_id'].toLowerCase()}`);
+      }
+
+      // Validate property owner gender
+      if (!insurerData.property_owner_gender) {
+        newInvalidFields.push('property_owner_gender');
+        errorMessages.push(`Моля, изберете ${fieldLabels['property_owner_gender'].toLowerCase()}`);
+      }
     }
 
     // Validate property address
@@ -1186,6 +1224,112 @@ const InsurerForm = ({
               </div>
             </div>
           </div>
+
+          {/* Additional fields for property owner when ЛНЧ (id = 2) or Паспорт № (id = 3) */}
+          {(insurerData.property_owner_id_number_type_id === '2' || insurerData.property_owner_id_number_type_id === '3') && (
+            <>
+              {/* Property Owner Birth Date */}
+              <div>
+                <label htmlFor="property_owner_birth_date" className="block text-sm font-medium text-white mb-1">
+                  Дата на раждане <span className="text-red-300">*</span>
+                </label>
+                <div className="relative">
+                  <div className="absolute top-1/2 transform -translate-y-1/2 left-0 pl-3 flex items-center pointer-events-none">
+                    <svg className="h-5 w-5 text-primary" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
+                      <path fillRule="evenodd" d="M6 2a1 1 0 00-1 1v1H4a2 2 0 00-2 2v10a2 2 0 002 2h12a2 2 0 002-2V6a2 2 0 00-2-2h-1V3a1 1 0 10-2 0v1H7V3a1 1 0 00-1-1zm0 5a1 1 0 000 2h8a1 1 0 100-2H6z" clipRule="evenodd" />
+                    </svg>
+                  </div>
+                  <input
+                    type="text"
+                    id="property_owner_birth_date"
+                    name="property_owner_birth_date"
+                    value={insurerData.property_owner_birth_date ? new Date(insurerData.property_owner_birth_date).toLocaleDateString('bg-BG') : ''}
+                    onClick={() => handleOpenDatePicker('property_owner_birth_date')}
+                    readOnly
+                    placeholder="Изберете дата"
+                    required
+                    className={`pl-10 block w-full rounded-md shadow-sm focus:ring-primary focus:border-primary sm:text-sm text-black cursor-pointer ${isFieldInvalid('property_owner_birth_date') ? 'border-red-500' : 'border-gray-300'}`}
+                  />
+                  {isFieldInvalid('property_owner_birth_date') && (
+                    <div className="absolute top-1/2 transform -translate-y-1/2 right-0 pr-3 flex items-center pointer-events-none">
+                      <svg className="h-5 w-5 text-red-500" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
+                        <path fillRule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z" clipRule="evenodd" />
+                      </svg>
+                    </div>
+                  )}
+                </div>
+              </div>
+
+              {/* Property Owner Nationality */}
+              <div>
+                <label htmlFor="property_owner_nationality_id" className="block text-sm font-medium text-white mb-1">
+                  Националност <span className="text-red-300">*</span>
+                </label>
+                <div className="relative">
+                  <select
+                    id="property_owner_nationality_id"
+                    name="property_owner_nationality_id"
+                    value={insurerData.property_owner_nationality_id || ''}
+                    onChange={handleChange}
+                    className={`appearance-none mt-1 block w-full pl-3 pr-10 py-2.5 sm:py-2 text-sm sm:text-base focus:outline-none focus:ring-primary focus:border-primary rounded-md text-black ${isFieldInvalid('property_owner_nationality_id') ? 'border-red-500' : 'border-gray-300'}`}
+                    required
+                  >
+                    <option value="">Изберете националност</option>
+                    {nationalityOptions.map(option => (
+                      <option key={option.id} value={option.id}>
+                        {option.name}
+                      </option>
+                    ))}
+                  </select>
+                  {isFieldInvalid('property_owner_nationality_id') && (
+                    <div className="absolute top-1/2 transform -translate-y-1/2 right-0 pr-10 flex items-center pointer-events-none">
+                      <svg className="h-5 w-5 text-red-500" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
+                        <path fillRule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z" clipRule="evenodd" />
+                      </svg>
+                    </div>
+                  )}
+                </div>
+              </div>
+
+              {/* Property Owner Gender */}
+              <div>
+                <div className={`flex items-center space-x-4 ${isFieldInvalid('property_owner_gender') ? 'p-2 border border-red-500 rounded-md' : ''}`}>
+                  <label className="text-sm font-medium text-white">
+                    Пол <span className="text-red-300">*</span>
+                  </label>
+                  <button
+                    type="button"
+                    onClick={() => handleChange({ target: { name: 'property_owner_gender', value: 'male' } })}
+                    className={`px-4 py-2 rounded-md border ${
+                      insurerData.property_owner_gender === 'male' 
+                        ? 'bg-primary text-white border-primary' 
+                        : 'bg-white/10 text-white border-white/30 hover:bg-white/20'
+                    } transition-colors duration-200`}
+                  >
+                    Мъж
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => handleChange({ target: { name: 'property_owner_gender', value: 'female' } })}
+                    className={`px-4 py-2 rounded-md border ${
+                      insurerData.property_owner_gender === 'female' 
+                        ? 'bg-primary text-white border-primary' 
+                        : 'bg-white/10 text-white border-white/30 hover:bg-white/20'
+                    } transition-colors duration-200`}
+                  >
+                    Жена
+                  </button>
+                  {isFieldInvalid('property_owner_gender') && (
+                    <div className="flex items-center">
+                      <svg className="h-5 w-5 text-red-500" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
+                        <path fillRule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z" clipRule="evenodd" />
+                      </svg>
+                    </div>
+                  )}
+                </div>
+              </div>
+            </>
+          )}
         </div>
 
 
@@ -1319,7 +1463,7 @@ const InsurerForm = ({
                     id="birth_date"
                     name="birth_date"
                     value={insurerData.birth_date ? new Date(insurerData.birth_date).toLocaleDateString('bg-BG') : ''}
-                    onClick={handleOpenDatePicker}
+                    onClick={() => handleOpenDatePicker('birth_date')}
                     readOnly
                     placeholder="Изберете дата"
                     required

@@ -45,6 +45,9 @@ const MultiStepForm = () => {
     property_owner_id_number_type_id: '1',
     property_owner_name: '',
     property_owner_id_number: '',
+    property_owner_birth_date: '',
+    property_owner_nationality_id: '',
+    property_owner_gender: '',
     property_address: ''
   });
   const [checkedItems, setCheckedItems] = useState({});
@@ -176,6 +179,9 @@ const MultiStepForm = () => {
       property_owner_id_number_type_id: '1',
       property_owner_name: '',
       property_owner_id_number: '',
+      property_owner_birth_date: '',
+      property_owner_nationality_id: '',
+      property_owner_gender: '',
       property_address: ''
     });
     setCheckedItems({});

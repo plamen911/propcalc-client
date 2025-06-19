@@ -253,6 +253,9 @@ const OrderPreviewForm = ({ prevStep, selectedTariff, insurerData, checkedItems,
           property_owner_name: insurerData.property_owner_name,
           property_owner_id_number: insurerData.property_owner_id_number,
           property_owner_id_number_type_id: insurerData.property_owner_id_number_type_id,
+          property_owner_birth_date: insurerData.property_owner_birth_date,
+          property_owner_nationality_id: insurerData.property_owner_nationality_id,
+          property_owner_gender: insurerData.property_owner_gender,
 
           // Property checklist items
           property_checklist_items: checkedItems
