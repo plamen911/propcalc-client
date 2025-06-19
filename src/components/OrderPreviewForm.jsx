@@ -65,6 +65,7 @@ const OrderPreviewForm = ({ prevStep, selectedTariff, insurerData, checkedItems,
   const [estateSubtypes, setEstateSubtypes] = useState([]);
   const [distanceToWater, setDistanceToWater] = useState([]);
   const [estateSettlementData, setEstateSettlementData] = useState(null);
+  const [nationalityOptions, setNationalityOptions] = useState([]);
 
   // Helper function to get the person role text based on the ID
   const getPersonRoleText = () => {
@@ -189,6 +190,11 @@ const OrderPreviewForm = ({ prevStep, selectedTariff, insurerData, checkedItems,
           const estateSubtypesData = Array.isArray(estateSubtypesResponse.data) ? estateSubtypesResponse.data : [];
           setEstateSubtypes(estateSubtypesData);
         }
+
+        // Fetch nationality options
+        const nationalityResponse = await api.get('/api/v1/form-data/nationalities');
+        const nationalityData = Array.isArray(nationalityResponse.data) ? nationalityResponse.data : [];
+        setNationalityOptions(nationalityData);
       } catch (err) {
         console.error('Error fetching options:', err);
         setPersonRoleOptions([]);
@@ -199,6 +205,7 @@ const OrderPreviewForm = ({ prevStep, selectedTariff, insurerData, checkedItems,
         setEstateSubtypes([]);
         setDistanceToWater([]);
         setEstateSettlementData(null);
+        setNationalityOptions([]);
       }
     };
 
@@ -235,6 +242,7 @@ const OrderPreviewForm = ({ prevStep, selectedTariff, insurerData, checkedItems,
           distance_to_water_id: formData.distance_to_water_id,
           area_sq_meters: formData.area_sq_meters,
           property_address: insurerData.property_address,
+          property_additional_info: insurerData.property_additional_info,
 
           // Insurer data
           person_role_id: insurerData.person_role_id,
@@ -508,8 +516,14 @@ const OrderPreviewForm = ({ prevStep, selectedTariff, insurerData, checkedItems,
                     {/* Property Address */}
                     {insurerData && insurerData.property_address && (
                       <div className="flex flex-col sm:flex-row sm:items-center border-b border-white/10 py-1.5 sm:py-2">
-                        <div className="text-white text-sm sm:text-base pr-2 font-medium mb-0.5 sm:mb-0 sm:w-1/3">Адрес на имота:</div>
+                        <div className="text-white text-sm sm:text-base pr-2 font-medium mb-0.5 sm:mb-0 sm:w-1/3">Точен адрес на имота:</div>
                         <div className="text-white text-sm sm:text-base font-bold sm:w-2/3">{insurerData.property_address}</div>
+                      </div>
+                    )}
+                    {insurerData.property_additional_info && (
+                      <div className="flex flex-col sm:flex-row sm:items-center border-b border-white/10 py-1.5 sm:py-2">
+                        <div className="text-white text-sm sm:text-base pr-2 font-medium mb-0.5 sm:mb-0 sm:w-1/3">Допълнителни данни за имота:</div>
+                        <div className="text-white text-sm sm:text-base font-bold sm:w-2/3">{insurerData.property_additional_info}</div>
                       </div>
                     )}
                     <div className="flex flex-col sm:flex-row sm:items-center border-b border-white/10 py-1.5 sm:py-2">
@@ -528,20 +542,6 @@ const OrderPreviewForm = ({ prevStep, selectedTariff, insurerData, checkedItems,
                       <div className="text-white text-sm sm:text-base pr-2 font-medium mb-0.5 sm:mb-0 sm:w-1/3">РЗП:</div>
                       <div className="text-white text-sm sm:text-base font-bold sm:w-2/3">{formData.area_sq_meters ? `${formData.area_sq_meters} кв.м.` : 'Не е посочено'}</div>
                     </div>
-                    {/* Property Owner Name */}
-                    {insurerData && insurerData.property_owner_name && (
-                      <div className="flex flex-col sm:flex-row sm:items-center border-b border-white/10 py-1.5 sm:py-2">
-                        <div className="text-white text-sm sm:text-base pr-2 font-medium mb-0.5 sm:mb-0 sm:w-1/3">Имена на собственика:</div>
-                        <div className="text-white text-sm sm:text-base font-bold sm:w-2/3">{insurerData.property_owner_name}</div>
-                      </div>
-                    )}
-                    {/* Property Owner ID Number */}
-                    {insurerData && insurerData.property_owner_id_number && (
-                      <div className="flex flex-col sm:flex-row sm:items-center border-b border-white/10 py-1.5 sm:py-2">
-                        <div className="text-white text-sm sm:text-base pr-2 font-medium mb-0.5 sm:mb-0 sm:w-1/3">{getPropertyOwnerIdNumberTypeText()}</div>
-                        <div className="text-white text-sm sm:text-base font-bold sm:w-2/3">{insurerData.property_owner_id_number}</div>
-                      </div>
-                    )}
                   </div>
                 </div>
 
@@ -564,11 +564,67 @@ const OrderPreviewForm = ({ prevStep, selectedTariff, insurerData, checkedItems,
             </div>
           )}
 
+          {insurerData && insurerData.property_owner_name && (
+            <div className="mb-4">
+              <div className="bg-white/10 p-4 sm:p-6 rounded-xl border border-white/20">
+                <h3 className="text-base sm:text-lg font-medium text-white mb-3 sm:mb-4">
+                  Собственик
+                </h3>
+                <div className="p-2 sm:p-3 bg-white/5 rounded-lg">
+                  <div className="space-y-1.5 sm:space-y-2">
+                    {/* Property Owner Name */}
+                    <div className="flex flex-col sm:flex-row sm:items-center border-b border-white/10 py-1.5 sm:py-2">
+                      <div className="text-white text-sm sm:text-base pr-2 font-medium mb-0.5 sm:mb-0 sm:w-1/3">Име:</div>
+                      <div className="text-white text-sm sm:text-base font-bold sm:w-2/3">{insurerData.property_owner_name}</div>
+                    </div>
+                    {/* Property Owner ID Number */}
+                    <div className="flex flex-col sm:flex-row sm:items-center border-b border-white/10 py-1.5 sm:py-2">
+                      <div className="text-white text-sm sm:text-base pr-2 font-medium mb-0.5 sm:mb-0 sm:w-1/3">{getPropertyOwnerIdNumberTypeText()}</div>
+                      <div className="text-white text-sm sm:text-base font-bold sm:w-2/3">{insurerData.property_owner_id_number}</div>
+                    </div>
+                    {/* Show additional fields for ЛНЧ (id = 2) or Паспорт № (id = 3) */}
+                    {(insurerData.property_owner_id_number_type_id === '2' || insurerData.property_owner_id_number_type_id === '3') && (
+                      <>
+                        {/* Birth Date */}
+                        {insurerData.property_owner_birth_date && (
+                          <div className="flex flex-col sm:flex-row sm:items-center border-b border-white/10 py-1.5 sm:py-2">
+                            <div className="text-white text-sm sm:text-base pr-2 font-medium mb-0.5 sm:mb-0 sm:w-1/3">Дата на раждане:</div>
+                            <div className="text-white text-sm sm:text-base font-bold sm:w-2/3">
+                              {new Date(insurerData.property_owner_birth_date).toLocaleDateString('bg-BG')}
+                            </div>
+                          </div>
+                        )}
+                        {/* Nationality */}
+                        {insurerData.property_owner_nationality_id && (
+                          <div className="flex flex-col sm:flex-row sm:items-center border-b border-white/10 py-1.5 sm:py-2">
+                            <div className="text-white text-sm sm:text-base pr-2 font-medium mb-0.5 sm:mb-0 sm:w-1/3">Националност:</div>
+                            <div className="text-white text-sm sm:text-base font-bold sm:w-2/3">
+                              {nationalityOptions.find(n => String(n.id) === String(insurerData.property_owner_nationality_id))?.name || 'Не е посочено'}
+                            </div>
+                          </div>
+                        )}
+                        {/* Gender */}
+                        {insurerData.property_owner_gender && (
+                          <div className="flex flex-col sm:flex-row sm:items-center border-b border-white/10 py-1.5 sm:py-2">
+                            <div className="text-white text-sm sm:text-base pr-2 font-medium mb-0.5 sm:mb-0 sm:w-1/3">Пол:</div>
+                            <div className="text-white text-sm sm:text-base font-bold sm:w-2/3">
+                              {insurerData.property_owner_gender === 'male' ? 'Мъж' : 'Жена'}
+                            </div>
+                          </div>
+                        )}
+                      </>
+                    )}
+                  </div>
+                </div>
+              </div>
+            </div>
+          )}
+
           {insurerData && (
             <div className="mb-4">
               <div className="bg-white/10 p-4 sm:p-6 rounded-xl border border-white/20">
                 <h3 className="text-base sm:text-lg font-medium text-white mb-3 sm:mb-4">
-                  Данни за застраховащия
+                  Застраховащ
                 </h3>
                 <div className="p-2 sm:p-3 bg-white/5 rounded-lg">
                   <div className="space-y-1.5 sm:space-y-2">
@@ -580,6 +636,38 @@ const OrderPreviewForm = ({ prevStep, selectedTariff, insurerData, checkedItems,
                       <div className="text-white text-sm sm:text-base pr-2 font-medium mb-0.5 sm:mb-0 sm:w-1/3">{getIdNumberTypeText()}</div>
                       <div className="text-white text-sm sm:text-base font-bold sm:w-2/3">{insurerData.id_number}</div>
                     </div>
+                    {/* Show additional fields for ЛНЧ (id = 2) or Паспорт № (id = 3) */}
+                    {(insurerData.id_number_type_id === '2' || insurerData.id_number_type_id === '3') && (
+                      <>
+                        {/* Birth Date */}
+                        {insurerData.birth_date && (
+                          <div className="flex flex-col sm:flex-row sm:items-center border-b border-white/10 py-1.5 sm:py-2">
+                            <div className="text-white text-sm sm:text-base pr-2 font-medium mb-0.5 sm:mb-0 sm:w-1/3">Дата на раждане:</div>
+                            <div className="text-white text-sm sm:text-base font-bold sm:w-2/3">
+                              {new Date(insurerData.birth_date).toLocaleDateString('bg-BG')}
+                            </div>
+                          </div>
+                        )}
+                        {/* Nationality */}
+                        {insurerData.insurer_nationality_id && (
+                          <div className="flex flex-col sm:flex-row sm:items-center border-b border-white/10 py-1.5 sm:py-2">
+                            <div className="text-white text-sm sm:text-base pr-2 font-medium mb-0.5 sm:mb-0 sm:w-1/3">Националност:</div>
+                            <div className="text-white text-sm sm:text-base font-bold sm:w-2/3">
+                              {nationalityOptions.find(n => String(n.id) === String(insurerData.insurer_nationality_id))?.name || 'Не е посочено'}
+                            </div>
+                          </div>
+                        )}
+                        {/* Gender */}
+                        {insurerData.gender && (
+                          <div className="flex flex-col sm:flex-row sm:items-center border-b border-white/10 py-1.5 sm:py-2">
+                            <div className="text-white text-sm sm:text-base pr-2 font-medium mb-0.5 sm:mb-0 sm:w-1/3">Пол:</div>
+                            <div className="text-white text-sm sm:text-base font-bold sm:w-2/3">
+                              {insurerData.gender === 'male' ? 'Мъж' : 'Жена'}
+                            </div>
+                          </div>
+                        )}
+                      </>
+                    )}
                     <div className="flex flex-col sm:flex-row sm:items-center border-b border-white/10 py-1.5 sm:py-2">
                       <div className="text-white text-sm sm:text-base pr-2 font-medium mb-0.5 sm:mb-0 sm:w-1/3">Населено място:</div>
                       <div className="text-white text-sm sm:text-base font-bold sm:w-2/3">{settlementData ? settlementData.name : ''}</div>
