@@ -283,9 +283,12 @@ const InsurerForm = ({
       const isSettlementEmpty = !insurerData.insurer_settlement_id;
       const isPhoneEmpty = !insurerData.phone || insurerData.phone.trim() === '';
       const isEmailEmpty = !insurerData.email || insurerData.email.trim() === '';
+      const isBirthDateEmpty = !insurerData.birth_date;
+      const isNationalityEmpty = !insurerData.insurer_nationality_id;
+      const isGenderEmpty = !insurerData.gender;
 
       // If all fields are empty, copy values from property owner
-      if (isFullNameEmpty && isIdNumberEmpty && isSettlementEmpty && isPhoneEmpty && isEmailEmpty) {
+      if (isFullNameEmpty && isIdNumberEmpty && isSettlementEmpty && isPhoneEmpty && isEmailEmpty && isBirthDateEmpty && isNationalityEmpty && isGenderEmpty) {
         // Copy property_owner_name to full_name if available
         if (insurerData.property_owner_name && insurerData.property_owner_name.trim() !== '') {
           newState.full_name = insurerData.property_owner_name;
@@ -310,6 +313,21 @@ const InsurerForm = ({
         // Copy property_address to permanent_address if available
         if (insurerData.property_address && insurerData.property_address.trim() !== '') {
           newState.permanent_address = insurerData.property_address;
+        }
+
+        // Copy property_owner_birth_date to birth_date if available
+        if (insurerData.property_owner_birth_date) {
+          newState.birth_date = insurerData.property_owner_birth_date;
+        }
+
+        // Copy property_owner_nationality_id to insurer_nationality_id if available
+        if (insurerData.property_owner_nationality_id) {
+          newState.insurer_nationality_id = insurerData.property_owner_nationality_id;
+        }
+
+        // Copy property_owner_gender to gender if available
+        if (insurerData.property_owner_gender) {
+          newState.gender = insurerData.property_owner_gender;
         }
       }
     }
@@ -565,7 +583,7 @@ const InsurerForm = ({
       'property_owner_nationality_id': 'Националност на собственика',
       'property_owner_gender': 'Пол на собственика',
       'property_address': 'Точен адрес на имота',
-      'property_additional_info': 'Допълнителни данни за имота'
+      'property_additional_info': 'Допълнителни пояснения'
     };
 
     // Validate person_role_id
@@ -1126,7 +1144,7 @@ const InsurerForm = ({
           {/* Property Additional Info */}
           <div>
             <label htmlFor="property_additional_info" className="block text-sm font-medium text-white mb-1">
-              Допълнителни данни за имота
+              Допълнителни пояснения
             </label>
             <div className="relative">
               <input

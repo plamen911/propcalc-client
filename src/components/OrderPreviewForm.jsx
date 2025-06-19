@@ -522,7 +522,7 @@ const OrderPreviewForm = ({ prevStep, selectedTariff, insurerData, checkedItems,
                     )}
                     {insurerData.property_additional_info && (
                       <div className="flex flex-col sm:flex-row sm:items-center border-b border-white/10 py-1.5 sm:py-2">
-                        <div className="text-white text-sm sm:text-base pr-2 font-medium mb-0.5 sm:mb-0 sm:w-1/3">Допълнителни данни за имота:</div>
+                        <div className="text-white text-sm sm:text-base pr-2 font-medium mb-0.5 sm:mb-0 sm:w-1/3">Допълнителни пояснения:</div>
                         <div className="text-white text-sm sm:text-base font-bold sm:w-2/3">{insurerData.property_additional_info}</div>
                       </div>
                     )}
