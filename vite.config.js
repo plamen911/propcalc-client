@@ -7,4 +7,9 @@ export default defineConfig({
   css: {
     postcss: './postcss.config.js',
   },
+  build: {
+    rollupOptions: {
+      maxParallelFileOps: 5, // Limit the number of concurrent file operations
+    },
+  },
 })
