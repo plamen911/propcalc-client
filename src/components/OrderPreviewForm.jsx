@@ -11,11 +11,11 @@ import {
   Stack
 } from '@mui/material';
 import { styled } from '@mui/material/styles';
-import BackButton from './BackButton';
-import ProceedButton from './ProceedButton';
+import BackButton from './ui/BackButton.jsx';
+import ProceedButton from './ui/ProceedButton.jsx';
 import CheckCircleOutlineIcon from '@mui/icons-material/CheckCircleOutline';
 import api from '../services/api';
-import ErrorDisplay from './ErrorDisplay';
+import ErrorDisplay from './ui/ErrorDisplay.jsx';
 import { formatCurrency } from '../utils/formatters';
 
 // Styled Paper component for the preview section
@@ -65,6 +65,7 @@ const OrderPreviewForm = ({ prevStep, selectedTariff, insurerData, checkedItems,
   const [estateSubtypes, setEstateSubtypes] = useState([]);
   const [distanceToWater, setDistanceToWater] = useState([]);
   const [estateSettlementData, setEstateSettlementData] = useState(null);
+  const [propertyOwnerSettlementData, setPropertyOwnerSettlementData] = useState(null);
   const [nationalityOptions, setNationalityOptions] = useState([]);
 
   // Helper function to get the person role text based on the ID
@@ -172,6 +173,16 @@ const OrderPreviewForm = ({ prevStep, selectedTariff, insurerData, checkedItems,
           setSettlementData(settlementData);
         }
 
+        // Fetch property owner settlement data if property_owner_settlement_id is available
+        if (insurerData && insurerData.property_owner_settlement_id) {
+          const propertyOwnerSettlementResponse = await api.get('/api/v1/form-data/settlements', {
+            params: { id: insurerData.property_owner_settlement_id }
+          });
+          const propertyOwnerSettlementData = Array.isArray(propertyOwnerSettlementResponse.data) && propertyOwnerSettlementResponse.data.length > 0
+            ? propertyOwnerSettlementResponse.data[0]
+            : null;
+          setPropertyOwnerSettlementData(propertyOwnerSettlementData);
+        }
 
         // Fetch estate settlement data if settlement_id is available
         if (formData && formData.settlement_id) {
@@ -205,6 +216,7 @@ const OrderPreviewForm = ({ prevStep, selectedTariff, insurerData, checkedItems,
         setEstateSubtypes([]);
         setDistanceToWater([]);
         setEstateSettlementData(null);
+        setPropertyOwnerSettlementData(null);
         setNationalityOptions([]);
       }
     };
@@ -264,6 +276,8 @@ const OrderPreviewForm = ({ prevStep, selectedTariff, insurerData, checkedItems,
           property_owner_birth_date: insurerData.property_owner_birth_date,
           property_owner_nationality_id: insurerData.property_owner_nationality_id,
           property_owner_gender: insurerData.property_owner_gender,
+          property_owner_settlement_id: insurerData.property_owner_settlement_id,
+          property_owner_permanent_address: insurerData.property_owner_permanent_address,
 
           // Property checklist items
           property_checklist_items: checkedItems
@@ -614,6 +628,16 @@ const OrderPreviewForm = ({ prevStep, selectedTariff, insurerData, checkedItems,
                         )}
                       </>
                     )}
+                    {/* Property Owner Settlement */}
+                    <div className="flex flex-col sm:flex-row sm:items-center border-b border-white/10 py-1.5 sm:py-2">
+                      <div className="text-white text-sm sm:text-base pr-2 font-medium mb-0.5 sm:mb-0 sm:w-1/3">Населено място:</div>
+                      <div className="text-white text-sm sm:text-base font-bold sm:w-2/3">{propertyOwnerSettlementData ? propertyOwnerSettlementData.name : 'Не е посочено'}</div>
+                    </div>
+                    {/* Property Owner Address */}
+                    <div className="flex flex-col sm:flex-row sm:items-center border-b border-white/10 py-1.5 sm:py-2">
+                      <div className="text-white text-sm sm:text-base pr-2 font-medium mb-0.5 sm:mb-0 sm:w-1/3">Постоянен адрес:</div>
+                      <div className="text-white text-sm sm:text-base font-bold sm:w-2/3">{insurerData.property_owner_permanent_address || 'Не е посочено'}</div>
+                    </div>
                   </div>
                 </div>
               </div>

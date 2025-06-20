@@ -1,12 +1,12 @@
 import React, { useState, useEffect, useRef } from 'react';
 import {ArrowForward, CalendarMonth, CheckCircle, Close, LocalOffer} from '@mui/icons-material';
-import BackButton from './BackButton';
-import ProceedButton from './ProceedButton';
+import BackButton from './ui/BackButton.jsx';
+import ProceedButton from './ui/ProceedButton.jsx';
 import { Dialog, DialogContent, DialogTitle, IconButton } from '@mui/material';
 import api from '../services/api';
-import LoadingSpinner from './LoadingSpinner';
-import ErrorDisplay from './ErrorDisplay';
-import ErrorIcon from './ErrorIcon';
+import LoadingSpinner from './ui/LoadingSpinner.jsx';
+import ErrorDisplay from './ui/ErrorDisplay.jsx';
+import ErrorIcon from './ui/ErrorIcon.jsx';
 import { formatCurrency } from '../utils/formatters';
 
 const InsurerForm = ({ 
@@ -403,8 +403,8 @@ const InsurerForm = ({
         }
 
         // Copy property_address to permanent_address if available
-        if (insurerData.property_address && insurerData.property_address.trim() !== '') {
-          newState.permanent_address = insurerData.property_address;
+        if (insurerData.property_owner_permanent_address && insurerData.property_owner_permanent_address.trim() !== '') {
+          newState.permanent_address = insurerData.property_owner_permanent_address;
         }
 
         // Copy property_owner_birth_date to birth_date if available

@@ -1,10 +1,10 @@
 import React, { useState, useEffect, useCallback } from 'react';
-import BackButton from './BackButton';
-import ProceedButton from './ProceedButton';
+import BackButton from './ui/BackButton.jsx';
+import ProceedButton from './ui/ProceedButton.jsx';
 import api from '../services/api';
 import { debounce } from 'lodash';
-import LoadingSpinner from './LoadingSpinner';
-import ErrorDisplay from './ErrorDisplay';
+import LoadingSpinner from './ui/LoadingSpinner.jsx';
+import ErrorDisplay from './ui/ErrorDisplay.jsx';
 import { formatCurrency } from '../utils/formatters';
 import ArrowForward from "@mui/icons-material/ArrowForward";
 

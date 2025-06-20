@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import api from '../services/api';
-import LoadingSpinner from './LoadingSpinner';
-import ErrorDisplay from './ErrorDisplay';
+import LoadingSpinner from './ui/LoadingSpinner.jsx';
+import ErrorDisplay from './ui/ErrorDisplay.jsx';
 import { ArrowForward } from '@mui/icons-material';
 
 const EstateDataForm = ({ formData, handleChange, nextStep }) => {

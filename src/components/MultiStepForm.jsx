@@ -5,8 +5,8 @@ import InsurerForm from './InsurerForm';
 import OrderPreviewForm from './OrderPreviewForm';
 import api from '../services/api';
 import AuthService from '../services/auth';
-import LoadingSpinner from './LoadingSpinner';
-import ErrorDisplay from './ErrorDisplay';
+import LoadingSpinner from './ui/LoadingSpinner.jsx';
+import ErrorDisplay from './ui/ErrorDisplay.jsx';
 
 const MultiStepForm = () => {
   const [currentStep, setCurrentStep] = useState(0);
