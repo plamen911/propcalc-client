@@ -6,6 +6,7 @@ import { Dialog, DialogContent, DialogTitle, IconButton } from '@mui/material';
 import api from '../services/api';
 import LoadingSpinner from './LoadingSpinner';
 import ErrorDisplay from './ErrorDisplay';
+import ErrorIcon from './ErrorIcon';
 import { formatCurrency } from '../utils/formatters';
 
 const InsurerForm = ({ 
@@ -1178,11 +1179,7 @@ const InsurerForm = ({
                     disabled={promoCodeValid || validatingPromo}
                   />
                   {promoCodeError && (
-                    <div className="absolute top-1/2 transform -translate-y-1/2 right-0 pr-3 flex items-center pointer-events-none">
-                      <svg className="h-5 w-5 text-red-500" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
-                        <path fillRule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z" clipRule="evenodd" />
-                      </svg>
-                    </div>
+                    <ErrorIcon />
                   )}
                 </div>
                 {promoCodeError && (
@@ -1247,13 +1244,7 @@ const InsurerForm = ({
                 required
                 className={`block w-full rounded-md shadow-sm focus:ring-primary focus:border-primary sm:text-sm text-black ${isFieldInvalid('property_address') ? 'border-error' : 'border-gray-300'}`}
               />
-              {isFieldInvalid('property_address') && (
-                <div className="absolute top-1/2 transform -translate-y-1/2 right-0 pr-3 flex items-center pointer-events-none">
-                  <svg className="h-5 w-5 text-red-500" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
-                    <path fillRule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z" clipRule="evenodd" />
-                  </svg>
-                </div>
-              )}
+              {isFieldInvalid('property_address') && <ErrorIcon />}
             </div>
           </div>
 
@@ -1299,13 +1290,7 @@ const InsurerForm = ({
                 required
                 className={`block w-full rounded-md shadow-sm focus:ring-primary focus:border-primary sm:text-sm text-black ${isFieldInvalid('property_owner_name') ? 'border-error' : 'border-gray-300'}`}
               />
-              {isFieldInvalid('property_owner_name') && (
-                <div className="absolute top-1/2 transform -translate-y-1/2 right-0 pr-3 flex items-center pointer-events-none">
-                  <svg className="h-5 w-5 text-red-500" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
-                    <path fillRule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z" clipRule="evenodd" />
-                  </svg>
-                </div>
-              )}
+              {isFieldInvalid('property_owner_name') && <ErrorIcon />}
             </div>
           </div>
 
@@ -1330,13 +1315,7 @@ const InsurerForm = ({
                     </option>
                   ))}
                 </select>
-                {isFieldInvalid('property_owner_id_number_type_id') && (
-                  <div className="absolute top-1/2 transform -translate-y-1/2 right-0 pr-10 flex items-center pointer-events-none">
-                    <svg className="h-5 w-5 text-red-500" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
-                      <path fillRule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z" clipRule="evenodd" />
-                    </svg>
-                  </div>
-                )}
+                {isFieldInvalid('property_owner_id_number_type_id') && <ErrorIcon paddingRight="pr-10" />}
               </div>
               <div className="relative w-2/3">
                 <input
@@ -1348,13 +1327,7 @@ const InsurerForm = ({
                   required
                   className={`pl-3 block w-full rounded-r-md border-l-0 shadow-sm focus:ring-primary focus:border-primary focus:z-10 py-2.5 sm:py-2 text-sm sm:text-base text-black ${isFieldInvalid('property_owner_id_number') ? 'border-error' : 'border-gray-300'}`}
                 />
-                {isFieldInvalid('property_owner_id_number') && (
-                  <div className="absolute top-1/2 transform -translate-y-1/2 right-0 pr-3 flex items-center pointer-events-none">
-                    <svg className="h-5 w-5 text-red-500" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
-                      <path fillRule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z" clipRule="evenodd" />
-                    </svg>
-                  </div>
-                )}
+                {isFieldInvalid('property_owner_id_number') && <ErrorIcon />}
               </div>
             </div>
           </div>
@@ -1385,11 +1358,7 @@ const InsurerForm = ({
                     className={`pl-10 block w-full rounded-md shadow-sm focus:ring-primary focus:border-primary sm:text-sm text-black cursor-pointer ${isFieldInvalid('property_owner_birth_date') ? 'border-red-500' : 'border-gray-300'}`}
                   />
                   {isFieldInvalid('property_owner_birth_date') && (
-                    <div className="absolute top-1/2 transform -translate-y-1/2 right-0 pr-3 flex items-center pointer-events-none">
-                      <svg className="h-5 w-5 text-red-500" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
-                        <path fillRule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z" clipRule="evenodd" />
-                      </svg>
-                    </div>
+                    <ErrorIcon />
                   )}
                 </div>
               </div>
@@ -1415,13 +1384,7 @@ const InsurerForm = ({
                       </option>
                     ))}
                   </select>
-                  {isFieldInvalid('property_owner_nationality_id') && (
-                    <div className="absolute top-1/2 transform -translate-y-1/2 right-0 pr-10 flex items-center pointer-events-none">
-                      <svg className="h-5 w-5 text-red-500" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
-                        <path fillRule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z" clipRule="evenodd" />
-                      </svg>
-                    </div>
-                  )}
+                  {isFieldInvalid('property_owner_nationality_id') && <ErrorIcon paddingRight="pr-10" />}
                 </div>
               </div>
 
@@ -1453,13 +1416,7 @@ const InsurerForm = ({
                   >
                     Жена
                   </button>
-                  {isFieldInvalid('property_owner_gender') && (
-                    <div className="flex items-center">
-                      <svg className="h-5 w-5 text-red-500" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
-                        <path fillRule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z" clipRule="evenodd" />
-                      </svg>
-                    </div>
-                  )}
+                  {isFieldInvalid('property_owner_gender') && <ErrorIcon className="flex items-center" />}
                 </div>
               </div>
             </>
@@ -1492,13 +1449,7 @@ const InsurerForm = ({
                 autoComplete="off"
                 required
               />
-              {isFieldInvalid('property_owner_settlement_id') && (
-                <div className="absolute top-1/2 transform -translate-y-1/2 right-0 pr-3 flex items-center pointer-events-none">
-                  <svg className="h-5 w-5 text-red-500" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
-                    <path fillRule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z" clipRule="evenodd" />
-                  </svg>
-                </div>
-              )}
+              {isFieldInvalid('property_owner_settlement_id') && <ErrorIcon />}
               <input type="hidden" name="property_owner_settlement_id" value={insurerData.property_owner_settlement_id || ''} />
             </div>
             {showPropertyOwnerSettlementOptions && filteredPropertyOwnerSettlements.length > 0 && (
@@ -1532,13 +1483,7 @@ const InsurerForm = ({
                 required
                 className={`block w-full rounded-md shadow-sm focus:ring-primary focus:border-primary sm:text-sm text-black ${isFieldInvalid('property_owner_permanent_address') ? 'border-error' : 'border-gray-300'}`}
               />
-              {isFieldInvalid('property_owner_permanent_address') && (
-                <div className="absolute top-1/2 transform -translate-y-1/2 right-0 pr-3 flex items-center pointer-events-none">
-                  <svg className="h-5 w-5 text-red-500" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
-                    <path fillRule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z" clipRule="evenodd" />
-                  </svg>
-                </div>
-              )}
+              {isFieldInvalid('property_owner_permanent_address') && <ErrorIcon />}
             </div>
           </div>
         </div>
@@ -1570,13 +1515,7 @@ const InsurerForm = ({
                   </option>
                 ))}
               </select>
-              {isFieldInvalid('person_role_id') && (
-                <div className="absolute top-1/2 transform -translate-y-1/2 right-0 pr-10 flex items-center pointer-events-none">
-                  <svg className="h-5 w-5 text-red-500" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
-                    <path fillRule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z" clipRule="evenodd" />
-                  </svg>
-                </div>
-              )}
+              {isFieldInvalid('person_role_id') && <ErrorIcon paddingRight="pr-10" />}
             </div>
           </div>
 
@@ -1595,13 +1534,7 @@ const InsurerForm = ({
                 required
                 className={`block w-full rounded-md shadow-sm focus:ring-primary focus:border-primary sm:text-sm text-black ${isFieldInvalid('full_name') ? 'border-error' : 'border-gray-300'}`}
               />
-              {isFieldInvalid('full_name') && (
-                <div className="absolute top-1/2 transform -translate-y-1/2 right-0 pr-3 flex items-center pointer-events-none">
-                  <svg className="h-5 w-5 text-red-500" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
-                    <path fillRule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z" clipRule="evenodd" />
-                  </svg>
-                </div>
-              )}
+              {isFieldInvalid('full_name') && <ErrorIcon />}
             </div>
           </div>
 
@@ -1625,13 +1558,7 @@ const InsurerForm = ({
                     </option>
                   ))}
                 </select>
-                {isFieldInvalid('id_number_type_id') && (
-                  <div className="absolute top-1/2 transform -translate-y-1/2 right-0 pr-10 flex items-center pointer-events-none">
-                    <svg className="h-5 w-5 text-red-500" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
-                      <path fillRule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z" clipRule="evenodd" />
-                    </svg>
-                  </div>
-                )}
+                {isFieldInvalid('id_number_type_id') && <ErrorIcon paddingRight="pr-10" />}
               </div>
               <div className="relative w-2/3">
                 <input
@@ -1643,13 +1570,7 @@ const InsurerForm = ({
                   required
                   className={`pl-3 block w-full rounded-r-md border-l-0 shadow-sm focus:ring-primary focus:border-primary focus:z-10 py-2.5 sm:py-2 text-sm sm:text-base text-black ${isFieldInvalid('id_number') ? 'border-error' : 'border-gray-300'}`}
                 />
-                {isFieldInvalid('id_number') && (
-                  <div className="absolute top-1/2 transform -translate-y-1/2 right-0 pr-3 flex items-center pointer-events-none">
-                    <svg className="h-5 w-5 text-red-500" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
-                      <path fillRule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z" clipRule="evenodd" />
-                    </svg>
-                  </div>
-                )}
+                {isFieldInvalid('id_number') && <ErrorIcon />}
               </div>
             </div> 
           </div>
@@ -1679,13 +1600,7 @@ const InsurerForm = ({
                     required
                     className={`pl-10 block w-full rounded-md shadow-sm focus:ring-primary focus:border-primary sm:text-sm text-black cursor-pointer ${isFieldInvalid('birth_date') ? 'border-red-500' : 'border-gray-300'}`}
                   />
-                  {isFieldInvalid('birth_date') && (
-                    <div className="absolute top-1/2 transform -translate-y-1/2 right-0 pr-3 flex items-center pointer-events-none">
-                      <svg className="h-5 w-5 text-red-500" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
-                        <path fillRule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z" clipRule="evenodd" />
-                      </svg>
-                    </div>
-                  )}
+                  {isFieldInvalid('birth_date') && <ErrorIcon />}
                 </div>
               </div>
 
@@ -1710,13 +1625,7 @@ const InsurerForm = ({
                       </option>
                     ))}
                   </select>
-                  {isFieldInvalid('insurer_nationality_id') && (
-                    <div className="absolute top-1/2 transform -translate-y-1/2 right-0 pr-10 flex items-center pointer-events-none">
-                      <svg className="h-5 w-5 text-red-500" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
-                        <path fillRule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z" clipRule="evenodd" />
-                      </svg>
-                    </div>
-                  )}
+                  {isFieldInvalid('insurer_nationality_id') && <ErrorIcon paddingRight="pr-10" />}
                 </div>
               </div>
 
@@ -1748,13 +1657,7 @@ const InsurerForm = ({
                   >
                     Жена
                   </button>
-                  {isFieldInvalid('gender') && (
-                    <div className="flex items-center">
-                      <svg className="h-5 w-5 text-red-500" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
-                        <path fillRule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z" clipRule="evenodd" />
-                      </svg>
-                    </div>
-                  )}
+                  {isFieldInvalid('gender') && <ErrorIcon className="flex items-center" />}
                 </div>
               </div>
             </>
@@ -1786,13 +1689,7 @@ const InsurerForm = ({
                 autoComplete="off"
                 required
               />
-              {isFieldInvalid('insurer_settlement_id') && (
-                <div className="absolute top-1/2 transform -translate-y-1/2 right-0 pr-3 flex items-center pointer-events-none">
-                  <svg className="h-5 w-5 text-red-500" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
-                    <path fillRule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z" clipRule="evenodd" />
-                  </svg>
-                </div>
-              )}
+              {isFieldInvalid('insurer_settlement_id') && <ErrorIcon />}
               <input type="hidden" name="insurer_settlement_id" value={insurerData.insurer_settlement_id || ''} />
             </div>
             {showSettlementOptions && filteredSettlements.length > 0 && (
@@ -1825,13 +1722,7 @@ const InsurerForm = ({
                 required
                 className={`block w-full rounded-md shadow-sm focus:ring-primary focus:border-primary sm:text-sm text-black ${isFieldInvalid('permanent_address') ? 'border-error' : 'border-gray-300'}`}
               />
-              {isFieldInvalid('permanent_address') && (
-                <div className="absolute top-1/2 transform -translate-y-1/2 right-0 pr-3 flex items-center pointer-events-none">
-                  <svg className="h-5 w-5 text-red-500" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
-                    <path fillRule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z" clipRule="evenodd" />
-                  </svg>
-                </div>
-              )}
+              {isFieldInvalid('permanent_address') && <ErrorIcon />}
             </div>
           </div>
 
@@ -1855,13 +1746,7 @@ const InsurerForm = ({
                 required
                 className={`pl-10 block w-full rounded-md shadow-sm focus:ring-primary focus:border-primary sm:text-sm text-black ${isFieldInvalid('phone') ? 'border-red-500' : 'border-gray-300'}`}
               />
-              {isFieldInvalid('phone') && (
-                <div className="absolute top-1/2 transform -translate-y-1/2 right-0 pr-3 flex items-center pointer-events-none">
-                  <svg className="h-5 w-5 text-red-500" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
-                    <path fillRule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z" clipRule="evenodd" />
-                  </svg>
-                </div>
-              )}
+              {isFieldInvalid('phone') && <ErrorIcon />}
             </div>
           </div>
 
@@ -1886,13 +1771,7 @@ const InsurerForm = ({
                 required
                 className={`pl-10 block w-full rounded-md shadow-sm focus:ring-primary focus:border-primary sm:text-sm text-black ${isFieldInvalid('email') ? 'border-red-500' : 'border-gray-300'}`}
               />
-              {isFieldInvalid('email') && (
-                <div className="absolute top-1/2 transform -translate-y-1/2 right-0 pr-3 flex items-center pointer-events-none">
-                  <svg className="h-5 w-5 text-red-500" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
-                    <path fillRule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z" clipRule="evenodd" />
-                  </svg>
-                </div>
-              )}
+              {isFieldInvalid('email') && <ErrorIcon />}
             </div>
           </div>
         </div>
