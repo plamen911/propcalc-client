@@ -1,13 +1,34 @@
 import React, { useState, useEffect, useRef } from 'react';
-import {ArrowForward, CalendarMonth, CheckCircle, Close, LocalOffer} from '@mui/icons-material';
+import {ArrowForward, CheckCircle, Close, LocalOffer} from '@mui/icons-material';
+import HelpOutlineIcon from '@mui/icons-material/HelpOutline';
 import BackButton from './ui/BackButton.jsx';
 import ProceedButton from './ui/ProceedButton.jsx';
-import { Dialog, DialogContent, DialogTitle, IconButton } from '@mui/material';
+import { Dialog, DialogContent, DialogTitle, IconButton, Tooltip, tooltipClasses } from '@mui/material';
+import { styled } from '@mui/material/styles';
 import api from '../services/api';
 import LoadingSpinner from './ui/LoadingSpinner.jsx';
 import ErrorDisplay from './ui/ErrorDisplay.jsx';
 import ErrorIcon from './ui/ErrorIcon.jsx';
-import { formatCurrency } from '../utils/formatters';
+import { formatCurrency, formatDescription } from '../utils/formatters';
+
+const LightTooltip = styled(({ className, ...props }) => (
+  <Tooltip {...props} classes={{ popper: className }} />
+))(({ theme }) => ({
+  [`& .${tooltipClasses.tooltip}`]: {
+    backgroundColor: theme.palette.common.white,
+    color: 'rgba(0, 0, 0, 0.87)',
+    boxShadow: theme.shadows[1],
+    fontSize: 14,
+    maxWidth: 300,
+    padding: '12px',
+    [theme.breakpoints.up('md')]: {
+      maxWidth: 500,
+    },
+  },
+  [`& .${tooltipClasses.arrow}`]: {
+    color: theme.palette.common.white,
+  },
+}));
 
 const InsurerForm = ({ 
   nextStep, 
@@ -1075,8 +1096,24 @@ const InsurerForm = ({
                   .filter(clause => parseFloat(clause.tariff_amount) !== 0 && clause.tariff_amount !== '')
                   .map((clause) => (
                   <div key={clause.id} className="flex justify-between items-center border-b border-white/10 py-2">
-                    <div className="text-white text-sm sm:text-base pr-2 flex-1">{clause.insurance_clause.name}</div>
-                    <div className="text-white text-sm sm:text-base text-right font-semibold text-accent whitespace-nowrap" style={{animation: 'colorPulse 2s ease-in-out infinite'}}>{formatCurrency(clause.tariff_amount)} {currencySymbol}</div>
+                    <div className="text-white text-sm sm:text-base pr-2 flex-1 flex items-center">
+                      {clause.insurance_clause.name}
+                      {clause.insurance_clause.description && (
+                        <LightTooltip
+                          title={formatDescription(clause.insurance_clause.description)}
+                          arrow
+                          placement="top"
+                        >
+                          <HelpOutlineIcon
+                            className="text-accent"
+                            style={{ fontSize: 16, marginLeft: 4 }}
+                          />
+                        </LightTooltip>
+                      )}
+                    </div>
+                    <div className="text-white text-sm sm:text-base text-right font-semibold whitespace-nowrap">
+                      <span className="text-accent">{formatCurrency(clause.tariff_amount)}</span> <span className="text-accent">{currencySymbol}</span>
+                    </div>
                   </div>
                 ))}
               </div>
@@ -1093,7 +1130,9 @@ const InsurerForm = ({
                       <span className="inline-block w-2 h-2 bg-blue-400 rounded-full mr-2"></span>
                       <span className="uppercase text-white text-xs sm:text-sm font-medium">Застрахователна премия</span>
                     </div>
-                    <div className="text-accent font-semibold text-base sm:text-lg ml-2 whitespace-nowrap">{formatCurrency(selectedTariff.statistics.total_premium)} {currencySymbol}</div>
+                    <div className="font-semibold text-base sm:text-lg ml-2 whitespace-nowrap">
+                      <span className="text-accent">{formatCurrency(selectedTariff.statistics.total_premium)}</span><span className="text-accent"> {currencySymbol}</span>
+                    </div>
                   </div>
                 </div>
               )}
@@ -1105,7 +1144,9 @@ const InsurerForm = ({
                       <span className="inline-block w-2 h-2 bg-green-400 rounded-full mr-2"></span>
                       <span className="uppercase text-white text-xs sm:text-sm font-medium">Застрахователна премия след отстъпка {selectedTariff.discount_percent}%</span>
                     </div>
-                    <div className="text-accent font-semibold text-base sm:text-lg ml-2 whitespace-nowrap">{formatCurrency(selectedTariff.statistics.discounted_premium)} {currencySymbol}</div>
+                    <div className="font-semibold text-base sm:text-lg ml-2 whitespace-nowrap">
+                      <span className="text-accent">{formatCurrency(selectedTariff.statistics.discounted_premium)}</span> <span className="text-accent">{currencySymbol}</span>
+                    </div>
                   </div>
                 </div>
               )}
@@ -1118,8 +1159,8 @@ const InsurerForm = ({
                       <span className="inline-block w-2 h-2 bg-green-400 rounded-full mr-2"></span>
                       <span className="uppercase text-white text-xs sm:text-sm font-medium">Застрахователна премия след приложен промо код {promoDiscount}%</span>
                     </div>
-                    <div className="text-accent font-semibold text-base sm:text-lg ml-2 whitespace-nowrap">
-                      {formatCurrency(selectedTariff.statistics.discounted_premium - (selectedTariff.statistics.total_premium * promoDiscount / 100))} {currencySymbol}
+                    <div className="font-semibold text-base sm:text-lg ml-2 whitespace-nowrap">
+                      <span className="text-accent">{formatCurrency(selectedTariff.statistics.discounted_premium - (selectedTariff.statistics.total_premium * promoDiscount / 100))}</span> <span className="text-accent">{currencySymbol}</span>
                     </div>
                   </div>
                 </div>
@@ -1132,11 +1173,13 @@ const InsurerForm = ({
                       <span className="inline-block w-2 h-2 bg-yellow-400 rounded-full mr-2"></span>
                       <span className="uppercase text-white text-xs sm:text-sm font-medium">Данък върху застрахователната премия {selectedTariff.tax_percent}% </span>
                     </div>
-                    <div className="text-accent font-semibold text-base sm:text-lg ml-2 whitespace-nowrap">
-                      {promoCodeValid && promoDiscount 
-                        ? formatCurrency((selectedTariff.statistics.discounted_premium - (selectedTariff.statistics.total_premium * promoDiscount / 100)) * (selectedTariff.tax_percent / 100)) 
-                        : formatCurrency(selectedTariff.statistics.tax_amount)} 
-                      {currencySymbol}
+                    <div className="font-semibold text-base sm:text-lg ml-2 whitespace-nowrap">
+                      <span className="text-accent">
+                        {promoCodeValid && promoDiscount 
+                          ? formatCurrency((selectedTariff.statistics.discounted_premium - (selectedTariff.statistics.total_premium * promoDiscount / 100)) * (selectedTariff.tax_percent / 100)) 
+                          : formatCurrency(selectedTariff.statistics.tax_amount)}
+                      </span>
+                      <span className="text-accent"> {currencySymbol}</span>
                     </div>
                   </div>
                 </div>
@@ -1149,10 +1192,12 @@ const InsurerForm = ({
                     <span className="uppercase text-white text-sm sm:text-base font-bold">Общо дължима сума за една година</span>
                   </div>
                   <div className="text-white font-bold text-lg sm:text-xl ml-2 whitespace-nowrap" style={{animation: 'colorPulse 2s ease-in-out infinite'}}>
-                    {promoCodeValid && promoDiscount 
-                      ? formatCurrency(promoDiscountedAmount)
-                      : formatCurrency(selectedTariff.statistics.total_amount)} 
-                    {currencySymbol}
+                    <span className="text-accent">
+                      {promoCodeValid && promoDiscount 
+                        ? formatCurrency(promoDiscountedAmount)
+                        : formatCurrency(selectedTariff.statistics.total_amount)}
+                    </span> 
+                    <span className="text-accent"> {currencySymbol}</span>
                   </div>
                 </div>
               </div>
@@ -1783,7 +1828,21 @@ const InsurerForm = ({
               <div className="space-y-2 sm:space-y-1">
                 {propertyChecklistItems.map(item => (
                   <div key={item.id} className="flex flex-col sm:flex-row sm:justify-between sm:items-center border-b border-white/10 py-3 sm:py-2">
-                    <div className="text-white text-base sm:text-base pr-2 flex-1 mb-2 sm:mb-0 font-medium">{item.name}</div>
+                    <div className="text-white text-base sm:text-base pr-2 flex-1 mb-2 sm:mb-0 font-medium flex items-center">
+                      {item.name}
+                      {item.description && (
+                        <LightTooltip
+                          title={formatDescription(item.description)}
+                          arrow
+                          placement="top"
+                        >
+                          <HelpOutlineIcon
+                            className="text-accent"
+                            style={{ fontSize: 16, marginLeft: 4 }}
+                          />
+                        </LightTooltip>
+                      )}
+                    </div>
                     <div className="flex space-x-3 sm:space-x-2">
                       <button
                         type="button"
