@@ -5,8 +5,30 @@ import api from '../services/api';
 import { debounce } from 'lodash';
 import LoadingSpinner from './ui/LoadingSpinner.jsx';
 import ErrorDisplay from './ui/ErrorDisplay.jsx';
-import { formatCurrency } from '../utils/formatters';
+import { formatCurrency, formatDescription } from '../utils/formatters.jsx';
 import ArrowForward from "@mui/icons-material/ArrowForward";
+import HelpOutlineIcon from '@mui/icons-material/HelpOutline';
+import { Tooltip, tooltipClasses } from '@mui/material';
+import { styled } from '@mui/material/styles';
+
+const LightTooltip = styled(({ className, ...props }) => (
+  <Tooltip {...props} classes={{ popper: className }} />
+))(({ theme }) => ({
+  [`& .${tooltipClasses.tooltip}`]: {
+    backgroundColor: theme.palette.common.white,
+    color: 'rgba(0, 0, 0, 0.87)',
+    boxShadow: theme.shadows[1],
+    fontSize: 14,
+    maxWidth: 300,
+    padding: '12px',
+    [theme.breakpoints.up('md')]: {
+      maxWidth: 500,
+    },
+  },
+  [`& .${tooltipClasses.arrow}`]: {
+    color: theme.palette.common.white,
+  },
+}));
 
 const CoveredRisksForm = ({ formData, nextStep, prevStep, lastOpenedAccordion, setLastOpenedAccordion, customClauseAmounts, setCustomClauseAmounts, selectedRisks, setSelectedRisks, isCustomPackageSelected, setIsCustomPackageSelected, setSelectedTariff, currencySymbol, clauseCheckboxes, setClauseCheckboxes }) => {
   // State for API data
@@ -502,7 +524,14 @@ const CoveredRisksForm = ({ formData, nextStep, prevStep, lastOpenedAccordion, s
                       .filter(clause => parseFloat(clause.tariff_amount) !== 0)
                       .map((clause) => (
                       <div key={clause.id} className="flex justify-between items-center border-b border-white/10 py-2">
-                        <div className="text-white text-sm sm:text-base pr-2 flex-1">{clause.insurance_clause.name}</div>
+                        <div className="flex items-center text-white text-sm sm:text-base pr-2 flex-1">
+                          <span>{clause.insurance_clause.name}</span>
+                          {clause.insurance_clause.id === 1 && clause.insurance_clause.description && (
+                            <LightTooltip title={formatDescription(clause.insurance_clause.description)} arrow>
+                              <HelpOutlineIcon fontSize="small" className="ml-1 text-yellow-400" />
+                            </LightTooltip>
+                          )}
+                        </div>
                         <div className="text-white text-sm sm:text-base text-right font-semibold text-[#ffcc00] whitespace-nowrap" style={{animation: 'colorPulse 2s ease-in-out infinite'}}>
                           {formatCurrency(clause.tariff_amount)} {currencySymbol}
                         </div>
@@ -608,7 +637,14 @@ const CoveredRisksForm = ({ formData, nextStep, prevStep, lastOpenedAccordion, s
                     // Hide clause with id = 3 if estate_type_id is not 4
                     (clause.id !== 3 || formData.estate_type_id === '4') ? (
                     <div key={clause.id} className="flex justify-between items-center border-b border-white/10 py-2">
-                      <div className="text-white text-sm sm:text-base pr-2 flex-1">{clause.name}</div>
+                      <div className="flex items-center text-white text-sm sm:text-base pr-2 flex-1">
+                        <span>{clause.name}</span>
+                        {clause.id === 1 && clause.description && (
+                          <LightTooltip title={formatDescription(clause.description)} arrow>
+                            <HelpOutlineIcon fontSize="small" className="ml-1 text-yellow-400" />
+                          </LightTooltip>
+                        )}
+                      </div>
                       <div className="w-full sm:w-40">
                         {clause.allow_custom_amount && (
                           <div className="relative rounded-md shadow-sm">
