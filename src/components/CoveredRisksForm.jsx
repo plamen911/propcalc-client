@@ -526,7 +526,7 @@ const CoveredRisksForm = ({ formData, nextStep, prevStep, lastOpenedAccordion, s
                       <div key={clause.id} className="flex justify-between items-center border-b border-white/10 py-2">
                         <div className="flex items-center text-white text-sm sm:text-base pr-2 flex-1">
                           <span>{clause.insurance_clause.name}</span>
-                          {clause.insurance_clause.id === 1 && clause.insurance_clause.description && (
+                          {clause.insurance_clause.description && (
                             <LightTooltip title={formatDescription(clause.insurance_clause.description)} arrow>
                               <HelpOutlineIcon fontSize="small" className="ml-1 text-yellow-400" />
                             </LightTooltip>
