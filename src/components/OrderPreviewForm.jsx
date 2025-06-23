@@ -429,7 +429,7 @@ const OrderPreviewForm = ({ prevStep, selectedTariff, insurerData, checkedItems,
                         .map((clause) => (
                         <div key={clause.id} className="flex justify-between items-center border-b border-white/10 py-2">
                           <div className="text-white text-sm sm:text-base pr-2 flex-1">{clause.insurance_clause.name}</div>
-                          <div className="text-white text-sm sm:text-base text-right font-semibold text-[#ffcc00] whitespace-nowrap" style={{animation: 'colorPulse 2s ease-in-out infinite'}}>{formatCurrency(clause.tariff_amount)} {currencySymbol}</div>
+                          <div className="text-accent font-semibold text-base sm:text-lg ml-2">{formatCurrency(clause.tariff_amount)} {currencySymbol}</div>
                         </div>
                       ))}
                     </div>
@@ -446,7 +446,7 @@ const OrderPreviewForm = ({ prevStep, selectedTariff, insurerData, checkedItems,
                             <span className="inline-block w-3 h-3 bg-blue-400 rounded-full mr-2"></span>
                             <span className="uppercase text-white text-sm sm:text-base font-medium">Застрахователна премия</span>
                           </div>
-                          <div className="text-[#ffcc00] font-semibold text-base sm:text-lg ml-2">{formatCurrency(selectedTariff.statistics.total_premium)} {currencySymbol}</div>
+                          <div className="text-accent font-semibold text-base sm:text-lg ml-2">{formatCurrency(selectedTariff.statistics.total_premium)} {currencySymbol}</div>
                         </div>
                       </div>
                     )}
@@ -458,7 +458,7 @@ const OrderPreviewForm = ({ prevStep, selectedTariff, insurerData, checkedItems,
                             <span className="inline-block w-3 h-3 bg-green-400 rounded-full mr-2"></span>
                             <span className="uppercase text-white text-sm sm:text-base font-medium">Застрахователна премия след отстъпка от {selectedTariff.discount_percent}%</span>
                           </div>
-                          <div className="text-[#ffcc00] font-semibold text-base sm:text-lg ml-2">{formatCurrency(selectedTariff.statistics.discounted_premium)} {currencySymbol}</div>
+                          <div className="text-accent font-semibold text-base sm:text-lg ml-2">{formatCurrency(selectedTariff.statistics.discounted_premium)} {currencySymbol}</div>
                         </div>
                       </div>
                     )}
@@ -471,7 +471,7 @@ const OrderPreviewForm = ({ prevStep, selectedTariff, insurerData, checkedItems,
                             <span className="inline-block w-3 h-3 bg-green-400 rounded-full mr-2"></span>
                             <span className="uppercase text-white text-sm sm:text-base font-medium">Застрахователна премия след приложен промо код {promoDiscount}%</span>
                           </div>
-                          <div className="text-[#ffcc00] font-semibold text-base sm:text-lg ml-2">
+                          <div className="text-accent font-semibold text-base sm:text-lg ml-2">
                             {formatCurrency(selectedTariff.statistics.discounted_premium - (selectedTariff.statistics.total_premium * promoDiscount / 100))} {currencySymbol}
                           </div>
                         </div>
@@ -485,7 +485,7 @@ const OrderPreviewForm = ({ prevStep, selectedTariff, insurerData, checkedItems,
                             <span className="inline-block w-3 h-3 bg-yellow-400 rounded-full mr-2"></span>
                             <span className="uppercase text-white text-sm sm:text-base font-medium">{selectedTariff.tax_percent}% данък върху застрахователната премия</span>
                           </div>
-                          <div className="text-[#ffcc00] font-semibold text-base sm:text-lg ml-2">
+                          <div className="text-accent font-semibold text-base sm:text-lg ml-2">
                             {promoCodeValid && promoDiscount 
                               ? formatCurrency((selectedTariff.statistics.discounted_premium - (selectedTariff.statistics.total_premium * promoDiscount / 100)) * (selectedTariff.tax_percent / 100)) 
                               : formatCurrency(selectedTariff.statistics.tax_amount)} 
@@ -501,7 +501,7 @@ const OrderPreviewForm = ({ prevStep, selectedTariff, insurerData, checkedItems,
                           <span className="inline-block w-3 h-3 bg-red-500 rounded-full mr-2"></span>
                           <span className="uppercase text-white text-sm sm:text-base font-bold">Общо дължима сума за една година</span>
                         </div>
-                        <div className="text-white font-bold text-lg sm:text-xl ml-2" style={{animation: 'colorPulse 2s ease-in-out infinite'}}>
+                        <div className="text-accent font-bold text-lg sm:text-xl ml-2" style={{animation: 'colorPulse 2s ease-in-out infinite'}}>
                           {promoCodeValid && promoDiscount 
                             ? formatCurrency(promoDiscountedAmount)
                             : formatCurrency(selectedTariff.statistics.total_amount)} 
@@ -566,7 +566,7 @@ const OrderPreviewForm = ({ prevStep, selectedTariff, insurerData, checkedItems,
                       {propertyChecklistItems.map(item => (
                         <div key={item.id} className="flex flex-col sm:flex-row sm:justify-between sm:items-center border-b border-white/10 py-1.5 sm:py-2">
                           <div className="text-white text-sm sm:text-base pr-2 font-medium mb-0.5 sm:mb-0 sm:flex-1">{item.name}:</div>
-                          <div className="text-white text-sm sm:text-base text-left sm:text-right font-semibold text-[#ffcc00]" style={{animation: 'colorPulse 2s ease-in-out infinite'}}>
+                          <div className="text-white text-sm sm:text-base text-left sm:text-right font-semibold text-accent" style={{animation: 'colorPulse 2s ease-in-out infinite'}}>
                             {checkedItems[item.id] === true ? 'Да' : checkedItems[item.id] === false ? 'Не' : 'Не е посочено'}
                           </div>
                         </div>

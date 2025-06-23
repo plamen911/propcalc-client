@@ -9,6 +9,7 @@ import { formatCurrency, formatDescription } from '../utils/formatters.jsx';
 import ArrowForward from "@mui/icons-material/ArrowForward";
 import HelpOutlineIcon from '@mui/icons-material/HelpOutline';
 import { LocalOffer, CheckCircle } from '@mui/icons-material';
+// Make sure CheckCircle is imported correctly
 import { Tooltip, tooltipClasses } from '@mui/material';
 import { styled } from '@mui/material/styles';
 import ErrorIcon from './ui/ErrorIcon.jsx';
@@ -56,11 +57,9 @@ const CoveredRisksForm = ({
   setPromoCodeError,
   promoDiscount,
   setPromoDiscount,
-  promoDiscountedAmount,
   setPromoDiscountedAmount,
   validatingPromo,
   setValidatingPromo,
-  promoCodeId,
   setPromoCodeId
 }) => {
   // State for API data
@@ -205,6 +204,18 @@ const CoveredRisksForm = ({
   const handleRiskChange = (presetId) => {
     // Deselect custom package when selecting a preset
     setIsCustomPackageSelected(false);
+
+    // Update selectedRisks to mark the selected preset
+    setSelectedRisks(prev => {
+      const updatedRisks = {};
+      // Set all presets to false
+      Object.keys(prev).forEach(key => {
+        updatedRisks[key] = false;
+      });
+      // Set the selected preset to true
+      updatedRisks[presetId] = true;
+      return updatedRisks;
+    });
 
     // Find the selected tariff preset
     const selectedPreset = tariffPresets.find(preset => preset.id === presetId);
@@ -518,6 +529,9 @@ const CoveredRisksForm = ({
       setValidationError(''); // Clear any previous error
     }
 
+    // Mark custom package as selected
+    setIsCustomPackageSelected(true);
+
     // Deselect all presets
     const resetSelectedRisks = {};
     Object.keys(selectedRisks).forEach(key => {
@@ -611,7 +625,7 @@ const CoveredRisksForm = ({
       {/* Promotional Code Section */}
       <div className="bg-white/10 p-3 sm:p-4 rounded-xl mb-3 sm:mb-4 border border-white/20">
         <div className="flex items-center mb-2">
-          <LocalOffer className="text-[#ffcc00] mr-2" />
+          <LocalOffer className="text-accent mr-2" />
           <h4 className="text-white text-sm sm:text-base font-medium">Имате промоционален код?</h4>
         </div>
 
@@ -646,7 +660,7 @@ const CoveredRisksForm = ({
         {promoCodeValid && promoDiscount && showPromoSuccess && (
           <div className="mt-4 p-3 bg-green-600/20 rounded-lg border border-green-500/30">
             <div className="flex items-center">
-              <CheckCircle className="text-green-500 mr-2" />
+              <CheckCircle className="text-accent mr-2" fontSize="medium" />
               <span className="text-white text-sm">Промоционален код приложен успешно! Отстъпката от {promoDiscount}% е отразена в крайната цена.</span>
             </div>
           </div>
@@ -668,7 +682,12 @@ const CoveredRisksForm = ({
               >
                 <div className="flex items-center flex-1 min-w-0">
                   <div className="flex flex-col w-full">
-                    <span className="text-white font-medium text-base sm:text-lg sm:mr-3">{preset.name}</span>
+                    <div className="flex items-center">
+                      <span className="text-white font-medium text-base sm:text-lg sm:mr-3">{preset.name}</span>
+                      {!isCustomPackageSelected && selectedRisks[preset.id] && (
+                        <CheckCircle className="text-accent ml-1" fontSize="medium" />
+                      )}
+                    </div>
                     <div className="flex flex-wrap items-center mt-1.5 sm:mt-1">
                       <div className="flex items-center">
                         <span className="text-white text-sm sm:text-md font-semibold whitespace-nowrap">
@@ -682,7 +701,7 @@ const CoveredRisksForm = ({
                             {formatCurrency(preset.statistics.total_premium)} {currencySymbol}
                           </span>
                         )}
-                        <span className="text-[#ffcc00] text-sm sm:text-md font-semibold whitespace-nowrap">
+                        <span className="text-accent text-sm sm:text-md font-semibold whitespace-nowrap">
                           {formatCurrency(preset.statistics.total_amount)} {currencySymbol}
                         </span>
                       </div>
@@ -728,7 +747,7 @@ const CoveredRisksForm = ({
                             </LightTooltip>
                           )}
                         </div>
-                        <div className="text-[#ffcc00] text-sm sm:text-base font-semibold whitespace-nowrap self-end sm:self-auto" style={{animation: 'colorPulse 2s ease-in-out infinite'}}>
+                        <div className="text-accent text-sm sm:text-base font-semibold whitespace-nowrap self-end sm:self-auto" style={{animation: 'colorPulse 2s ease-in-out infinite'}}>
                           {formatCurrency(clause.tariff_amount)} {currencySymbol}
                         </div>
                       </div>
@@ -744,7 +763,7 @@ const CoveredRisksForm = ({
                             <span className="inline-block w-2 h-2 bg-blue-400 rounded-full mr-2 mt-1 sm:mt-0 flex-shrink-0"></span>
                             <span className="uppercase text-white text-xs sm:text-sm font-medium leading-tight">Застрахователна премия</span>
                           </div>
-                          <div className="text-[#ffcc00] font-semibold text-sm sm:text-base sm:ml-2 self-end sm:self-auto">{formatCurrency(preset.statistics.total_premium)} {currencySymbol}</div>
+                          <div className="text-accent font-semibold text-sm sm:text-base sm:ml-2 self-end sm:self-auto">{formatCurrency(preset.statistics.total_premium)} {currencySymbol}</div>
                         </div>
                       </div>
                       <div className="border-b border-white/10 bg-white/5 p-2.5 sm:p-3">
@@ -753,7 +772,7 @@ const CoveredRisksForm = ({
                             <span className="inline-block w-2 h-2 bg-green-400 rounded-full mr-2 mt-1 sm:mt-0 flex-shrink-0"></span>
                             <span className="uppercase text-white text-xs sm:text-sm font-medium leading-tight">Застрахователна премия след отстъпка от {preset.discount_percent}%</span>
                           </div>
-                          <div className="text-[#ffcc00] font-semibold text-sm sm:text-base sm:ml-2 self-end sm:self-auto">{formatCurrency(preset.statistics.discounted_premium)} {currencySymbol}</div>
+                          <div className="text-accent font-semibold text-sm sm:text-base sm:ml-2 self-end sm:self-auto">{formatCurrency(preset.statistics.discounted_premium)} {currencySymbol}</div>
                         </div>
                       </div>
                       <div className="border-b border-white/10 bg-white/5 p-2.5 sm:p-3">
@@ -762,7 +781,7 @@ const CoveredRisksForm = ({
                             <span className="inline-block w-2 h-2 bg-yellow-400 rounded-full mr-2 mt-1 sm:mt-0 flex-shrink-0"></span>
                             <span className="uppercase text-white text-xs sm:text-sm font-medium leading-tight">{preset.tax_percent}% данък върху застрахователната премия</span>
                           </div>
-                          <div className="text-[#ffcc00] font-semibold text-sm sm:text-base sm:ml-2 self-end sm:self-auto">{formatCurrency(preset.statistics.tax_amount)} {currencySymbol}</div>
+                          <div className="text-accent font-semibold text-sm sm:text-base sm:ml-2 self-end sm:self-auto">{formatCurrency(preset.statistics.tax_amount)} {currencySymbol}</div>
                         </div>
                       </div>
                       <div className="bg-[#8b2131]/70 p-2.5 sm:p-3">
@@ -785,8 +804,8 @@ const CoveredRisksForm = ({
                         handleRiskChange(preset.id);
                       }}
                       text={selectedRisks[preset.id] ? 'ИЗБРАНО ✓' : 'ИЗБЕРИ'}
-                      showIcon={!selectedRisks[preset.id]}
-                      className={`w-full sm:w-auto px-6 sm:px-8 ${selectedRisks[preset.id] ? 'border-white text-primary bg-white' : ''} shadow-md min-h-[52px] sm:min-h-0`}
+                      showIcon={!isCustomPackageSelected}
+                      className={`w-full sm:w-auto px-6 sm:px-8 shadow-md min-h-[52px] sm:min-h-0`}
                     />
                   </div>
                 </div>
@@ -803,7 +822,12 @@ const CoveredRisksForm = ({
             >
               <div className="flex items-center flex-1 min-w-0">
                 <div className="flex flex-col w-full">
-                  <span className="text-white font-medium text-base sm:text-lg">Пакет по избор</span>
+                  <div className="flex items-center">
+                    <span className="text-white font-medium text-base sm:text-lg">Пакет по избор</span>
+                    {isCustomPackageSelected && (
+                      <CheckCircle className="text-accent ml-1" fontSize="medium" />
+                    )}
+                  </div>
                   <span className="text-white/70 text-xs sm:text-sm mt-1">Създайте свой собствен пакет</span>
                 </div>
               </div>
@@ -900,7 +924,7 @@ const CoveredRisksForm = ({
                         <span className="inline-block w-2 h-2 bg-blue-400 rounded-full mr-2 mt-1 sm:mt-0 flex-shrink-0"></span>
                         <span className="uppercase text-white text-xs sm:text-sm font-medium leading-tight">Застрахователна премия</span>
                       </div>
-                      <div className="text-[#ffcc00] font-semibold text-sm sm:text-base sm:ml-2 self-end sm:self-auto">{formatCurrency(customPackageStatistics.statistics.total_premium)} {currencySymbol}</div>
+                      <div className="text-accent font-semibold text-sm sm:text-base sm:ml-2 self-end sm:self-auto">{formatCurrency(customPackageStatistics.statistics.total_premium)} {currencySymbol}</div>
                     </div>
                   </div>
                   <div className="border-b border-white/10 bg-white/5 p-2.5 sm:p-3">
@@ -909,7 +933,7 @@ const CoveredRisksForm = ({
                         <span className="inline-block w-2 h-2 bg-green-400 rounded-full mr-2 mt-1 sm:mt-0 flex-shrink-0"></span>
                         <span className="uppercase text-white text-xs sm:text-sm font-medium leading-tight">Застрахователна премия след отстъпка от {customPackageStatistics.discount_percent}%</span>
                       </div>
-                      <div className="text-[#ffcc00] font-semibold text-sm sm:text-base sm:ml-2 self-end sm:self-auto">{formatCurrency(customPackageStatistics.statistics.discounted_premium)} {currencySymbol}</div>
+                      <div className="text-accent font-semibold text-sm sm:text-base sm:ml-2 self-end sm:self-auto">{formatCurrency(customPackageStatistics.statistics.discounted_premium)} {currencySymbol}</div>
                     </div>
                   </div>
                   <div className="border-b border-white/10 bg-white/5 p-2.5 sm:p-3">
@@ -918,7 +942,7 @@ const CoveredRisksForm = ({
                         <span className="inline-block w-2 h-2 bg-yellow-400 rounded-full mr-2 mt-1 sm:mt-0 flex-shrink-0"></span>
                         <span className="uppercase text-white text-xs sm:text-sm font-medium leading-tight">{customPackageStatistics.tax_percent}% данък върху застрахователната премия</span>
                       </div>
-                      <div className="text-[#ffcc00] font-semibold text-sm sm:text-base sm:ml-2 self-end sm:self-auto">{formatCurrency(customPackageStatistics.statistics.tax_amount)} {currencySymbol}</div>
+                      <div className="text-accent font-semibold text-sm sm:text-base sm:ml-2 self-end sm:self-auto">{formatCurrency(customPackageStatistics.statistics.tax_amount)} {currencySymbol}</div>
                     </div>
                   </div>
                   <div className="bg-[#8b2131]/70 p-2.5 sm:p-3">
@@ -943,7 +967,7 @@ const CoveredRisksForm = ({
                     onClick={handleCustomPackageSelect}
                     text={isCustomPackageSelected ? 'ИЗБРАНО ✓' : 'ИЗБЕРИ'}
                     showIcon={!isCustomPackageSelected}
-                    className={`w-full sm:w-auto px-6 sm:px-8 ${isCustomPackageSelected ? 'border-white text-primary bg-white' : ''} shadow-md min-h-[56px] sm:min-h-0`}
+                    className={`w-full sm:w-auto px-6 sm:px-8 shadow-md min-h-[56px] sm:min-h-0`}
                   />
                 </div>
               </div>
