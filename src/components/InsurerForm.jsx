@@ -65,6 +65,7 @@ const InsurerForm = ({
   const [tempDate, setTempDate] = useState({ year: new Date().getFullYear(), month: new Date().getMonth(), day: new Date().getDate() });
   const settlementRef = useRef(null);
   const propertyOwnerSettlementRef = useRef(null);
+  const [isOwnerAddressSame, setIsOwnerAddressSame] = useState(false);
 
   // Initialize tempDate when birth_date changes
   useEffect(() => {
@@ -849,6 +850,32 @@ const InsurerForm = ({
   const months = generateMonths();
   const days = generateDays();
 
+  // Handler for the owner address checkbox
+  const handleOwnerAddressCheckbox = (e) => {
+    const checked = e.target.checked;
+    setIsOwnerAddressSame(checked);
+    if (checked) {
+      // Copy property settlement and address
+      setInsurerData(prev => ({
+        ...prev,
+        property_owner_settlement_id: propertySettlement ? propertySettlement.id : '',
+        property_owner_permanent_address: insurerData.property_address || ''
+      }));
+      // Also update the input field for settlement
+      setPropertyOwnerSettlement(propertySettlement || null);
+      setPropertyOwnerSettlementInput(propertySettlement ? `${propertySettlement.name}, ${propertySettlement.post_code}` : '');
+    } else {
+      // Clear owner settlement and address
+      setInsurerData(prev => ({
+        ...prev,
+        property_owner_settlement_id: '',
+        property_owner_permanent_address: ''
+      }));
+      setPropertyOwnerSettlement(null);
+      setPropertyOwnerSettlementInput('');
+    }
+  };
+
   return (
     <form onSubmit={handleSubmit} className="space-y-6">
       {/* Date Picker Dialog */}
@@ -1391,6 +1418,20 @@ const InsurerForm = ({
               />
               {isFieldInvalid('property_owner_permanent_address') && <ErrorIcon />}
             </div>
+          </div>
+
+          {/* Checkbox: Address same as insured property */}
+          <div className="flex items-center mt-2">
+            <input
+              type="checkbox"
+              id="owner-address-same-checkbox"
+              checked={isOwnerAddressSame}
+              onChange={handleOwnerAddressCheckbox}
+              className="mr-2 h-5 w-5 text-primary border-white/50 rounded focus:ring-primary"
+            />
+            <label htmlFor="owner-address-same-checkbox" className="text-white text-sm select-none cursor-pointer">
+              Адресът е същия като на застрахования имот
+            </label>
           </div>
         </div>
       </div>
