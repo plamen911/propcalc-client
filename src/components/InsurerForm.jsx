@@ -3,32 +3,13 @@ import {ArrowForward, CheckCircle, Close, LocalOffer} from '@mui/icons-material'
 import HelpOutlineIcon from '@mui/icons-material/HelpOutline';
 import BackButton from './ui/BackButton.jsx';
 import ProceedButton from './ui/ProceedButton.jsx';
-import { Dialog, DialogContent, DialogTitle, IconButton, Tooltip, tooltipClasses } from '@mui/material';
-import { styled } from '@mui/material/styles';
+import { Dialog, DialogContent, DialogTitle, IconButton } from '@mui/material';
 import api from '../services/api';
 import LoadingSpinner from './ui/LoadingSpinner.jsx';
 import ErrorDisplay from './ui/ErrorDisplay.jsx';
 import ErrorIcon from './ui/ErrorIcon.jsx';
 import { formatCurrency, formatDescription } from '../utils/formatters';
-
-const LightTooltip = styled(({ className, ...props }) => (
-  <Tooltip {...props} classes={{ popper: className }} />
-))(({ theme }) => ({
-  [`& .${tooltipClasses.tooltip}`]: {
-    backgroundColor: theme.palette.common.white,
-    color: 'rgba(0, 0, 0, 0.87)',
-    boxShadow: theme.shadows[1],
-    fontSize: 14,
-    maxWidth: 300,
-    padding: '12px',
-    [theme.breakpoints.up('md')]: {
-      maxWidth: 500,
-    },
-  },
-  [`& .${tooltipClasses.arrow}`]: {
-    color: theme.palette.common.white,
-  },
-}));
+import InfoModal from './ui/InfoModal.jsx';
 
 const InsurerForm = ({ 
   nextStep, 
@@ -1073,16 +1054,16 @@ const InsurerForm = ({
                     <div className="text-white text-sm sm:text-base pr-2 flex-1 flex items-center">
                       {clause.insurance_clause.name}
                       {clause.insurance_clause.description && (
-                        <LightTooltip
-                          title={formatDescription(clause.insurance_clause.description)}
-                          arrow
-                          placement="top"
-                        >
-                          <HelpOutlineIcon
-                            className="text-accent"
-                            style={{ fontSize: 16, marginLeft: 4 }}
-                          />
-                        </LightTooltip>
+                        <InfoModal
+                          title={clause.insurance_clause.name}
+                          content={formatDescription(clause.insurance_clause.description)}
+                          icon={
+                            <HelpOutlineIcon
+                              className="text-accent"
+                              style={{ fontSize: 16, marginLeft: 4 }}
+                            />
+                          }
+                        />
                       )}
                     </div>
                     <div className="text-white text-sm sm:text-base text-right font-semibold whitespace-nowrap">
@@ -1812,16 +1793,16 @@ const InsurerForm = ({
                     <div className="text-white text-base sm:text-base pr-2 flex-1 mb-2 sm:mb-0 font-medium flex items-center">
                       {item.name}
                       {item.description && (
-                        <LightTooltip
-                          title={formatDescription(item.description)}
-                          arrow
-                          placement="top"
-                        >
-                          <HelpOutlineIcon
-                            className="text-accent"
-                            style={{ fontSize: 16, marginLeft: 4 }}
-                          />
-                        </LightTooltip>
+                        <InfoModal
+                          title={item.name}
+                          content={formatDescription(item.description)}
+                          icon={
+                            <HelpOutlineIcon
+                              className="text-accent"
+                              style={{ fontSize: 16, marginLeft: 4 }}
+                            />
+                          }
+                        />
                       )}
                     </div>
                     <div className="flex space-x-3 sm:space-x-2">

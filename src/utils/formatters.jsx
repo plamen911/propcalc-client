@@ -22,14 +22,9 @@ export const formatCurrency = (value) => {
 
 export const formatDescription = (text) => {
     if (!text) {
-        return null;
+        return '';
     }
 
-    return (
-        <>
-            {text.split('\n').map((item, key) => (
-                <span key={key}>{item}<br /></span>
-            ))}
-        </>
-    );
+    // Convert newlines to <br> tags for HTML display
+    return text.split('\n').join('<br />');
 };
