@@ -667,26 +667,30 @@ const CoveredRisksForm = ({
                 onClick={() => handleRiskChange(preset.id)}
               >
                 <div className="flex items-center flex-1 min-w-0">
-                  <div className="flex flex-col sm:flex-row sm:items-center">
+                  <div className="flex flex-col w-full">
                     <span className="text-white font-medium text-base sm:text-lg sm:mr-3">{preset.name}</span>
-                    <div className="flex items-center mt-1 sm:mt-0">
-                      <span className="text-white text-md font-semibold whitespace-nowrap">
-                        {formatCurrency(preset.tariff_preset_clauses.find(clause => clause.insurance_clause.id === 1)?.tariff_amount || "0")} {currencySymbol}
-                      </span>
-                      <ArrowForward className="mx-2 text-white" fontSize="small" />
-                      {preset.statistics.total_premium > preset.statistics.total_amount && (
-                        <span className="text-white/60 text-md font-semibold whitespace-nowrap line-through mr-2">
-                          {formatCurrency(preset.statistics.total_premium)} {currencySymbol}
+                    <div className="flex flex-wrap items-center mt-1.5 sm:mt-1">
+                      <div className="flex items-center">
+                        <span className="text-white text-sm sm:text-md font-semibold whitespace-nowrap">
+                          {formatCurrency(preset.tariff_preset_clauses.find(clause => clause.insurance_clause.id === 1)?.tariff_amount || "0")} {currencySymbol}
                         </span>
-                      )}
-                      <span className="text-white text-md font-semibold whitespace-nowrap">
-                        {formatCurrency(preset.statistics.total_amount)} {currencySymbol}
-                      </span>
+                        <ArrowForward className="mx-1.5 sm:mx-2 text-white" fontSize="small" />
+                      </div>
+                      <div className="flex items-center">
+                        {preset.statistics.total_premium > preset.statistics.total_amount && (
+                          <span className="text-white/60 text-sm sm:text-md font-semibold whitespace-nowrap line-through mr-1.5 sm:mr-2">
+                            {formatCurrency(preset.statistics.total_premium)} {currencySymbol}
+                          </span>
+                        )}
+                        <span className="text-[#ffcc00] text-sm sm:text-md font-semibold whitespace-nowrap">
+                          {formatCurrency(preset.statistics.total_amount)} {currencySymbol}
+                        </span>
+                      </div>
                     </div>
                   </div>
                 </div>
                 <span
-                  className="bg-white/10 rounded-full p-1.5 ml-2"
+                  className="bg-white/10 rounded-full p-1.5 ml-2 flex-shrink-0"
                   tabIndex={-1}
                   aria-label="Избери този пакет"
                 >
@@ -711,20 +715,20 @@ const CoveredRisksForm = ({
                   </div>
 
                   {/* Clause rows - mobile optimized */}
-                  <div className="space-y-1">
+                  <div className="space-y-2">
                     {preset.tariff_preset_clauses
                       .filter(clause => parseFloat(clause.tariff_amount) !== 0)
                       .map((clause) => (
-                      <div key={clause.id} className="flex justify-between items-center border-b border-white/10 py-2">
-                        <div className="flex items-center text-white text-sm sm:text-base pr-2 flex-1">
-                          <span>{clause.insurance_clause.name}</span>
+                      <div key={clause.id} className="flex flex-col sm:flex-row sm:justify-between sm:items-center border-b border-white/10 py-2">
+                        <div className="flex items-start sm:items-center text-white text-sm sm:text-base pr-2 flex-1 mb-1 sm:mb-0">
+                          <span className="leading-tight">{clause.insurance_clause.name}</span>
                           {clause.insurance_clause.description && (
                             <LightTooltip title={formatDescription(clause.insurance_clause.description)} arrow>
-                              <HelpOutlineIcon fontSize="small" className="ml-1 text-yellow-400" />
+                              <HelpOutlineIcon fontSize="small" className="ml-1 text-yellow-400 flex-shrink-0" />
                             </LightTooltip>
                           )}
                         </div>
-                        <div className="text-white text-sm sm:text-base text-right font-semibold text-[#ffcc00] whitespace-nowrap" style={{animation: 'colorPulse 2s ease-in-out infinite'}}>
+                        <div className="text-[#ffcc00] text-sm sm:text-base font-semibold whitespace-nowrap self-end sm:self-auto" style={{animation: 'colorPulse 2s ease-in-out infinite'}}>
                           {formatCurrency(clause.tariff_amount)} {currencySymbol}
                         </div>
                       </div>
@@ -734,40 +738,40 @@ const CoveredRisksForm = ({
                   {/* Statistics section - enhanced for mobile */}
                   {preset.statistics && (
                     <div className="mt-4 sm:mt-6 rounded-lg overflow-hidden border border-white/20 shadow-md">
-                      <div className="border-b border-white/10 bg-white/5 p-3">
+                      <div className="border-b border-white/10 bg-white/5 p-2.5 sm:p-3">
                         <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center">
-                          <div className="flex items-center mb-1 sm:mb-0">
-                            <span className="inline-block w-2 h-2 bg-blue-400 rounded-full mr-2 flex-shrink-0"></span>
-                            <span className="uppercase text-white text-xs sm:text-sm font-medium">Застрахователна премия</span>
+                          <div className="flex items-start sm:items-center mb-1 sm:mb-0">
+                            <span className="inline-block w-2 h-2 bg-blue-400 rounded-full mr-2 mt-1 sm:mt-0 flex-shrink-0"></span>
+                            <span className="uppercase text-white text-xs sm:text-sm font-medium leading-tight">Застрахователна премия</span>
                           </div>
-                          <div className="text-[#ffcc00] font-semibold text-base sm:text-lg sm:ml-2 self-end sm:self-auto">{formatCurrency(preset.statistics.total_premium)} {currencySymbol}</div>
+                          <div className="text-[#ffcc00] font-semibold text-sm sm:text-base sm:ml-2 self-end sm:self-auto">{formatCurrency(preset.statistics.total_premium)} {currencySymbol}</div>
                         </div>
                       </div>
-                      <div className="border-b border-white/10 bg-white/5 p-3">
+                      <div className="border-b border-white/10 bg-white/5 p-2.5 sm:p-3">
                         <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center">
-                          <div className="flex items-center mb-1 sm:mb-0">
-                            <span className="inline-block w-2 h-2 bg-green-400 rounded-full mr-2 flex-shrink-0"></span>
-                            <span className="uppercase text-white text-xs sm:text-sm font-medium">Застрахователна премия след отстъпка от {preset.discount_percent}%</span>
+                          <div className="flex items-start sm:items-center mb-1 sm:mb-0">
+                            <span className="inline-block w-2 h-2 bg-green-400 rounded-full mr-2 mt-1 sm:mt-0 flex-shrink-0"></span>
+                            <span className="uppercase text-white text-xs sm:text-sm font-medium leading-tight">Застрахователна премия след отстъпка от {preset.discount_percent}%</span>
                           </div>
-                          <div className="text-[#ffcc00] font-semibold text-base sm:text-lg sm:ml-2 self-end sm:self-auto">{formatCurrency(preset.statistics.discounted_premium)} {currencySymbol}</div>
+                          <div className="text-[#ffcc00] font-semibold text-sm sm:text-base sm:ml-2 self-end sm:self-auto">{formatCurrency(preset.statistics.discounted_premium)} {currencySymbol}</div>
                         </div>
                       </div>
-                      <div className="border-b border-white/10 bg-white/5 p-3">
+                      <div className="border-b border-white/10 bg-white/5 p-2.5 sm:p-3">
                         <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center">
-                          <div className="flex items-center mb-1 sm:mb-0">
-                            <span className="inline-block w-2 h-2 bg-yellow-400 rounded-full mr-2 flex-shrink-0"></span>
-                            <span className="uppercase text-white text-xs sm:text-sm font-medium">{preset.tax_percent}% данък върху застрахователната премия</span>
+                          <div className="flex items-start sm:items-center mb-1 sm:mb-0">
+                            <span className="inline-block w-2 h-2 bg-yellow-400 rounded-full mr-2 mt-1 sm:mt-0 flex-shrink-0"></span>
+                            <span className="uppercase text-white text-xs sm:text-sm font-medium leading-tight">{preset.tax_percent}% данък върху застрахователната премия</span>
                           </div>
-                          <div className="text-[#ffcc00] font-semibold text-base sm:text-lg sm:ml-2 self-end sm:self-auto">{formatCurrency(preset.statistics.tax_amount)} {currencySymbol}</div>
+                          <div className="text-[#ffcc00] font-semibold text-sm sm:text-base sm:ml-2 self-end sm:self-auto">{formatCurrency(preset.statistics.tax_amount)} {currencySymbol}</div>
                         </div>
                       </div>
-                      <div className="bg-[#8b2131]/70 p-3">
+                      <div className="bg-[#8b2131]/70 p-2.5 sm:p-3">
                         <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center">
-                          <div className="flex items-center mb-1 sm:mb-0">
-                            <span className="inline-block w-3 h-3 bg-red-500 rounded-full mr-2 animate-pulse flex-shrink-0"></span>
-                            <span className="uppercase text-white text-sm sm:text-base font-bold">Общо дължима сума за една година</span>
+                          <div className="flex items-start sm:items-center mb-1.5 sm:mb-0">
+                            <span className="inline-block w-3 h-3 bg-red-500 rounded-full mr-2 mt-0.5 sm:mt-0 animate-pulse flex-shrink-0"></span>
+                            <span className="uppercase text-white text-sm font-bold leading-tight">Общо дължима сума за една година</span>
                           </div>
-                          <div className="text-white font-bold text-lg sm:text-xl sm:ml-2 self-end sm:self-auto" style={{animation: 'colorPulse 2s ease-in-out infinite'}}>{formatCurrency(preset.statistics.total_amount)} {currencySymbol}</div>
+                          <div className="text-white font-bold text-base sm:text-lg sm:ml-2 self-end sm:self-auto" style={{animation: 'colorPulse 2s ease-in-out infinite'}}>{formatCurrency(preset.statistics.total_amount)} {currencySymbol}</div>
                         </div>
                       </div>
                     </div>
@@ -798,11 +802,12 @@ const CoveredRisksForm = ({
               onClick={toggleCustomPackage}
             >
               <div className="flex items-center flex-1 min-w-0">
-                <div className="flex flex-col sm:flex-row sm:items-center">
+                <div className="flex flex-col w-full">
                   <span className="text-white font-medium text-base sm:text-lg">Пакет по избор</span>
+                  <span className="text-white/70 text-xs sm:text-sm mt-1">Създайте свой собствен пакет</span>
                 </div>
               </div>
-              <div className="bg-white/10 rounded-full p-1.5 ml-2">
+              <div className="bg-white/10 rounded-full p-1.5 ml-2 flex-shrink-0">
                 <svg 
                   className={`w-4 h-4 sm:w-5 sm:h-5 text-white transition-transform flex-shrink-0 ${isCustomPackageExpanded ? 'transform rotate-180' : ''}`} 
                   fill="none" 
@@ -828,12 +833,12 @@ const CoveredRisksForm = ({
                   {allClauses.map((clause) => (
                     // Hide clause with id = 3 if estate_type_id is not 4
                     (clause.id !== 3 || formData.estate_type_id === '4') ? (
-                    <div key={clause.id} className="flex justify-between items-center border-b border-white/10 py-2">
-                      <div className="flex items-center text-white text-sm sm:text-base pr-2 flex-1">
-                        <span>{clause.name}</span>
+                    <div key={clause.id} className="flex flex-col sm:flex-row sm:justify-between sm:items-center border-b border-white/10 py-2.5 sm:py-2">
+                      <div className="flex items-start sm:items-center text-white text-sm sm:text-base pr-2 flex-1 mb-1.5 sm:mb-0">
+                        <span className="leading-tight">{clause.name}</span>
                         {clause.id === 1 && clause.description && (
                           <LightTooltip title={formatDescription(clause.description)} arrow>
-                            <HelpOutlineIcon fontSize="small" className="ml-1 text-yellow-400" />
+                            <HelpOutlineIcon fontSize="small" className="ml-1 text-yellow-400 flex-shrink-0" />
                           </LightTooltip>
                         )}
                       </div>
@@ -841,7 +846,7 @@ const CoveredRisksForm = ({
                         {clause.allow_custom_amount && (
                           <div className="relative rounded-md shadow-sm">
                             {(clause.id === 6 || clause.id === 14 || clause.id === 16) && (
-                              <div className="absolute left-0 top-0 bottom-0 flex items-center pl-2.5 sm:pl-2 z-10">
+                              <div className="absolute left-0 top-0 bottom-0 flex items-center pl-3 sm:pl-2 z-10">
                                 <div className="p-1.5 sm:p-0.5 -m-1.5 sm:-m-0.5">
                                   <input
                                     type="checkbox"
@@ -854,10 +859,11 @@ const CoveredRisksForm = ({
                             )}
                             <input
                               type="text"
+                              inputMode="numeric"
                               value={customClauseAmounts[clause.id]}
                               onChange={(e) => handleClauseAmountChange(clause.id, e.target.value)}
                               placeholder={(clause.id === 14 || clause.id === 16) ? "150" : "Сума"}
-                              className={`w-full pr-12 ${(clause.id === 6 || clause.id === 14 || clause.id === 16) ? 'pl-10 sm:pl-8' : 'px-3'} py-3.5 sm:py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-[#8B2131] focus:border-[#8B2131] text-black text-base sm:text-base touch-manipulation ${(clause.id === 6 || clause.id === 14 || clause.id === 16) ? 'bg-gray-100' : ''}`}
+                              className={`w-full pr-12 ${(clause.id === 6 || clause.id === 14 || clause.id === 16) ? 'pl-11 sm:pl-8' : 'px-3'} py-4 sm:py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-[#8B2131] focus:border-[#8B2131] text-black text-base touch-manipulation ${(clause.id === 6 || clause.id === 14 || clause.id === 16) ? 'bg-gray-100' : ''}`}
                               readOnly={clause.id === 6 || clause.id === 14 || clause.id === 16}
                               {...(clause.id === 1 ? {
                                 min: "100000",
@@ -888,46 +894,46 @@ const CoveredRisksForm = ({
 
                 {/* Statistics section - same design as tariff presets */}
                 <div className="mt-4 sm:mt-6 rounded-lg overflow-hidden border border-white/20 shadow-md">
-                  <div className="border-b border-white/10 bg-white/5 p-3">
+                  <div className="border-b border-white/10 bg-white/5 p-2.5 sm:p-3">
                     <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center">
-                      <div className="flex items-center mb-1 sm:mb-0">
-                        <span className="inline-block w-2 h-2 bg-blue-400 rounded-full mr-2 flex-shrink-0"></span>
-                        <span className="uppercase text-white text-xs sm:text-sm font-medium">Застрахователна премия</span>
+                      <div className="flex items-start sm:items-center mb-1 sm:mb-0">
+                        <span className="inline-block w-2 h-2 bg-blue-400 rounded-full mr-2 mt-1 sm:mt-0 flex-shrink-0"></span>
+                        <span className="uppercase text-white text-xs sm:text-sm font-medium leading-tight">Застрахователна премия</span>
                       </div>
-                      <div className="text-[#ffcc00] font-semibold text-base sm:text-lg sm:ml-2 self-end sm:self-auto">{formatCurrency(customPackageStatistics.statistics.total_premium)} {currencySymbol}</div>
+                      <div className="text-[#ffcc00] font-semibold text-sm sm:text-base sm:ml-2 self-end sm:self-auto">{formatCurrency(customPackageStatistics.statistics.total_premium)} {currencySymbol}</div>
                     </div>
                   </div>
-                  <div className="border-b border-white/10 bg-white/5 p-3">
+                  <div className="border-b border-white/10 bg-white/5 p-2.5 sm:p-3">
                     <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center">
-                      <div className="flex items-center mb-1 sm:mb-0">
-                        <span className="inline-block w-2 h-2 bg-green-400 rounded-full mr-2 flex-shrink-0"></span>
-                        <span className="uppercase text-white text-xs sm:text-sm font-medium">Застрахователна премия след отстъпка от {customPackageStatistics.discount_percent}%</span>
+                      <div className="flex items-start sm:items-center mb-1 sm:mb-0">
+                        <span className="inline-block w-2 h-2 bg-green-400 rounded-full mr-2 mt-1 sm:mt-0 flex-shrink-0"></span>
+                        <span className="uppercase text-white text-xs sm:text-sm font-medium leading-tight">Застрахователна премия след отстъпка от {customPackageStatistics.discount_percent}%</span>
                       </div>
-                      <div className="text-[#ffcc00] font-semibold text-base sm:text-lg sm:ml-2 self-end sm:self-auto">{formatCurrency(customPackageStatistics.statistics.discounted_premium)} {currencySymbol}</div>
+                      <div className="text-[#ffcc00] font-semibold text-sm sm:text-base sm:ml-2 self-end sm:self-auto">{formatCurrency(customPackageStatistics.statistics.discounted_premium)} {currencySymbol}</div>
                     </div>
                   </div>
-                  <div className="border-b border-white/10 bg-white/5 p-3">
+                  <div className="border-b border-white/10 bg-white/5 p-2.5 sm:p-3">
                     <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center">
-                      <div className="flex items-center mb-1 sm:mb-0">
-                        <span className="inline-block w-2 h-2 bg-yellow-400 rounded-full mr-2 flex-shrink-0"></span>
-                        <span className="uppercase text-white text-xs sm:text-sm font-medium">{customPackageStatistics.tax_percent}% данък върху застрахователната премия</span>
+                      <div className="flex items-start sm:items-center mb-1 sm:mb-0">
+                        <span className="inline-block w-2 h-2 bg-yellow-400 rounded-full mr-2 mt-1 sm:mt-0 flex-shrink-0"></span>
+                        <span className="uppercase text-white text-xs sm:text-sm font-medium leading-tight">{customPackageStatistics.tax_percent}% данък върху застрахователната премия</span>
                       </div>
-                      <div className="text-[#ffcc00] font-semibold text-base sm:text-lg sm:ml-2 self-end sm:self-auto">{formatCurrency(customPackageStatistics.statistics.tax_amount)} {currencySymbol}</div>
+                      <div className="text-[#ffcc00] font-semibold text-sm sm:text-base sm:ml-2 self-end sm:self-auto">{formatCurrency(customPackageStatistics.statistics.tax_amount)} {currencySymbol}</div>
                     </div>
                   </div>
-                  <div className="bg-[#8b2131]/70 p-3">
+                  <div className="bg-[#8b2131]/70 p-2.5 sm:p-3">
                     <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center">
-                      <div className="flex items-center mb-1 sm:mb-0">
-                        <span className="inline-block w-3 h-3 bg-red-500 rounded-full mr-2 animate-pulse flex-shrink-0"></span>
-                        <span className="uppercase text-white text-sm sm:text-base font-bold">Общо дължима сума за една година</span>
+                      <div className="flex items-start sm:items-center mb-1.5 sm:mb-0">
+                        <span className="inline-block w-3 h-3 bg-red-500 rounded-full mr-2 mt-0.5 sm:mt-0 animate-pulse flex-shrink-0"></span>
+                        <span className="uppercase text-white text-sm font-bold leading-tight">Общо дължима сума за една година</span>
                       </div>
-                      <div className="text-white font-bold text-lg sm:text-xl sm:ml-2 self-end sm:self-auto" style={{animation: 'colorPulse 2s ease-in-out infinite'}}>{formatCurrency(customPackageStatistics.statistics.total_amount)} {currencySymbol}</div>
+                      <div className="text-white font-bold text-base sm:text-lg sm:ml-2 self-end sm:self-auto" style={{animation: 'colorPulse 2s ease-in-out infinite'}}>{formatCurrency(customPackageStatistics.statistics.total_amount)} {currencySymbol}</div>
                     </div>
                   </div>
                 </div>
 
                 {/* Choose button for custom package */}
-                <div className="flex w-full sm:justify-center mt-5">
+                <div className="flex flex-col w-full sm:items-center mt-5">
                   {validationError && (
                     <div className="mb-3 text-red-300 text-sm text-center w-full">
                       {validationError}
@@ -937,7 +943,7 @@ const CoveredRisksForm = ({
                     onClick={handleCustomPackageSelect}
                     text={isCustomPackageSelected ? 'ИЗБРАНО ✓' : 'ИЗБЕРИ'}
                     showIcon={!isCustomPackageSelected}
-                    className={`w-full sm:w-auto px-6 sm:px-8 ${isCustomPackageSelected ? 'border-white text-primary bg-white' : ''} shadow-md min-h-[52px] sm:min-h-0`}
+                    className={`w-full sm:w-auto px-6 sm:px-8 ${isCustomPackageSelected ? 'border-white text-primary bg-white' : ''} shadow-md min-h-[56px] sm:min-h-0`}
                   />
                 </div>
               </div>
