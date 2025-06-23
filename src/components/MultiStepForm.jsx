@@ -246,19 +246,6 @@ const MultiStepForm = () => {
             currencySymbol={currencySymbol}
             clauseCheckboxes={clauseCheckboxes}
             setClauseCheckboxes={setClauseCheckboxes}
-          />
-        );
-      case 2:
-        return (
-          <InsurerForm 
-            nextStep={nextStep} 
-            prevStep={prevStep}
-            selectedTariff={selectedTariff}
-            insurerData={insurerData}
-            setInsurerData={setInsurerData}
-            checkedItems={checkedItems}
-            setCheckedItems={setCheckedItems}
-            currencySymbol={currencySymbol}
             promoCode={promoCode}
             setPromoCode={setPromoCode}
             promoCodeValid={promoCodeValid}
@@ -273,7 +260,23 @@ const MultiStepForm = () => {
             setValidatingPromo={setValidatingPromo}
             promoCodeId={promoCodeId}
             setPromoCodeId={setPromoCodeId}
+          />
+        );
+      case 2:
+        return (
+          <InsurerForm 
+            nextStep={nextStep} 
+            prevStep={prevStep}
+            selectedTariff={selectedTariff}
+            insurerData={insurerData}
+            setInsurerData={setInsurerData}
+            checkedItems={checkedItems}
+            setCheckedItems={setCheckedItems}
+            currencySymbol={currencySymbol}
             formData={formData}
+            promoCodeValid={promoCodeValid}
+            promoDiscount={promoDiscount}
+            promoDiscountedAmount={promoDiscountedAmount}
           />
         );
       case 3:

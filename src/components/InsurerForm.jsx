@@ -39,23 +39,11 @@ const InsurerForm = ({
   checkedItems, 
   setCheckedItems,
   currencySymbol,
-  promoCode,
-  setPromoCode,
+  formData,
   promoCodeValid,
-  setPromoCodeValid,
-  promoCodeError,
-  setPromoCodeError,
   promoDiscount,
-  setPromoDiscount,
-  promoDiscountedAmount,
-  setPromoDiscountedAmount,
-  validatingPromo,
-  setValidatingPromo,
-  promoCodeId,
-  setPromoCodeId,
-  formData
+  promoDiscountedAmount
 }) => {
-  const [showPromoSuccess, setShowPromoSuccess] = useState(false);
   const [propertyChecklistItems, setPropertyChecklistItems] = useState([]);
   const [personRoleOptions, setPersonRoleOptions] = useState([]);
   const [idNumberTypeOptions, setIdNumberTypeOptions] = useState([]);
@@ -90,33 +78,6 @@ const InsurerForm = ({
     }
   }, [insurerData.birth_date]);
 
-  // Hide promo success message after 5 seconds
-  useEffect(() => {
-    if (showPromoSuccess) {
-      const timer = setTimeout(() => {
-        setShowPromoSuccess(false);
-      }, 5000);
-
-      return () => clearTimeout(timer);
-    }
-  }, [showPromoSuccess]);
-
-  // Recalculate promoDiscountedAmount when selectedTariff changes
-  useEffect(() => {
-    if (promoCodeValid && promoDiscount && selectedTariff && selectedTariff.statistics && selectedTariff.statistics.total_premium) {
-      // Get the original premium
-      const originalPremium = selectedTariff.statistics.total_premium;
-      // Calculate promo discount amount based on the original premium
-      const promoDiscountAmount = Math.round((originalPremium * (promoDiscount / 100)) * 100) / 100;
-      // Calculate premium after both discounts
-      const premiumAfterBothDiscounts = selectedTariff.statistics.discounted_premium - promoDiscountAmount;
-      // Calculate tax on the premium after both discounts
-      const taxAmount = Math.round((premiumAfterBothDiscounts * (selectedTariff.tax_percent / 100)) * 100) / 100;
-      // Calculate total amount (premium after both discounts + tax)
-      const totalAmount = premiumAfterBothDiscounts + taxAmount;
-      setPromoDiscountedAmount(totalAmount);
-    }
-  }, [selectedTariff, promoCodeValid, promoDiscount]);
 
   // Fetch form data when the component mounts
   useEffect(() => {
@@ -521,65 +482,6 @@ const InsurerForm = ({
     }));
   };
 
-  const handlePromoCodeChange = (e) => {
-    setPromoCode(e.target.value);
-    // Reset validation state when the code changes
-    if (promoCodeValid) {
-      setPromoCodeValid(false);
-      setPromoDiscount(null);
-      setPromoDiscountedAmount(null);
-    }
-    if (promoCodeError) {
-      setPromoCodeError('');
-    }
-    // Hide success message when the code changes
-    setShowPromoSuccess(false);
-  };
-
-  const validatePromoCode = async () => {
-    if (!promoCode.trim()) {
-      setPromoCodeError('Моля, въведете промоционален код');
-      return;
-    }
-
-    setValidatingPromo(true);
-    setPromoCodeError('');
-
-    try {
-      const response = await api.post('/api/v1/promotional-codes/validate', { code: promoCode });
-
-      if (response.data.valid) {
-        setPromoCodeValid(true);
-        setPromoDiscount(response.data.discountPercentage);
-        setPromoCodeId(response.data.id);
-        setShowPromoSuccess(true);
-
-        // Calculate discounted amount
-        if (selectedTariff && selectedTariff.statistics && selectedTariff.statistics.total_premium) {
-          // Get the original premium
-          const originalPremium = selectedTariff.statistics.total_premium;
-          // Calculate promo discount amount based on the original premium
-          const promoDiscountAmount = Math.round((originalPremium * (response.data.discountPercentage / 100)) * 100) / 100;
-          // Calculate premium after both discounts
-          const premiumAfterBothDiscounts = selectedTariff.statistics.discounted_premium - promoDiscountAmount;
-          // Calculate tax on the premium after both discounts
-          const taxAmount = Math.round((premiumAfterBothDiscounts * (selectedTariff.tax_percent / 100)) * 100) / 100;
-          // Calculate total amount (premium after both discounts + tax)
-          const totalAmount = premiumAfterBothDiscounts + taxAmount;
-          setPromoDiscountedAmount(totalAmount);
-        }
-      } else {
-        setPromoCodeValid(false);
-        setPromoCodeError(response.data.message || 'Невалиден промоционален код');
-      }
-    } catch (error) {
-      console.error('Error validating promotional code:', error);
-      setPromoCodeError('Грешка при валидиране на кода. Моля, опитайте отново.');
-      setPromoCodeValid(false);
-    } finally {
-      setValidatingPromo(false);
-    }
-  };
 
   const areAllItemsChecked = () => {
     return propertyChecklistItems.length > 0 && 
@@ -1160,7 +1062,10 @@ const InsurerForm = ({
                       <span className="uppercase text-white text-xs sm:text-sm font-medium">Застрахователна премия след приложен промо код {promoDiscount}%</span>
                     </div>
                     <div className="font-semibold text-base sm:text-lg ml-2 whitespace-nowrap">
-                      <span className="text-accent">{formatCurrency(selectedTariff.statistics.discounted_premium - (selectedTariff.statistics.total_premium * promoDiscount / 100))}</span> <span className="text-accent">{currencySymbol}</span>
+                      <span className="text-accent">
+                        {formatCurrency(selectedTariff.statistics.discounted_premium - (selectedTariff.statistics.total_premium * promoDiscount / 100))}
+                      </span> 
+                      <span className="text-accent">{currencySymbol}</span>
                     </div>
                   </div>
                 </div>
@@ -1193,7 +1098,7 @@ const InsurerForm = ({
                   </div>
                   <div className="text-white font-bold text-lg sm:text-xl ml-2 whitespace-nowrap" style={{animation: 'colorPulse 2s ease-in-out infinite'}}>
                     <span className="text-accent">
-                      {promoCodeValid && promoDiscount 
+                      {promoCodeValid && promoDiscount && promoDiscountedAmount
                         ? formatCurrency(promoDiscountedAmount)
                         : formatCurrency(selectedTariff.statistics.total_amount)}
                     </span> 
@@ -1205,50 +1110,6 @@ const InsurerForm = ({
           )}
 
 
-          {/* Promotional Code Section */}
-          <div className="mt-4 p-3 bg-white/5 rounded-lg border border-white/20">
-            <div className="flex items-center mb-2">
-              <LocalOffer className="text-[#ffcc00] mr-2" />
-              <h4 className="text-white text-sm sm:text-base font-medium">Имате промоционален код?</h4>
-            </div>
-
-            <div className="flex flex-col sm:flex-row gap-2">
-              <div className="flex-grow relative">
-                <div className="relative w-full">
-                  <input
-                    type="text"
-                    value={promoCode}
-                    onChange={handlePromoCodeChange}
-                    placeholder="Въведете промоционален код"
-                    className={`w-full p-2 rounded-md border ${promoCodeError ? 'border-red-500' : 'border-gray-300'} focus:outline-none focus:ring-[#8B2131] focus:border-[#8B2131] text-black`}
-                    disabled={promoCodeValid || validatingPromo}
-                  />
-                  {promoCodeError && (
-                    <ErrorIcon />
-                  )}
-                </div>
-                {promoCodeError && (
-                  <div className="text-red-300 text-xs mt-1">{promoCodeError}</div>
-                )}
-              </div>
-              <button
-                onClick={validatePromoCode}
-                disabled={promoCodeValid || validatingPromo || !promoCode.trim()}
-                className={`inline-flex items-center justify-center py-4 sm:py-2.5 px-6 sm:px-5 border border-transparent shadow-sm text-base sm:text-base font-medium rounded-full text-white ${promoCodeValid ? 'bg-green-600' : 'bg-[#6b1021] hover:bg-[#5a0d1c] focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-[#6b1021] transition-all duration-200 hover:scale-105'} disabled:opacity-50 disabled:cursor-not-allowed w-full sm:w-auto touch-manipulation min-h-[56px] sm:min-h-0`}
-              >
-                {validatingPromo ? 'Проверка...' : promoCodeValid ? 'Приложен' : 'Приложи'}
-              </button>
-            </div>
-
-            {promoCodeValid && promoDiscount && showPromoSuccess && (
-              <div className="mt-4 p-3 bg-green-600/20 rounded-lg border border-green-500/30">
-                <div className="flex items-center">
-                  <CheckCircle className="text-green-500 mr-2" />
-                  <span className="text-white text-sm">Промоционален код приложен успешно! Отстъпката от {promoDiscount}% е отразена в крайната цена.</span>
-                </div>
-              </div>
-            )}
-          </div>
         </div>
       )}
       <div className="bg-white/10 p-6 rounded-xl mb-6 border border-white/20">

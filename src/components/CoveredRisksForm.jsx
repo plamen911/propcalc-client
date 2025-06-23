@@ -8,8 +8,10 @@ import ErrorDisplay from './ui/ErrorDisplay.jsx';
 import { formatCurrency, formatDescription } from '../utils/formatters.jsx';
 import ArrowForward from "@mui/icons-material/ArrowForward";
 import HelpOutlineIcon from '@mui/icons-material/HelpOutline';
+import { LocalOffer, CheckCircle } from '@mui/icons-material';
 import { Tooltip, tooltipClasses } from '@mui/material';
 import { styled } from '@mui/material/styles';
+import ErrorIcon from './ui/ErrorIcon.jsx';
 
 const LightTooltip = styled(({ className, ...props }) => (
   <Tooltip {...props} classes={{ popper: className }} />
@@ -30,7 +32,37 @@ const LightTooltip = styled(({ className, ...props }) => (
   },
 }));
 
-const CoveredRisksForm = ({ formData, nextStep, prevStep, lastOpenedAccordion, setLastOpenedAccordion, customClauseAmounts, setCustomClauseAmounts, selectedRisks, setSelectedRisks, isCustomPackageSelected, setIsCustomPackageSelected, setSelectedTariff, currencySymbol, clauseCheckboxes, setClauseCheckboxes }) => {
+const CoveredRisksForm = ({ 
+  formData, 
+  nextStep, 
+  prevStep, 
+  lastOpenedAccordion, 
+  setLastOpenedAccordion, 
+  customClauseAmounts, 
+  setCustomClauseAmounts, 
+  selectedRisks, 
+  setSelectedRisks, 
+  isCustomPackageSelected, 
+  setIsCustomPackageSelected, 
+  setSelectedTariff, 
+  currencySymbol, 
+  clauseCheckboxes, 
+  setClauseCheckboxes,
+  promoCode,
+  setPromoCode,
+  promoCodeValid,
+  setPromoCodeValid,
+  promoCodeError,
+  setPromoCodeError,
+  promoDiscount,
+  setPromoDiscount,
+  promoDiscountedAmount,
+  setPromoDiscountedAmount,
+  validatingPromo,
+  setValidatingPromo,
+  promoCodeId,
+  setPromoCodeId
+}) => {
   // State for API data
   const [tariffPresets, setTariffPresets] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -43,6 +75,9 @@ const CoveredRisksForm = ({ formData, nextStep, prevStep, lastOpenedAccordion, s
 
   // State for all unique clauses
   const [allClauses, setAllClauses] = useState([]);
+
+  // State for promotional code success message
+  const [showPromoSuccess, setShowPromoSuccess] = useState(false);
 
   // State for custom package statistics
   const [customPackageStatistics, setCustomPackageStatistics] = useState({
@@ -214,6 +249,107 @@ const CoveredRisksForm = ({ formData, nextStep, prevStep, lastOpenedAccordion, s
     }, 500),
     [customClauseAmounts, formData.settlement_id, formData.distance_to_water_id, isCustomPackageExpanded]
   );
+
+  // Handle promotional code input change
+  const handlePromoCodeChange = (e) => {
+    setPromoCode(e.target.value);
+    // Reset validation state when the code changes
+    if (promoCodeValid) {
+      setPromoCodeValid(false);
+      setPromoDiscount(null);
+      setPromoDiscountedAmount(null);
+    }
+    if (promoCodeError) {
+      setPromoCodeError('');
+    }
+    // Hide success message when the code changes
+    setShowPromoSuccess(false);
+  };
+
+  // Validate promotional code
+  const validatePromoCode = async () => {
+    if (!promoCode.trim()) {
+      setPromoCodeError('Моля, въведете промоционален код');
+      return;
+    }
+
+    setValidatingPromo(true);
+    setPromoCodeError('');
+
+    try {
+      const response = await api.post('/api/v1/promotional-codes/validate', { code: promoCode });
+
+      if (response.data.valid) {
+        setPromoCodeValid(true);
+        setPromoDiscount(response.data.discountPercentage);
+        setPromoCodeId(response.data.id);
+        setShowPromoSuccess(true);
+
+        // Update tariff presets with the promotional discount
+        if (tariffPresets.length > 0) {
+          const updatedTariffPresets = tariffPresets.map(preset => {
+            if (preset.statistics && preset.statistics.total_premium) {
+              // Get the original premium
+              const originalPremium = preset.statistics.total_premium;
+              // Calculate promo discount amount based on the original premium
+              const promoDiscountAmount = Math.round((originalPremium * (response.data.discountPercentage / 100)) * 100) / 100;
+              // Calculate premium after both discounts
+              const premiumAfterBothDiscounts = preset.statistics.discounted_premium - promoDiscountAmount;
+              // Calculate tax on the premium after both discounts
+              const taxAmount = Math.round((premiumAfterBothDiscounts * (preset.tax_percent / 100)) * 100) / 100;
+              // Calculate total amount (premium after both discounts + tax)
+              const totalAmount = premiumAfterBothDiscounts + taxAmount;
+
+              // Create a new statistics object with updated values
+              const updatedStatistics = {
+                ...preset.statistics,
+                discounted_premium: premiumAfterBothDiscounts,
+                tax_amount: taxAmount,
+                total_amount: totalAmount
+              };
+
+              // Return updated preset
+              return {
+                ...preset,
+                statistics: updatedStatistics
+              };
+            }
+            return preset;
+          });
+
+          setTariffPresets(updatedTariffPresets);
+        }
+
+        // Also update custom package statistics if available
+        if (customPackageStatistics.statistics && customPackageStatistics.statistics.total_premium) {
+          const originalPremium = customPackageStatistics.statistics.total_premium;
+          const promoDiscountAmount = Math.round((originalPremium * (response.data.discountPercentage / 100)) * 100) / 100;
+          const premiumAfterBothDiscounts = customPackageStatistics.statistics.discounted_premium - promoDiscountAmount;
+          const taxAmount = Math.round((premiumAfterBothDiscounts * (customPackageStatistics.tax_percent / 100)) * 100) / 100;
+          const totalAmount = premiumAfterBothDiscounts + taxAmount;
+
+          setCustomPackageStatistics(prev => ({
+            ...prev,
+            statistics: {
+              ...prev.statistics,
+              discounted_premium: premiumAfterBothDiscounts,
+              tax_amount: taxAmount,
+              total_amount: totalAmount
+            }
+          }));
+        }
+      } else {
+        setPromoCodeValid(false);
+        setPromoCodeError(response.data.message || 'Невалиден промоционален код');
+      }
+    } catch (error) {
+      console.error('Error validating promotional code:', error);
+      setPromoCodeError('Грешка при валидиране на кода. Моля, опитайте отново.');
+      setPromoCodeValid(false);
+    } finally {
+      setValidatingPromo(false);
+    }
+  };
 
   // Call API when custom clause amounts change
   useEffect(() => {
@@ -472,6 +608,51 @@ const CoveredRisksForm = ({ formData, nextStep, prevStep, lastOpenedAccordion, s
           }
         `}
       </style>
+      {/* Promotional Code Section */}
+      <div className="bg-white/10 p-3 sm:p-4 rounded-xl mb-3 sm:mb-4 border border-white/20">
+        <div className="flex items-center mb-2">
+          <LocalOffer className="text-[#ffcc00] mr-2" />
+          <h4 className="text-white text-sm sm:text-base font-medium">Имате промоционален код?</h4>
+        </div>
+
+        <div className="flex flex-col sm:flex-row gap-2">
+          <div className="flex-grow relative">
+            <div className="relative w-full">
+              <input
+                type="text"
+                value={promoCode}
+                onChange={handlePromoCodeChange}
+                placeholder="Въведете промоционален код"
+                className={`w-full p-2 rounded-md border ${promoCodeError ? 'border-red-500' : 'border-gray-300'} focus:outline-none focus:ring-[#8B2131] focus:border-[#8B2131] text-black`}
+                disabled={promoCodeValid || validatingPromo}
+              />
+              {promoCodeError && (
+                <ErrorIcon />
+              )}
+            </div>
+            {promoCodeError && (
+              <div className="text-red-300 text-xs mt-1">{promoCodeError}</div>
+            )}
+          </div>
+          <button
+            onClick={validatePromoCode}
+            disabled={promoCodeValid || validatingPromo || !promoCode.trim()}
+            className={`inline-flex items-center justify-center py-4 sm:py-2.5 px-6 sm:px-5 border border-transparent shadow-sm text-base sm:text-base font-medium rounded-full text-white ${promoCodeValid ? 'bg-green-600' : 'bg-[#6b1021] hover:bg-[#5a0d1c] focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-[#6b1021] transition-all duration-200 hover:scale-105'} disabled:opacity-50 disabled:cursor-not-allowed w-full sm:w-auto touch-manipulation min-h-[56px] sm:min-h-0`}
+          >
+            {validatingPromo ? 'Проверка...' : promoCodeValid ? 'Приложен' : 'Приложи'}
+          </button>
+        </div>
+
+        {promoCodeValid && promoDiscount && showPromoSuccess && (
+          <div className="mt-4 p-3 bg-green-600/20 rounded-lg border border-green-500/30">
+            <div className="flex items-center">
+              <CheckCircle className="text-green-500 mr-2" />
+              <span className="text-white text-sm">Промоционален код приложен успешно! Отстъпката от {promoDiscount}% е отразена в крайната цена.</span>
+            </div>
+          </div>
+        )}
+      </div>
+
       <div className="bg-white/10 p-3 sm:p-4 rounded-xl mb-3 sm:mb-4 border border-white/20">
         <h3 className="text-base sm:text-lg font-medium text-white mb-2 sm:mb-3">
           Покрити рискове
