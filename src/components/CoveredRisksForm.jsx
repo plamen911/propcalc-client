@@ -664,7 +664,7 @@ const CoveredRisksForm = ({
               {/* Accordion Header - enhanced for mobile */}
               <div 
                 className="flex items-center justify-between p-3 sm:p-4 bg-white/10 cursor-pointer hover:bg-white/15 active:bg-white/20 transition-colors duration-150 rounded-t-lg"
-                onClick={() => toggleAccordion(preset.id)}
+                onClick={() => handleRiskChange(preset.id)}
               >
                 <div className="flex items-center flex-1 min-w-0">
                   <div className="flex flex-col sm:flex-row sm:items-center">
@@ -678,16 +678,20 @@ const CoveredRisksForm = ({
                     </div>
                   </div>
                 </div>
-                <div className="bg-white/10 rounded-full p-1.5 ml-2">
+                <span
+                  className="bg-white/10 rounded-full p-1.5 ml-2"
+                  tabIndex={-1}
+                  aria-label="Избери този пакет"
+                >
                   <svg 
-                    className={`w-4 h-4 sm:w-5 sm:h-5 text-white transition-transform flex-shrink-0 ${expandedItems[preset.id] ? 'transform rotate-180' : ''}`} 
+                    className="w-4 h-4 sm:w-5 sm:h-5 text-white transition-transform flex-shrink-0" 
                     fill="none" 
                     stroke="currentColor" 
                     viewBox="0 0 24 24"
                   >
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 9l-7 7-7-7" />
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 5l7 7-7 7" />
                   </svg>
-                </div>
+                </span>
               </div>
 
               {/* Accordion Content */}
