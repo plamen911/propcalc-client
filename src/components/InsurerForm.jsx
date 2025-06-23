@@ -956,7 +956,7 @@ const InsurerForm = ({
                   id="year-select"
                   value={tempDate.year}
                   onChange={(e) => handleDateChange('year', parseInt(e.target.value))}
-                  className="appearance-none block w-full pl-3 pr-10 py-3.5 sm:py-2 text-base sm:text-base border-gray-300 focus:outline-none focus:ring-[#8B2131] focus:border-[#8B2131] rounded-md text-black touch-manipulation"
+                  className="appearance-none block w-full pl-3 pr-10 py-3.5 sm:py-2 text-base sm:text-base border-gray-300 focus:outline-none focus:ring-primary focus:border-primary rounded-md text-black touch-manipulation"
                 >
                   {years.map((year) => (
                     <option key={year} value={year}>
@@ -977,7 +977,7 @@ const InsurerForm = ({
                   id="month-select"
                   value={tempDate.month}
                   onChange={(e) => handleDateChange('month', parseInt(e.target.value))}
-                  className="appearance-none block w-full pl-3 pr-10 py-3.5 sm:py-2 text-base sm:text-base border-gray-300 focus:outline-none focus:ring-[#8B2131] focus:border-[#8B2131] rounded-md text-black touch-manipulation"
+                  className="appearance-none block w-full pl-3 pr-10 py-3.5 sm:py-2 text-base sm:text-base border-gray-300 focus:outline-none focus:ring-primary focus:border-primary rounded-md text-black touch-manipulation"
                 >
                   {months.map((month) => (
                     <option key={month.value} value={month.value}>
@@ -998,7 +998,7 @@ const InsurerForm = ({
                   id="day-select"
                   value={tempDate.day}
                   onChange={(e) => handleDateChange('day', parseInt(e.target.value))}
-                  className="appearance-none block w-full pl-3 pr-10 py-3.5 sm:py-2 text-base sm:text-base border-gray-300 focus:outline-none focus:ring-[#8B2131] focus:border-[#8B2131] rounded-md text-black touch-manipulation"
+                  className="appearance-none block w-full pl-3 pr-10 py-3.5 sm:py-2 text-base sm:text-base border-gray-300 focus:outline-none focus:ring-primary focus:border-primary rounded-md text-black touch-manipulation"
                 >
                   {days.map((day) => (
                     <option key={day} value={day}>
@@ -1182,7 +1182,7 @@ const InsurerForm = ({
                 id="property_settlement"
                 value={propertySettlement ? `${propertySettlement.name}, ${propertySettlement.post_code}` : ''}
                 readOnly
-                className="block w-full rounded-md shadow-sm focus:ring-[#8B2131] focus:border-[#8B2131] sm:text-sm text-black bg-gray-100 border-gray-300"
+                className="block w-full rounded-md shadow-sm focus:ring-primary focus:border-primary sm:text-sm text-black bg-gray-100 border-gray-300"
               />
             </div>
           </div>
@@ -1265,7 +1265,7 @@ const InsurerForm = ({
                   name="property_owner_id_number_type_id"
                   value={insurerData.property_owner_id_number_type_id || ''}
                   onChange={handleChange}
-                  className={`appearance-none block w-full pl-3 pr-10 py-2.5 sm:py-2 text-sm sm:text-base border-r-0 focus:outline-none focus:ring-primary focus:border-primary rounded-l-md text-black ${isFieldInvalid('property_owner_id_number_type_id') ? 'border-error' : 'border-gray-300'}`}
+                  className={`appearance-none block w-full pl-3 pr-10 py-3.5 sm:py-2 text-base sm:text-base border-gray-300 focus:outline-none focus:ring-primary focus:border-primary rounded-md text-black touch-manipulation`}
                   required
                 >
                   {idNumberTypeOptions.map(option => (
@@ -1333,7 +1333,7 @@ const InsurerForm = ({
                     name="property_owner_nationality_id"
                     value={insurerData.property_owner_nationality_id || ''}
                     onChange={handleChange}
-                    className={`appearance-none mt-1 block w-full pl-3 pr-10 py-2.5 sm:py-2 text-sm sm:text-base focus:outline-none focus:ring-primary focus:border-primary rounded-md text-black ${isFieldInvalid('property_owner_nationality_id') ? 'border-red-500' : 'border-gray-300'}`}
+                    className={`appearance-none mt-1 block w-full pl-3 pr-10 py-3.5 sm:py-2 text-base sm:text-base border-gray-300 focus:outline-none focus:ring-primary focus:border-primary rounded-md text-black touch-manipulation`}
                     required
                   >
                     <option value="">Изберете националност</option>
@@ -1404,7 +1404,7 @@ const InsurerForm = ({
                   }
                 }}
                 placeholder="Въведете населено място"
-                className={`pl-10 block w-full rounded-md shadow-sm focus:ring-[#8B2131] focus:border-[#8B2131] sm:text-sm text-black ${isFieldInvalid('property_owner_settlement_id') ? 'border-red-500' : 'border-gray-300'}`}
+                className={`pl-10 block w-full rounded-md shadow-sm focus:ring-primary focus:border-primary sm:text-sm text-black ${isFieldInvalid('property_owner_settlement_id') ? 'border-red-500' : 'border-gray-300'}`}
                 autoComplete="off"
                 required
               />
@@ -1482,7 +1482,7 @@ const InsurerForm = ({
                 name="person_role_id"
                 value={insurerData.person_role_id}
                 onChange={handleChange}
-                className={`appearance-none mt-1 block w-full pl-3 pr-10 py-2.5 sm:py-2 text-sm sm:text-base focus:outline-none focus:ring-primary focus:border-primary rounded-md text-black ${isFieldInvalid('person_role_id') ? 'border-error' : 'border-gray-300'}`}
+                className={`appearance-none mt-1 block w-full pl-3 pr-10 py-3.5 sm:py-2 text-base sm:text-base border-gray-300 focus:outline-none focus:ring-primary focus:border-primary rounded-md text-black touch-manipulation`}
                 required
               >
                 {personRoleOptions.map(option => (
@@ -1525,7 +1525,7 @@ const InsurerForm = ({
                   name="id_number_type_id"
                   value={insurerData.id_number_type_id}
                   onChange={handleChange}
-                  className={`appearance-none block w-full pl-3 pr-10 py-2.5 sm:py-2 text-sm sm:text-base border-r-0 focus:outline-none focus:ring-primary focus:border-primary rounded-l-md text-black ${isFieldInvalid('id_number_type_id') ? 'border-error' : 'border-gray-300'}`}
+                  className={`appearance-none block w-full pl-3 pr-10 py-3.5 sm:py-2 text-base sm:text-base border-gray-300 focus:outline-none focus:ring-primary focus:border-primary rounded-md text-black touch-manipulation`}
                   required
                 >
                   {idNumberTypeOptions.map(option => (
@@ -1591,7 +1591,7 @@ const InsurerForm = ({
                     name="insurer_nationality_id"
                     value={insurerData.insurer_nationality_id}
                     onChange={handleChange}
-                    className={`appearance-none mt-1 block w-full pl-3 pr-10 py-2.5 sm:py-2 text-sm sm:text-base focus:outline-none focus:ring-primary focus:border-primary rounded-md text-black ${isFieldInvalid('insurer_nationality_id') ? 'border-red-500' : 'border-gray-300'}`}
+                    className={`appearance-none mt-1 block w-full pl-3 pr-10 py-3.5 sm:py-2 text-base sm:text-base border-gray-300 focus:outline-none focus:ring-primary focus:border-primary rounded-md text-black touch-manipulation`}
                     required
                   >
                     <option value="">Изберете националност</option>
@@ -1661,7 +1661,7 @@ const InsurerForm = ({
                   }
                 }}
                 placeholder="Въведете населено място"
-                className={`pl-10 block w-full rounded-md shadow-sm focus:ring-[#8B2131] focus:border-[#8B2131] sm:text-sm text-black ${isFieldInvalid('insurer_settlement_id') ? 'border-red-500' : 'border-gray-300'}`}
+                className={`pl-10 block w-full rounded-md shadow-sm focus:ring-primary focus:border-primary sm:text-sm text-black ${isFieldInvalid('insurer_settlement_id') ? 'border-red-500' : 'border-gray-300'}`}
                 autoComplete="off"
                 required
               />

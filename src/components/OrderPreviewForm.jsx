@@ -30,7 +30,7 @@ const PreviewPaper = styled(Paper)(({ theme }) => ({
 // Styled Alert component for success messages
 const SuccessAlert = styled(Alert)(({ theme }) => ({
   backgroundColor: 'rgba(139, 33, 49, 0.2)',
-  color: '#8b2131',
+  color: theme.palette.primary.main,
   border: '1px solid rgba(139, 33, 49, 0.3)',
   borderRadius: theme.shape.borderRadius * 2,
   padding: theme.spacing(1.5),
@@ -38,7 +38,7 @@ const SuccessAlert = styled(Alert)(({ theme }) => ({
     padding: theme.spacing(2),
   },
   '& .MuiAlert-icon': {
-    color: '#8b2131',
+    color: theme.palette.primary.main,
     marginRight: theme.spacing(1.5),
     [theme.breakpoints.up('sm')]: {
       marginRight: theme.spacing(2),
@@ -495,7 +495,7 @@ const OrderPreviewForm = ({ prevStep, selectedTariff, insurerData, checkedItems,
                       </div>
                     )}
 
-                    <div className="bg-[#8b2131]/70 p-3">
+                    <div className="bg-primary/70 p-3">
                       <div className="flex justify-between items-center">
                         <div className="flex items-center">
                           <span className="inline-block w-3 h-3 bg-red-500 rounded-full mr-2"></span>

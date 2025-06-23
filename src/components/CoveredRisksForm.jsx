@@ -616,7 +616,7 @@ const CoveredRisksForm = ({
                 value={promoCode}
                 onChange={handlePromoCodeChange}
                 placeholder="Въведете промоционален код"
-                className={`w-full p-2 rounded-md border ${promoCodeError ? 'border-red-500' : 'border-gray-300'} focus:outline-none focus:ring-[#8B2131] focus:border-[#8B2131] text-black`}
+                className={`w-full p-2 rounded-md border ${promoCodeError ? 'border-red-500' : 'border-gray-300'} focus:outline-none focus:ring-primary focus:border-primary text-black`}
                 disabled={promoCodeValid || validatingPromo}
               />
               {promoCodeError && (
@@ -765,7 +765,7 @@ const CoveredRisksForm = ({
                           <div className="text-accent font-semibold text-sm sm:text-base sm:ml-2 self-end sm:self-auto">{formatCurrency(preset.statistics.tax_amount)} {currencySymbol}</div>
                         </div>
                       </div>
-                      <div className="bg-[#8b2131]/70 p-2.5 sm:p-3">
+                      <div className="bg-primary/70 p-2.5 sm:p-3">
                         <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center">
                           <div className="flex items-start sm:items-center mb-1.5 sm:mb-0">
                             <span className="inline-block w-3 h-3 bg-red-500 rounded-full mr-2 mt-0.5 sm:mt-0 animate-pulse flex-shrink-0"></span>
@@ -874,7 +874,7 @@ const CoveredRisksForm = ({
                               value={customClauseAmounts[clause.id]}
                               onChange={(e) => handleClauseAmountChange(clause.id, e.target.value)}
                               placeholder={(clause.id === 14 || clause.id === 16) ? "150" : "Сума"}
-                              className={`w-full pr-12 ${(clause.id === 6 || clause.id === 14 || clause.id === 16) ? 'pl-11 sm:pl-8' : 'px-3'} py-4 sm:py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-[#8B2131] focus:border-[#8B2131] text-black text-base touch-manipulation ${(clause.id === 6 || clause.id === 14 || clause.id === 16) ? 'bg-gray-100' : ''}`}
+                              className={`w-full pr-12 ${(clause.id === 6 || clause.id === 14 || clause.id === 16) ? 'pl-11 sm:pl-8' : 'px-3'} py-4 sm:py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-primary focus:border-primary text-black text-base touch-manipulation ${(clause.id === 6 || clause.id === 14 || clause.id === 16) ? 'bg-gray-100' : ''}`}
                               readOnly={clause.id === 6 || clause.id === 14 || clause.id === 16}
                               {...(clause.id === 1 ? {
                                 min: "100000",
@@ -944,7 +944,7 @@ const CoveredRisksForm = ({
                       </div>
                     </div>
                   </div>
-                  <div className="bg-[#8b2131]/70 p-2.5 sm:p-3">
+                  <div className="bg-primary/70 p-2.5 sm:p-3">
                     <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center">
                       <div className="flex items-start sm:items-center mb-1.5 sm:mb-0">
                         <span className="inline-block w-3 h-3 bg-red-500 rounded-full mr-2 mt-0.5 sm:mt-0 animate-pulse flex-shrink-0"></span>
