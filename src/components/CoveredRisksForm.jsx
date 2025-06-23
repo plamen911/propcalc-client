@@ -674,7 +674,14 @@ const CoveredRisksForm = ({
                         {formatCurrency(preset.tariff_preset_clauses.find(clause => clause.insurance_clause.id === 1)?.tariff_amount || "0")} {currencySymbol}
                       </span>
                       <ArrowForward className="mx-2 text-white" fontSize="small" />
-                      <span className="text-white text-md font-semibold whitespace-nowrap">{formatCurrency(preset.statistics.total_amount)} {currencySymbol}</span>
+                      {preset.statistics.total_premium > preset.statistics.total_amount && (
+                        <span className="text-white/60 text-md font-semibold whitespace-nowrap line-through mr-2">
+                          {formatCurrency(preset.statistics.total_premium)} {currencySymbol}
+                        </span>
+                      )}
+                      <span className="text-white text-md font-semibold whitespace-nowrap">
+                        {formatCurrency(preset.statistics.total_amount)} {currencySymbol}
+                      </span>
                     </div>
                   </div>
                 </div>
