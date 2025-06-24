@@ -714,7 +714,25 @@ const OrderPreviewForm = ({ prevStep, selectedTariff, insurerData, checkedItems,
             </div>
           )}
 
-          <div className="border-t border-white/10 my-4 sm:my-6"></div>
+          {/* Document links section - always visible before agree section */}
+          <div className="mb-4 flex flex-col gap-3 sm:gap-2 ml-1">
+            {[
+              { uri: "https://propcalc.zastrahovaite.com/docs/propcalc/pre-contract-insurance-info.pdf", title: "Информация преди сключване на застрахователния договор" },
+              { uri: "https://propcalc.zastrahovaite.com/docs/propcalc/property-insurance-product-info.pdf", title: "Информационен документ" },
+              { uri: "https://propcalc.zastrahovaite.com/docs/propcalc/bonus-home-plus.pdf", title: "Бонус дом+" }
+            ].map((doc) => (
+              <a
+                key={doc.uri}
+                href={doc.uri}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="block w-full px-4 py-3 rounded-lg bg-white/10 text-accent underline font-semibold hover:text-yellow-300 hover:bg-yellow-100/10 transition-colors duration-150 text-base sm:text-base break-words"
+                style={{ minHeight: '44px' }}
+              >
+                {doc.title}
+              </a>
+            ))}
+          </div>
 
           <div className="flex items-start mb-4">
             <input
