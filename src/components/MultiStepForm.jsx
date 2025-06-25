@@ -7,6 +7,7 @@ import api from '../services/api';
 import AuthService from '../services/auth';
 import LoadingSpinner from './ui/LoadingSpinner.jsx';
 import ErrorDisplay from './ui/ErrorDisplay.jsx';
+import ErrorBoundary from './ui/ErrorBoundary';
 
 const MultiStepForm = () => {
   const [currentStep, setCurrentStep] = useState(0);
@@ -230,37 +231,38 @@ const MultiStepForm = () => {
         );
       case 1:
         return (
-          <CoveredRisksForm 
-            formData={formData}
-            nextStep={nextStep} 
-            prevStep={prevStep}
-            lastOpenedAccordion={lastOpenedAccordion}
-            setLastOpenedAccordion={setLastOpenedAccordion}
-            customClauseAmounts={customClauseAmounts}
-            setCustomClauseAmounts={setCustomClauseAmounts}
-            selectedRisks={selectedRisks}
-            setSelectedRisks={setSelectedRisks}
-            isCustomPackageSelected={isCustomPackageSelected}
-            setIsCustomPackageSelected={setIsCustomPackageSelected}
-            setSelectedTariff={setSelectedTariff}
-            currencySymbol={currencySymbol}
-            clauseCheckboxes={clauseCheckboxes}
-            setClauseCheckboxes={setClauseCheckboxes}
-            promoCode={promoCode}
-            setPromoCode={setPromoCode}
-            promoCodeValid={promoCodeValid}
-            setPromoCodeValid={setPromoCodeValid}
-            promoCodeError={promoCodeError}
-            setPromoCodeError={setPromoCodeError}
-            promoDiscount={promoDiscount}
-            setPromoDiscount={setPromoDiscount}
-            promoDiscountedAmount={promoDiscountedAmount}
-            setPromoDiscountedAmount={setPromoDiscountedAmount}
-            validatingPromo={validatingPromo}
-            setValidatingPromo={setValidatingPromo}
-            promoCodeId={promoCodeId}
-            setPromoCodeId={setPromoCodeId}
-          />
+          <ErrorBoundary>
+            <CoveredRisksForm 
+              formData={formData}
+              nextStep={nextStep} 
+              prevStep={prevStep}
+              lastOpenedAccordion={lastOpenedAccordion}
+              setLastOpenedAccordion={setLastOpenedAccordion}
+              customClauseAmounts={customClauseAmounts}
+              setCustomClauseAmounts={setCustomClauseAmounts}
+              selectedRisks={selectedRisks}
+              setSelectedRisks={setSelectedRisks}
+              isCustomPackageSelected={isCustomPackageSelected}
+              setIsCustomPackageSelected={setIsCustomPackageSelected}
+              setSelectedTariff={setSelectedTariff}
+              currencySymbol={currencySymbol}
+              clauseCheckboxes={clauseCheckboxes}
+              setClauseCheckboxes={setClauseCheckboxes}
+              promoCode={promoCode}
+              setPromoCode={setPromoCode}
+              promoCodeValid={promoCodeValid}
+              setPromoCodeValid={setPromoCodeValid}
+              promoCodeError={promoCodeError}
+              setPromoCodeError={setPromoCodeError}
+              promoDiscount={promoDiscount}
+              setPromoDiscount={setPromoDiscount}
+              promoDiscountedAmount={promoDiscountedAmount}
+              setPromoDiscountedAmount={setPromoDiscountedAmount}
+              validatingPromo={validatingPromo}
+              setValidatingPromo={setValidatingPromo}
+              setPromoCodeId={setPromoCodeId}
+            />
+          </ErrorBoundary>
         );
       case 2:
         return (
