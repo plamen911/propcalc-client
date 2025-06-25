@@ -585,7 +585,7 @@ const InsurerForm = ({
       'email': 'Имейл',
       'property_owner_name': 'Имена на собственика по документи за самоличност',
       'property_owner_id_number_type_id': 'Тип на документ за самоличност на собственика',
-      'property_owner_id_number': 'ЕГН/ЛНЧ/Паспорт №',
+      'property_owner_id_number': 'ЕГН/ЛНЧ/БУЛСТАТ',
       'property_owner_birth_date': 'Дата на раждане на собственика',
       'property_owner_nationality_id': 'Националност на собственика',
       'property_owner_gender': 'Пол на собственика',
@@ -1174,7 +1174,7 @@ const InsurerForm = ({
           {/* Property Settlement (readonly) */}
           <div>
             <label htmlFor="property_settlement" className="block text-sm font-medium text-white mb-1">
-              Нас. място на имота
+              Населено място
             </label>
             <div className="relative">
               <input
@@ -1229,14 +1229,14 @@ const InsurerForm = ({
 
       <div className="bg-white/10 p-6 rounded-xl mb-6 border border-white/20">
         <h3 className="text-lg font-medium text-white mb-4">
-          Собственик
+          Данни за собственика
         </h3>
 
         <div className="space-y-4">
           {/* Property Owner Name */}
           <div>
             <label htmlFor="property_owner_name" className="block text-sm font-medium text-white mb-1">
-              Имена по документи за самоличност <span className="text-red-300">*</span>
+              Имена <span className="text-red-300">*</span>
             </label>
             <div className="relative">
               <input
@@ -1245,7 +1245,7 @@ const InsurerForm = ({
                 name="property_owner_name"
                 value={insurerData.property_owner_name || ''}
                 onChange={handleChange}
-                placeholder="Въведете имена по документи за самоличност"
+                placeholder="Въведете имена на собственика"
                 required
                 className={`block w-full rounded-md shadow-sm focus:ring-primary focus:border-primary sm:text-sm text-black ${isFieldInvalid('property_owner_name') ? 'border-error' : 'border-gray-300'}`}
               />
@@ -1256,7 +1256,7 @@ const InsurerForm = ({
            {/* Property Owner ID Number */}
            <div>
             <label htmlFor="property_owner_id_number_type_id" className="block text-sm font-medium text-white mb-1">
-              ЕГН/ЛНЧ/Паспорт №: <span className="text-red-300">*</span>
+              ЕГН/ЛНЧ/БУЛСТАТ: <span className="text-red-300">*</span>
             </label>
             <div className="flex items-center mt-1">
               <div className="relative w-1/3">
@@ -1467,7 +1467,7 @@ const InsurerForm = ({
 
       <div className="bg-white/10 p-6 rounded-xl mb-6 border border-white/20">
         <h3 className="text-lg font-medium text-white mb-4">
-          Застраховащ
+          Данни за застраховащия
         </h3>
 
         <div className="space-y-4">
@@ -1497,7 +1497,7 @@ const InsurerForm = ({
 
           <div>
             <label htmlFor="full_name" className="block text-sm font-medium text-white mb-1">
-              Имена по документи за самоличност <span className="text-red-300">*</span>
+              Имена <span className="text-red-300">*</span>
             </label>
             <div className="relative">
               <input
@@ -1506,7 +1506,7 @@ const InsurerForm = ({
                 name="full_name"
                 value={insurerData.full_name}
                 onChange={handleChange}
-                placeholder="Въведете имена по документи за самоличност"
+                placeholder="Въведете имена на застраховащия"
                 required
                 className={`block w-full rounded-md shadow-sm focus:ring-primary focus:border-primary sm:text-sm text-black ${isFieldInvalid('full_name') ? 'border-error' : 'border-gray-300'}`}
               />
@@ -1516,7 +1516,7 @@ const InsurerForm = ({
 
           <div>
             <label htmlFor="id_number_type_id" className="block text-sm font-medium text-white mb-1">
-              ЕГН/ЛНЧ/Паспорт №: <span className="text-red-300">*</span>
+              ЕГН/ЛНЧ/БУЛСТАТ: <span className="text-red-300">*</span>
             </label>
             <div className="flex items-center mt-1">
               <div className="relative w-1/3">
