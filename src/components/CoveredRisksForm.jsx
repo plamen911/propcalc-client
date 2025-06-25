@@ -661,19 +661,18 @@ const CoveredRisksForm = ({
               >
                 <div className="flex items-center flex-1 min-w-0">
                   <div className="flex flex-col w-full">
-                    <div className="flex items-center">
-                      <span className="text-white font-medium text-base sm:text-lg sm:mr-3">{preset.name}</span>
+                    <div className="flex items-baseline">
+                      <span className="text-white font-medium text-base sm:text-lg mr-1.5 sm:mr-3">
+                        {preset.name}
+                      </span>
+                      <span className="text-white/60 text-sm sm:text-md font-semibold whitespace-nowrap mr-1.5 sm:mr-2">
+                        {formatCurrency(preset.tariff_preset_clauses.find(clause => clause.insurance_clause.id === 1)?.tariff_amount || "0")} {currencySymbol}
+                      </span>
                       {!isCustomPackageSelected && selectedRisks[preset.id] && (
                         <CheckCircle className="text-accent ml-1" fontSize="medium" />
                       )}
                     </div>
                     <div className="flex flex-wrap items-center mt-1.5 sm:mt-1">
-                      <div className="flex items-center">
-                        <span className="text-white text-sm sm:text-md font-semibold whitespace-nowrap">
-                          {formatCurrency(preset.tariff_preset_clauses.find(clause => clause.insurance_clause.id === 1)?.tariff_amount || "0")} {currencySymbol}
-                        </span>
-                        <ArrowForward className="mx-1.5 sm:mx-2 text-white" fontSize="small" />
-                      </div>
                       <div className="flex items-center">
                         {preset.statistics.total_premium > preset.statistics.total_amount && (
                           <span className="text-white/60 text-sm sm:text-md font-semibold whitespace-nowrap line-through mr-1.5 sm:mr-2">
