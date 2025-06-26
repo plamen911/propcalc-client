@@ -9,14 +9,14 @@ import React from 'react';
  * @param {number|string} amount - The amount to format
  * @returns {string} - The formatted amount
  */
-export const formatCurrency = (value) => {
+export const formatCurrency = (value, fraction = 2) => {
   const number = parseFloat(value);
   if (isNaN(number)) {
     return '0.00';
   }
   return number.toLocaleString('bg-BG', {
-    minimumFractionDigits: 2,
-    maximumFractionDigits: 2,
+    minimumFractionDigits: fraction,
+    maximumFractionDigits: fraction,
   });
 };
 

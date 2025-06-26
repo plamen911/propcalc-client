@@ -17,6 +17,8 @@ import CheckCircleOutlineIcon from '@mui/icons-material/CheckCircleOutline';
 import api from '../services/api';
 import ErrorDisplay from './ui/ErrorDisplay.jsx';
 import { formatCurrency } from '../utils/formatters';
+import TariffPreview from "./ui/TariffPreview.jsx";
+import CalcStatisticsService from "../services/calc-statistics.js";
 
 // Styled Paper component for the preview section
 const PreviewPaper = styled(Paper)(({ theme }) => ({
@@ -283,19 +285,26 @@ const OrderPreviewForm = ({ prevStep, selectedTariff, insurerData, checkedItems,
           property_checklist_items: checkedItems
         };
 
+        const stats = CalcStatisticsService.calculate(
+            selectedTariff.statistics.total_premium,
+            selectedTariff.tax_percent,
+            selectedTariff.discount_percent,
+            promoDiscount
+        );
+
         // Add tariff data and financial data if a tariff is selected
         if (selectedTariff) {
           policyData.tariff_preset_id = selectedTariff.id;
-          policyData.subtotal = selectedTariff.statistics?.total_premium || 0;
+          policyData.subtotal = stats.insurancePremiumAmount;
           policyData.discount = selectedTariff.discount_percent || 0;
-          policyData.subtotal_tax = selectedTariff.statistics?.tax_amount || 0;
-          policyData.total = selectedTariff.statistics?.total_amount || 0;
+          policyData.subtotal_tax = stats.taxAmount;
+          policyData.total = stats.totalAmount;
 
           // Add promotional code data if a valid promo code is applied
           if (promoCodeValid && promoDiscount && promoCodeId) {
             policyData.promotional_code_id = promoCodeId;
             policyData.promotional_code_discount = promoDiscount;
-            // If promo discount is applied, update the total
+            // If a promo discount is applied, update the total
             if (promoDiscountedAmount) {
               policyData.total = promoDiscountedAmount;
             }
@@ -317,8 +326,6 @@ const OrderPreviewForm = ({ prevStep, selectedTariff, insurerData, checkedItems,
           setIsSubmitted(true);
         }
       } catch (err) {
-        console.error('Error submitting insurance policy:', err);
-
         // Check if the error response contains specific error messages
         if (err.response && err.response.data && err.response.data.errors) {
           // If there are specific error messages, display them
@@ -406,114 +413,12 @@ const OrderPreviewForm = ({ prevStep, selectedTariff, insurerData, checkedItems,
 
       {!isSubmitted && (
         <>
-          {selectedTariff && (
-            <Box sx={{ mb: 4 }}>
-              <div className="bg-white/10 p-4 sm:p-6 rounded-xl border border-white/20">
-                <h3 className="text-base sm:text-lg font-medium text-white mb-3 sm:mb-4">
-                  Вие избрахте покритие "{selectedTariff.name}" за Вашето имущество
-                </h3>
-
-                {/* Display clauses if available */}
-                {selectedTariff.tariff_preset_clauses && (
-                  <div className="p-2 sm:p-3 bg-white/5 rounded-lg mb-3 sm:mb-4">
-                    {/* Header - hidden on mobile */}
-                    <div className="hidden sm:flex justify-between border-b border-white/10 py-1 mb-1">
-                      <div className="font-medium text-white text-sm sm:text-base">Клаузи</div>
-                      <div className="font-medium text-white text-sm sm:text-base">Застрахователна сума</div>
-                    </div>
-
-                    {/* Clause rows - mobile optimized */}
-                    <div className="space-y-1">
-                      {selectedTariff.tariff_preset_clauses
-                        .filter(clause => parseFloat(clause.tariff_amount) !== 0)
-                        .map((clause) => (
-                        <div key={clause.id} className="flex justify-between items-center border-b border-white/10 py-2">
-                          <div className="text-white text-sm sm:text-base pr-2 flex-1">{clause.insurance_clause.name}</div>
-                          <div className="text-accent font-semibold text-base sm:text-lg ml-2">{formatCurrency(clause.tariff_amount)} {currencySymbol}</div>
-                        </div>
-                      ))}
-                    </div>
-                  </div>
-                )}
-
-                {/* Statistics section */}
-                {selectedTariff.statistics && (
-                  <div className="mt-4 rounded-lg overflow-hidden border border-white/20 shadow-md">
-                    {selectedTariff.statistics.total_premium && (
-                      <div className="border-b border-white/10 bg-white/5 p-3">
-                        <div className="flex justify-between items-center">
-                          <div className="flex items-center">
-                            <span className="inline-block w-3 h-3 bg-blue-400 rounded-full mr-2"></span>
-                            <span className="uppercase text-white text-sm sm:text-base font-medium">Застрахователна премия</span>
-                          </div>
-                          <div className="text-accent font-semibold text-base sm:text-lg ml-2">{formatCurrency(selectedTariff.statistics.total_premium)} {currencySymbol}</div>
-                        </div>
-                      </div>
-                    )}
-
-                    {selectedTariff.statistics.discounted_premium && selectedTariff.discount_percent && (
-                      <div className="border-b border-white/10 bg-white/5 p-3">
-                        <div className="flex justify-between items-center">
-                          <div className="flex items-center">
-                            <span className="inline-block w-3 h-3 bg-green-400 rounded-full mr-2"></span>
-                            <span className="uppercase text-white text-sm sm:text-base font-medium">Застрахователна премия след отстъпка от {selectedTariff.discount_percent}%</span>
-                          </div>
-                          <div className="text-accent font-semibold text-base sm:text-lg ml-2">{formatCurrency(selectedTariff.statistics.discounted_premium)} {currencySymbol}</div>
-                        </div>
-                      </div>
-                    )}
-
-                    {/* Show premium after promo code if a valid promo code is applied */}
-                    {promoCodeValid && promoDiscount && selectedTariff.statistics.discounted_premium && (
-                      <div className="border-b border-white/10 bg-white/5 p-3">
-                        <div className="flex justify-between items-center">
-                          <div className="flex items-center">
-                            <span className="inline-block w-3 h-3 bg-green-400 rounded-full mr-2"></span>
-                            <span className="uppercase text-white text-sm sm:text-base font-medium">Застрахователна премия след приложен промо код {promoDiscount}%</span>
-                          </div>
-                          <div className="text-accent font-semibold text-base sm:text-lg ml-2">
-                            {formatCurrency(selectedTariff.statistics.discounted_premium - (selectedTariff.statistics.total_premium * promoDiscount / 100))} {currencySymbol}
-                          </div>
-                        </div>
-                      </div>
-                    )}
-
-                    {selectedTariff.statistics.tax_amount && selectedTariff.tax_percent && (
-                      <div className="border-b border-white/10 bg-white/5 p-3">
-                        <div className="flex justify-between items-center">
-                          <div className="flex items-center">
-                            <span className="inline-block w-3 h-3 bg-yellow-400 rounded-full mr-2"></span>
-                            <span className="uppercase text-white text-sm sm:text-base font-medium">{selectedTariff.tax_percent}% данък върху застрахователната премия</span>
-                          </div>
-                          <div className="text-accent font-semibold text-base sm:text-lg ml-2">
-                            {promoCodeValid && promoDiscount 
-                              ? formatCurrency((selectedTariff.statistics.discounted_premium - (selectedTariff.statistics.total_premium * promoDiscount / 100)) * (selectedTariff.tax_percent / 100)) 
-                              : formatCurrency(selectedTariff.statistics.tax_amount)} 
-                            {currencySymbol}
-                          </div>
-                        </div>
-                      </div>
-                    )}
-
-                    <div className="bg-primary/70 p-3">
-                      <div className="flex justify-between items-center">
-                        <div className="flex items-center">
-                          <span className="inline-block w-3 h-3 bg-red-500 rounded-full mr-2"></span>
-                          <span className="uppercase text-white text-sm sm:text-base font-bold">Общо дължима сума за една година</span>
-                        </div>
-                        <div className="text-accent font-bold text-lg sm:text-xl ml-2" style={{animation: 'colorPulse 2s ease-in-out infinite'}}>
-                          {promoCodeValid && promoDiscount 
-                            ? formatCurrency(promoDiscountedAmount)
-                            : formatCurrency(selectedTariff.statistics.total_amount)} 
-                          {currencySymbol}
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                )}
-              </div>
-            </Box>
-          )}
+          <TariffPreview
+              selectedTariff={selectedTariff}
+              currencySymbol={currencySymbol}
+              promoCodeValid={promoCodeValid}
+              promoDiscount={promoDiscount}
+          />
 
           {formData && (
             <div className="mb-4">
