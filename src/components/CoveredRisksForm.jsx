@@ -7,7 +7,7 @@ import LoadingSpinner from './ui/LoadingSpinner.jsx';
 import ErrorDisplay from './ui/ErrorDisplay.jsx';
 import { formatCurrency, formatDescription } from '../utils/formatters.jsx';
 import ArrowForward from "@mui/icons-material/ArrowForward";
-import RemoveRedEyeIcon from '@mui/icons-material/RemoveRedEye';
+import EyeIcon from './ui/EyeIcon';
 import { LocalOffer, CheckCircle } from '@mui/icons-material';
 import InfoModal from './ui/InfoModal.jsx';
 import ErrorIcon from './ui/ErrorIcon.jsx';
@@ -723,7 +723,7 @@ const CoveredRisksForm = ({
                             <InfoModal
                               title={clause.insurance_clause.name}
                               content={formatDescription(clause.insurance_clause.description)}
-                              icon={<RemoveRedEyeIcon fontSize="small" className="ml-1 text-yellow-400 flex-shrink-0" />}
+                              icon={<EyeIcon className="ml-1 text-yellow-400 flex-shrink-0 h-5 w-5" />}
                             />
                           )}
                         </div>
@@ -862,7 +862,7 @@ const CoveredRisksForm = ({
                           <InfoModal
                             title={clause.name}
                             content={formatDescription(clause.description)}
-                            icon={<RemoveRedEyeIcon fontSize="small" className="ml-1 text-yellow-400 flex-shrink-0" />}
+                            icon={<EyeIcon className="ml-1 text-yellow-400 flex-shrink-0 h-5 w-5" />}
                           />
                         )}
                       </div>

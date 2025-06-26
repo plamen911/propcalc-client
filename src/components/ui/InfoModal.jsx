@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, cloneElement } from 'react';
 import { Dialog, DialogContent, DialogTitle, IconButton } from '@mui/material';
 import { Close } from '@mui/icons-material';
 
@@ -8,12 +8,15 @@ const InfoModal = ({ title, content, icon, maxWidth = 'sm' }) => {
   const handleOpen = () => setOpen(true);
   const handleClose = () => setOpen(false);
 
+  // Check if icon is an element that accepts onClick prop
+  const iconElement = icon && React.isValidElement(icon) 
+    ? cloneElement(icon, { onClick: handleOpen }) 
+    : <div onClick={handleOpen} style={{ cursor: 'pointer', display: 'inline-block', touchAction: 'manipulation' }}>{icon}</div>;
+
   return (
     <>
-      <div onClick={handleOpen} style={{ cursor: 'pointer', display: 'inline-block' }}>
-        {icon}
-      </div>
-      
+      {iconElement}
+
       <Dialog
         open={open}
         onClose={handleClose}

@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
 import {ArrowForward, CheckCircle, Close, LocalOffer} from '@mui/icons-material';
-import RemoveRedEyeIcon from '@mui/icons-material/RemoveRedEye';
+import EyeIcon from './ui/EyeIcon';
 import BackButton from './ui/BackButton.jsx';
 import ProceedButton from './ui/ProceedButton.jsx';
 import { Dialog, DialogContent, DialogTitle, IconButton } from '@mui/material';
@@ -1050,9 +1050,8 @@ const InsurerForm = ({
                           title={clause.insurance_clause.name}
                           content={formatDescription(clause.insurance_clause.description)}
                           icon={
-                            <RemoveRedEyeIcon
-                              className="text-accent"
-                              style={{ fontSize: 16, marginLeft: 4 }}
+                            <EyeIcon
+                              className="text-accent h-4 w-4 ml-1"
                             />
                           }
                         />
@@ -1792,9 +1791,8 @@ const InsurerForm = ({
                           title={item.name}
                           content={formatDescription(item.description)}
                           icon={
-                            <RemoveRedEyeIcon
-                              className="text-accent"
-                              style={{ fontSize: 16, marginLeft: 4 }}
+                            <EyeIcon
+                              className="text-accent h-4 w-4 ml-1"
                             />
                           }
                         />
