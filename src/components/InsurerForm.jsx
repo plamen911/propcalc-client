@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
 import {ArrowForward, CheckCircle, Close, LocalOffer} from '@mui/icons-material';
-import HelpOutlineIcon from '@mui/icons-material/HelpOutline';
+import RemoveRedEyeIcon from '@mui/icons-material/RemoveRedEye';
 import BackButton from './ui/BackButton.jsx';
 import ProceedButton from './ui/ProceedButton.jsx';
 import { Dialog, DialogContent, DialogTitle, IconButton } from '@mui/material';
@@ -1022,14 +1022,6 @@ const InsurerForm = ({
           </div>
         </DialogContent>
       </Dialog>
-      <style>
-        {`
-          @keyframes colorPulse {
-            0%, 100% { color: white; }
-            50% { color: theme('colors.accent'); }
-          }
-        `}
-      </style>
       {selectedTariff && (
         <div className="bg-white/10 p-6 rounded-xl mb-6 border border-white/20">
           <h3 className="text-lg font-medium text-white mb-4">
@@ -1058,7 +1050,7 @@ const InsurerForm = ({
                           title={clause.insurance_clause.name}
                           content={formatDescription(clause.insurance_clause.description)}
                           icon={
-                            <HelpOutlineIcon
+                            <RemoveRedEyeIcon
                               className="text-accent"
                               style={{ fontSize: 16, marginLeft: 4 }}
                             />
@@ -1067,7 +1059,8 @@ const InsurerForm = ({
                       )}
                     </div>
                     <div className="text-white text-sm sm:text-base text-right font-semibold whitespace-nowrap">
-                      <span className="text-accent">{formatCurrency(clause.tariff_amount)}</span> <span className="text-accent">{currencySymbol}</span>
+                      <span className="text-white">{formatCurrency(clause.tariff_amount)}</span>
+                      <span className="text-white">{currencySymbol}</span>
                     </div>
                   </div>
                 ))}
@@ -1086,7 +1079,8 @@ const InsurerForm = ({
                       <span className="uppercase text-white text-xs sm:text-sm font-medium">Застрахователна премия</span>
                     </div>
                     <div className="font-semibold text-base sm:text-lg ml-2 whitespace-nowrap">
-                      <span className="text-accent">{formatCurrency(selectedTariff.statistics.total_premium)}</span><span className="text-accent"> {currencySymbol}</span>
+                      <span className="text-white">{formatCurrency(selectedTariff.statistics.total_premium)}</span>
+                      <span className="text-white"> {currencySymbol}</span>
                     </div>
                   </div>
                 </div>
@@ -1100,7 +1094,8 @@ const InsurerForm = ({
                       <span className="uppercase text-white text-xs sm:text-sm font-medium">Застрахователна премия след отстъпка {selectedTariff.discount_percent}%</span>
                     </div>
                     <div className="font-semibold text-base sm:text-lg ml-2 whitespace-nowrap">
-                      <span className="text-accent">{formatCurrency(selectedTariff.statistics.discounted_premium)}</span> <span className="text-accent">{currencySymbol}</span>
+                      <span className="text-white">{formatCurrency(selectedTariff.statistics.discounted_premium)}</span>
+                      <span className="text-white">{currencySymbol}</span>
                     </div>
                   </div>
                 </div>
@@ -1115,10 +1110,10 @@ const InsurerForm = ({
                       <span className="uppercase text-white text-xs sm:text-sm font-medium">Застрахователна премия след приложен промо код {promoDiscount}%</span>
                     </div>
                     <div className="font-semibold text-base sm:text-lg ml-2 whitespace-nowrap">
-                      <span className="text-accent">
+                      <span className="text-white">
                         {formatCurrency(selectedTariff.statistics.discounted_premium - (selectedTariff.statistics.total_premium * promoDiscount / 100))}
                       </span> 
-                      <span className="text-accent">{currencySymbol}</span>
+                      <span className="text-white">{currencySymbol}</span>
                     </div>
                   </div>
                 </div>
@@ -1132,12 +1127,12 @@ const InsurerForm = ({
                       <span className="uppercase text-white text-xs sm:text-sm font-medium">Данък върху застрахователната премия {selectedTariff.tax_percent}% </span>
                     </div>
                     <div className="font-semibold text-base sm:text-lg ml-2 whitespace-nowrap">
-                      <span className="text-accent">
+                      <span className="text-white">
                         {promoCodeValid && promoDiscount 
                           ? formatCurrency((selectedTariff.statistics.discounted_premium - (selectedTariff.statistics.total_premium * promoDiscount / 100)) * (selectedTariff.tax_percent / 100)) 
                           : formatCurrency(selectedTariff.statistics.tax_amount)}
                       </span>
-                      <span className="text-accent"> {currencySymbol}</span>
+                      <span className="text-white"> {currencySymbol}</span>
                     </div>
                   </div>
                 </div>
@@ -1150,12 +1145,12 @@ const InsurerForm = ({
                     <span className="uppercase text-white text-sm sm:text-base font-bold">Общо дължима сума за една година</span>
                   </div>
                   <div className="text-white font-bold text-lg sm:text-xl ml-2 whitespace-nowrap" style={{animation: 'colorPulse 2s ease-in-out infinite'}}>
-                    <span className="text-accent">
+                    <span className="text-white">
                       {promoCodeValid && promoDiscount && promoDiscountedAmount
                         ? formatCurrency(promoDiscountedAmount)
                         : formatCurrency(selectedTariff.statistics.total_amount)}
                     </span> 
-                    <span className="text-accent"> {currencySymbol}</span>
+                    <span className="text-white"> {currencySymbol}</span>
                   </div>
                 </div>
               </div>
@@ -1797,7 +1792,7 @@ const InsurerForm = ({
                           title={item.name}
                           content={formatDescription(item.description)}
                           icon={
-                            <HelpOutlineIcon
+                            <RemoveRedEyeIcon
                               className="text-accent"
                               style={{ fontSize: 16, marginLeft: 4 }}
                             />
