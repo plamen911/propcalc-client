@@ -602,80 +602,71 @@ const CoveredRisksForm = ({
         `}
       </style>
       {/* Promotional Code Section */}
-      <div className="bg-white/10 p-3 sm:p-4 rounded-xl mb-3 sm:mb-4 border border-white/20">
-        <div className="flex items-center mb-2">
-          <LocalOffer className="text-accent mr-2" />
-          <h4 className="text-white text-sm sm:text-base font-medium">Имате промоционален код?</h4>
-        </div>
-
-        <div className="flex flex-col sm:flex-row gap-2">
-          <div className="flex-grow relative">
-            <div className="relative w-full">
-              <input
-                type="text"
-                value={promoCode}
-                onChange={handlePromoCodeChange}
-                placeholder="Въведете промоционален код"
-                className={`w-full p-2 rounded-md border ${promoCodeError ? 'border-red-500' : 'border-gray-300'} focus:outline-none focus:ring-primary focus:border-primary text-black`}
-                disabled={promoCodeValid || validatingPromo}
-              />
-              {promoCodeError && (
-                <ErrorIcon />
-              )}
+      <div>
+        <label htmlFor="promotional_code" className="block text-sm sm:text-base font-medium text-white mb-1 sm:mb-2">
+          Имате промоционален код?
+        </label>
+        <div className="mt-1 relative rounded-md shadow-sm">
+          <div className="flex flex-col sm:flex-row gap-2">
+            <div className="flex-grow relative">
+              <div className="relative w-full">
+                <input
+                    type="text"
+                    value={promoCode}
+                    onChange={handlePromoCodeChange}
+                    placeholder="Въведете промоционален код"
+                    className={`w-full p-2 rounded-md border ${promoCodeError ? 'border-red-500' : 'border-gray-300'} focus:outline-none focus:ring-primary focus:border-primary text-black`}
+                    disabled={promoCodeValid || validatingPromo}
+                />
+                {promoCodeError && (
+                    <ErrorIcon />
+                )}
+              </div>
+              {promoCodeError && <div className="text-sm sm:text-base text-red-300 mt-1">{promoCodeError}</div>}
             </div>
-            {promoCodeError && (
-              <div className="text-red-300 text-xs mt-1">{promoCodeError}</div>
-            )}
-          </div>
-          <button
-            onClick={validatePromoCode}
-            disabled={promoCodeValid || validatingPromo || !promoCode.trim()}
-            className={`inline-flex items-center justify-center py-4 sm:py-2.5 px-6 sm:px-5 border border-transparent shadow-sm text-base sm:text-base font-medium rounded-full text-white ${promoCodeValid ? 'bg-green-600' : 'bg-[#6b1021] hover:bg-[#5a0d1c] focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-[#6b1021] transition-all duration-200 hover:scale-105'} disabled:opacity-50 disabled:cursor-not-allowed w-full sm:w-auto touch-manipulation min-h-[56px] sm:min-h-0`}
-          >
-            {validatingPromo ? 'Проверка...' : promoCodeValid ? 'Приложен' : 'Приложи'}
-          </button>
-        </div>
-
-        {promoCodeValid && promoDiscount && showPromoSuccess && (
-          <div className="mt-4 p-3 bg-green-600/20 rounded-lg border border-green-500/30">
-            <div className="flex items-center">
-              <CheckCircle className="text-white mr-2" fontSize="medium" />
-              <span className="text-white text-sm">Промоционален код приложен успешно! Отстъпката от {promoDiscount}% е отразена в крайната цена.</span>
+            <div>
+              <button
+                  onClick={validatePromoCode}
+                  disabled={promoCodeValid || validatingPromo || !promoCode.trim()}
+                  className={`inline-flex items-center justify-center py-4 sm:py-2.5 px-6 sm:px-5 border border-transparent shadow-sm text-base sm:text-base font-medium rounded-full text-white ${promoCodeValid ? 'bg-green-600' : 'bg-[#6b1021] hover:bg-[#5a0d1c] focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-[#6b1021] transition-all duration-200 hover:scale-105'} disabled:opacity-50 disabled:cursor-not-allowed w-full sm:w-auto touch-manipulation min-h-[56px] sm:min-h-0`}
+              >
+                {validatingPromo ? 'Проверка...' : promoCodeValid ? 'Приложен' : 'Приложи'}
+              </button>
             </div>
           </div>
-        )}
+        </div>
       </div>
 
-      <div className="bg-white/10 p-3 sm:p-4 rounded-xl mb-3 sm:mb-4 border border-white/20">
-        <h3 className="text-base sm:text-lg font-medium text-white mb-2 sm:mb-3">
+      <div className="bg-white p-3 sm:p-4 rounded-xl mb-3 sm:mb-4 border border-gray-200 shadow-sm">
+        <h3 className="text-base sm:text-lg font-medium text-gray-800 mb-2 sm:mb-3">
           Покрити рискове
         </h3>
 
         <div className="space-y-2 sm:space-y-3">
           {tariffPresets.filter(preset => preset.active).map((preset) => (
-            <div key={preset.id} className="border border-white/20 rounded-lg overflow-hidden shadow-sm">
+            <div key={preset.id} className="border border-gray-300 rounded-lg overflow-hidden shadow-sm">
               {/* Accordion Header - enhanced for mobile */}
               <div 
-                className="flex items-center justify-between p-3 sm:p-4 bg-white/10 cursor-pointer hover:bg-white/15 active:bg-white/20 transition-colors duration-150 rounded-t-lg"
+                className="flex items-center justify-between p-3 sm:p-4 bg-gray-100 cursor-pointer hover:bg-gray-200 active:bg-gray-300 transition-colors duration-150 rounded-t-lg"
                 onClick={() => handleRiskChange(preset.id)}
               >
                 <div className="flex items-center flex-1 min-w-0">
                   <div className="flex flex-col w-full">
                     <div className="flex items-baseline">
-                      <span className="text-white font-medium text-base sm:text-lg mr-1.5 sm:mr-3">
+                      <span className="text-gray-800 font-medium text-base sm:text-lg mr-1.5 sm:mr-3">
                         {preset.name}
                       </span>
-                      <span className="text-white text-sm sm:text-md font-semibold whitespace-nowrap mr-1.5 sm:mr-2">
+                      <span className="text-gray-700 text-sm sm:text-md font-semibold whitespace-nowrap mr-1.5 sm:mr-2">
                         {formatCurrency(preset.tariff_preset_clauses.find(clause => clause.insurance_clause.id === 1)?.tariff_amount || "0", 0)} {currencySymbol}
                       </span>
                       {!isCustomPackageSelected && selectedRisks[preset.id] && (
-                        <CheckCircle className="text-accent ml-1" fontSize="medium" />
+                        <CheckCircle className="text-primary ml-1" fontSize="medium" />
                       )}
                     </div>
                     <div className="flex flex-wrap items-center mt-1.5 sm:mt-1">
                       <div className="flex items-center">
                         {preset.statistics.total_premium > preset.statistics.total_amount && (
-                          <span className="text-white/60 text-sm sm:text-md font-semibold whitespace-nowrap line-through mr-1.5 sm:mr-2">
+                          <span className="text-gray-500 text-sm sm:text-md font-semibold whitespace-nowrap line-through mr-1.5 sm:mr-2">
                             {formatCurrency(
                                 CalcStatisticsService.calculate(
                                     preset.statistics.total_premium,
@@ -686,7 +677,7 @@ const CoveredRisksForm = ({
                             )} {currencySymbol}
                           </span>
                         )}
-                        <span className="text-accent text-sm sm:text-md font-semibold whitespace-nowrap">
+                        <span className="text-primary text-sm sm:text-md font-semibold whitespace-nowrap">
                           {formatCurrency(
                               CalcStatisticsService.calculate(
                                   preset.statistics.total_premium,
@@ -701,12 +692,12 @@ const CoveredRisksForm = ({
                   </div>
                 </div>
                 <span
-                  className="bg-white/10 rounded-full p-1.5 ml-2 flex-shrink-0"
+                  className="bg-gray-200 rounded-full p-1.5 ml-2 flex-shrink-0"
                   tabIndex={-1}
                   aria-label="Избери този пакет"
                 >
                   <svg 
-                    className="w-4 h-4 sm:w-5 sm:h-5 text-white transition-transform flex-shrink-0" 
+                    className="w-4 h-4 sm:w-5 sm:h-5 text-gray-700 transition-transform flex-shrink-0" 
                     fill="none" 
                     stroke="currentColor" 
                     viewBox="0 0 24 24"
@@ -719,30 +710,30 @@ const CoveredRisksForm = ({
           ))}
 
           {/* Custom Package Accordion */}
-          <div className="border border-white/20 rounded-lg overflow-hidden shadow-sm mt-4">
+          <div className="border border-gray-300 rounded-lg overflow-hidden shadow-sm mt-4">
             {/* Custom Package Accordion Header */}
             <div 
-              className="flex items-center justify-between p-3 sm:p-4 bg-white/10 cursor-pointer hover:bg-white/15 active:bg-white/20 transition-colors duration-150 rounded-t-lg"
+              className="flex items-center justify-between p-3 sm:p-4 bg-gray-100 cursor-pointer hover:bg-gray-200 active:bg-gray-300 transition-colors duration-150 rounded-t-lg"
               onClick={toggleCustomPackage}
             >
               <div className="flex items-center flex-1 min-w-0">
                 <div className="flex flex-col w-full">
                   <div className="flex items-center">
-                    <span className="text-white font-medium text-base sm:text-lg">
+                    <span className="text-gray-800 font-medium text-base sm:text-lg">
                       Пакет по избор
                     </span>
                     {isCustomPackageSelected && (
-                      <CheckCircle className="text-white ml-1" fontSize="medium" />
+                      <CheckCircle className="text-primary ml-1" fontSize="medium" />
                     )}
                   </div>
-                  <span className="text-white/70 text-xs sm:text-sm mt-1">
+                  <span className="text-gray-600 text-xs sm:text-sm mt-1">
                     Създайте свой собствен пакет
                   </span>
                 </div>
               </div>
-              <div className="bg-white/10 rounded-full p-1.5 ml-2 flex-shrink-0">
+              <div className="bg-gray-200 rounded-full p-1.5 ml-2 flex-shrink-0">
                 <svg 
-                  className={`w-4 h-4 sm:w-5 sm:h-5 text-white transition-transform flex-shrink-0 ${isCustomPackageExpanded ? 'transform rotate-180' : ''}`} 
+                  className={`w-4 h-4 sm:w-5 sm:h-5 text-gray-700 transition-transform flex-shrink-0 ${isCustomPackageExpanded ? 'transform rotate-180' : ''}`} 
                   fill="none" 
                   stroke="currentColor" 
                   viewBox="0 0 24 24"
@@ -754,11 +745,11 @@ const CoveredRisksForm = ({
 
             {/* Custom Package Accordion Content */}
             {isCustomPackageExpanded && (
-              <div className="p-3 bg-white/5">
+              <div className="p-3 bg-gray-50">
                 {/* Header - hidden on mobile */}
-                <div className="hidden sm:flex justify-between border-b border-white/10 py-1 mb-1">
-                  <div className="font-medium text-white text-sm sm:text-base">Клаузи</div>
-                  <div className="font-medium text-white text-sm sm:text-base">Застрахователна сума</div>
+                <div className="hidden sm:flex justify-between border-b border-gray-300 py-1 mb-1">
+                  <div className="font-medium text-gray-800 text-sm sm:text-base">Клаузи</div>
+                  <div className="font-medium text-gray-800 text-sm sm:text-base">Застрахователна сума</div>
                 </div>
 
                 {/* Clause rows with input fields - mobile optimized */}
@@ -766,14 +757,14 @@ const CoveredRisksForm = ({
                   {allClauses.map((clause) => (
                     // Hide the clause with id = 3 if estate_type_id is not 4
                     (clause.id !== 3 || formData.estate_type_id === '4') ? (
-                    <div key={clause.id} className="flex flex-col sm:flex-row sm:justify-between sm:items-center border-b border-white/10 py-2.5 sm:py-2">
-                      <div className="flex items-start sm:items-center text-white text-sm sm:text-base pr-2 flex-1 mb-1.5 sm:mb-0">
+                    <div key={clause.id} className="flex flex-col sm:flex-row sm:justify-between sm:items-center border-b border-gray-200 py-2.5 sm:py-2">
+                      <div className="flex items-start sm:items-center text-gray-800 text-sm sm:text-base pr-2 flex-1 mb-1.5 sm:mb-0">
                         <span className="leading-tight">{clause.name}</span>
                         {clause.description && (
                           <InfoModal
                             title={clause.name}
                             content={formatDescription(clause.description)}
-                            icon={<EyeIcon className="ml-1 text-yellow-400 flex-shrink-0 h-5 w-5" />}
+                            icon={<EyeIcon className="ml-1 text-primary flex-shrink-0 h-5 w-5" />}
                           />
                         )}
                       </div>
@@ -828,16 +819,16 @@ const CoveredRisksForm = ({
                 </div>
 
                 {/* Statistics section - same design as tariff presets */}
-                <div className="mt-4 sm:mt-6 rounded-lg overflow-hidden border border-white/20 shadow-md">
-                  <div className="border-b border-white/10 bg-white/5 p-2.5 sm:p-3">
+                <div className="mt-4 sm:mt-6 rounded-lg overflow-hidden border border-gray-300 shadow-md">
+                  <div className="border-b border-gray-200 bg-gray-100 p-2.5 sm:p-3">
                     <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center">
                       <div className="flex items-start sm:items-center mb-1 sm:mb-0">
-                        <span className="inline-block w-2 h-2 bg-blue-400 rounded-full mr-2 mt-1 sm:mt-0 flex-shrink-0"></span>
-                        <span className="uppercase text-white text-xs sm:text-sm font-medium leading-tight">
+                        <span className="inline-block w-2 h-2 bg-blue-500 rounded-full mr-2 mt-1 sm:mt-0 flex-shrink-0"></span>
+                        <span className="uppercase text-gray-800 text-xs sm:text-sm font-medium leading-tight">
                           Застрахователна премия
                         </span>
                       </div>
-                      <div className="text-accent font-semibold text-sm sm:text-base sm:ml-2 self-end sm:self-auto">
+                      <div className="text-primary font-semibold text-sm sm:text-base sm:ml-2 self-end sm:self-auto">
                         {formatCurrency(
                             CalcStatisticsService.calculate(
                                 customPackageStatistics.statistics.total_premium,
@@ -849,15 +840,15 @@ const CoveredRisksForm = ({
                       </div>
                     </div>
                   </div>
-                  <div className="border-b border-white/10 bg-white/5 p-2.5 sm:p-3">
+                  <div className="border-b border-gray-200 bg-gray-100 p-2.5 sm:p-3">
                     <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center">
                       <div className="flex items-start sm:items-center mb-1 sm:mb-0">
-                        <span className="inline-block w-2 h-2 bg-green-400 rounded-full mr-2 mt-1 sm:mt-0 flex-shrink-0"></span>
-                        <span className="uppercase text-white text-xs sm:text-sm font-medium leading-tight">
+                        <span className="inline-block w-2 h-2 bg-green-500 rounded-full mr-2 mt-1 sm:mt-0 flex-shrink-0"></span>
+                        <span className="uppercase text-gray-800 text-xs sm:text-sm font-medium leading-tight">
                           Застрахователна премия след отстъпка {customPackageStatistics.discount_percent}%
                         </span>
                       </div>
-                      <div className="text-accent font-semibold text-sm sm:text-base sm:ml-2 self-end sm:self-auto">
+                      <div className="text-primary font-semibold text-sm sm:text-base sm:ml-2 self-end sm:self-auto">
                         {formatCurrency(
                             CalcStatisticsService.calculate(
                                 customPackageStatistics.statistics.total_premium,
@@ -872,16 +863,16 @@ const CoveredRisksForm = ({
 
                   {/* Show premium after promo code if a valid promo code is applied */}
                   {promoCodeValid && promoDiscount && customPackageStatistics.statistics.discounted_premium && (
-                      <div className="border-b border-white/10 bg-white/5 p-3">
+                      <div className="border-b border-gray-200 bg-gray-100 p-3">
                         <div className="flex justify-between items-center">
                           <div className="flex items-center">
-                            <span className="inline-block w-2 h-2 bg-green-400 rounded-full mr-2"></span>
-                              <span className="uppercase text-white text-xs sm:text-sm font-medium">
+                            <span className="inline-block w-2 h-2 bg-green-500 rounded-full mr-2"></span>
+                              <span className="uppercase text-gray-800 text-xs sm:text-sm font-medium">
                               Застрахователна премия след приложен промо код {promoDiscount}%
                             </span>
                           </div>
                           <div className="font-semibold text-base sm:text-lg ml-2 whitespace-nowrap">
-                            <span className="text-accent">
+                            <span className="text-primary">
                               {formatCurrency(
                                   CalcStatisticsService.calculate(
                                       customPackageStatistics.statistics.total_premium,
@@ -896,15 +887,15 @@ const CoveredRisksForm = ({
                       </div>
                   )}
 
-                  <div className="border-b border-white/10 bg-white/5 p-2.5 sm:p-3">
+                  <div className="border-b border-gray-200 bg-gray-100 p-2.5 sm:p-3">
                     <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center">
                       <div className="flex items-start sm:items-center mb-1 sm:mb-0">
-                        <span className="inline-block w-2 h-2 bg-yellow-400 rounded-full mr-2 mt-1 sm:mt-0 flex-shrink-0"></span>
-                        <span className="uppercase text-white text-xs sm:text-sm font-medium leading-tight">
+                        <span className="inline-block w-2 h-2 bg-yellow-500 rounded-full mr-2 mt-1 sm:mt-0 flex-shrink-0"></span>
+                        <span className="uppercase text-gray-800 text-xs sm:text-sm font-medium leading-tight">
                           Данък върху застрахователната премия {customPackageStatistics.tax_percent}%
                         </span>
                       </div>
-                      <div className="text-accent font-semibold text-sm sm:text-base sm:ml-2 self-end sm:self-auto">
+                      <div className="text-primary font-semibold text-sm sm:text-base sm:ml-2 self-end sm:self-auto">
                         {formatCurrency(
                             CalcStatisticsService.calculate(
                                 customPackageStatistics.statistics.total_premium,
@@ -916,7 +907,7 @@ const CoveredRisksForm = ({
                       </div>
                     </div>
                   </div>
-                  <div className="bg-primary/70 p-2.5 sm:p-3">
+                  <div className="bg-primary p-2.5 sm:p-3">
                     <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center">
                       <div className="flex items-start sm:items-center mb-1.5 sm:mb-0">
                         <span className="inline-block w-3 h-3 bg-red-500 rounded-full mr-2 mt-0.5 sm:mt-0 flex-shrink-0"></span>
@@ -924,7 +915,7 @@ const CoveredRisksForm = ({
                           Общо дължима сума за една година
                         </span>
                       </div>
-                      <div className="text-accent font-bold text-base sm:text-lg sm:ml-2 self-end sm:self-auto">
+                      <div className="text-white font-bold text-base sm:text-lg sm:ml-2 self-end sm:self-auto">
                         {formatCurrency(
                             CalcStatisticsService.calculate(
                                 customPackageStatistics.statistics.total_premium,
@@ -941,7 +932,7 @@ const CoveredRisksForm = ({
                 {/* Choose button for custom package */}
                 <div className="flex flex-col w-full sm:items-center mt-5">
                   {validationError && (
-                    <div className="mb-3 text-red-300 text-sm text-center w-full">
+                    <div className="mb-3 text-red-600 text-sm text-center w-full bg-red-100 p-2 rounded-md border border-red-300">
                       {validationError}
                     </div>
                   )}
