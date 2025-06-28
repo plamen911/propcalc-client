@@ -150,15 +150,15 @@ const TariffPreview = ({ selectedTariff, currencySymbol, promoCodeValid, promoDi
                                 </div>
                             )}
 
-                            <div className="bg-primary p-2.5 sm:p-3">
+                            <div className="border-b border-gray-200 bg-gray-100 p-2.5 sm:p-3">
                                 <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center">
                                     <div className="flex items-start sm:items-center mb-1.5 sm:mb-0">
                                         <span className="inline-block w-3 h-3 bg-red-500 rounded-full mr-2 mt-0.5 sm:mt-0 flex-shrink-0"></span>
-                                        <span className="uppercase text-white text-sm font-bold leading-tight">
+                                        <span className="uppercase text-gray-800 text-xs sm:text-sm font-medium leading-tight">
                                           Общо дължима сума за една година
                                         </span>
                                     </div>
-                                    <div className="text-white font-bold text-base sm:text-lg sm:ml-2 self-end sm:self-auto">
+                                    <div className="text-primary font-semibold text-sm sm:text-base sm:ml-2 self-end sm:self-auto pulse">
                                         {formatCurrency(
                                             CalcStatisticsService.calculate(
                                                 selectedTariff.statistics.total_premium,
