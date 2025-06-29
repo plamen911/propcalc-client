@@ -1025,13 +1025,6 @@ const InsurerForm = ({
         </DialogContent>
       </Dialog>
 
-      <TariffPreview
-          selectedTariff={selectedTariff}
-          currencySymbol={currencySymbol}
-          promoCodeValid={promoCodeValid}
-          promoDiscount={promoDiscount}
-      />
-
       <div className="bg-white/10 p-5 sm:p-6 rounded-xl mb-5 sm:mb-6 border border-white/20">
         <h3 className="text-lg font-medium text-white mb-3 sm:mb-4">
           Данни за имота

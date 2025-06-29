@@ -7,7 +7,7 @@ import api from '../services/api';
 import AuthService from '../services/auth';
 import LoadingSpinner from './ui/LoadingSpinner.jsx';
 import ErrorDisplay from './ui/ErrorDisplay.jsx';
-import ErrorBoundary from './ui/ErrorBoundary';
+import TariffPreviewForm from "./TariffPreviewForm.jsx";
 
 const MultiStepForm = () => {
   const [currentStep, setCurrentStep] = useState(0);
@@ -231,40 +231,49 @@ const MultiStepForm = () => {
         );
       case 1:
         return (
-          <ErrorBoundary>
-            <CoveredRisksForm 
-              formData={formData}
-              nextStep={nextStep} 
-              prevStep={prevStep}
-              lastOpenedAccordion={lastOpenedAccordion}
-              setLastOpenedAccordion={setLastOpenedAccordion}
-              customClauseAmounts={customClauseAmounts}
-              setCustomClauseAmounts={setCustomClauseAmounts}
-              selectedRisks={selectedRisks}
-              setSelectedRisks={setSelectedRisks}
-              isCustomPackageSelected={isCustomPackageSelected}
-              setIsCustomPackageSelected={setIsCustomPackageSelected}
-              setSelectedTariff={setSelectedTariff}
-              currencySymbol={currencySymbol}
-              clauseCheckboxes={clauseCheckboxes}
-              setClauseCheckboxes={setClauseCheckboxes}
-              promoCode={promoCode}
-              setPromoCode={setPromoCode}
-              promoCodeValid={promoCodeValid}
-              setPromoCodeValid={setPromoCodeValid}
-              promoCodeError={promoCodeError}
-              setPromoCodeError={setPromoCodeError}
-              promoDiscount={promoDiscount}
-              setPromoDiscount={setPromoDiscount}
-              promoDiscountedAmount={promoDiscountedAmount}
-              setPromoDiscountedAmount={setPromoDiscountedAmount}
-              validatingPromo={validatingPromo}
-              setValidatingPromo={setValidatingPromo}
-              setPromoCodeId={setPromoCodeId}
+            <CoveredRisksForm
+                formData={formData}
+                nextStep={nextStep}
+                prevStep={prevStep}
+                lastOpenedAccordion={lastOpenedAccordion}
+                setLastOpenedAccordion={setLastOpenedAccordion}
+                customClauseAmounts={customClauseAmounts}
+                setCustomClauseAmounts={setCustomClauseAmounts}
+                selectedRisks={selectedRisks}
+                setSelectedRisks={setSelectedRisks}
+                isCustomPackageSelected={isCustomPackageSelected}
+                setIsCustomPackageSelected={setIsCustomPackageSelected}
+                setSelectedTariff={setSelectedTariff}
+                currencySymbol={currencySymbol}
+                clauseCheckboxes={clauseCheckboxes}
+                setClauseCheckboxes={setClauseCheckboxes}
+                promoCode={promoCode}
+                setPromoCode={setPromoCode}
+                promoCodeValid={promoCodeValid}
+                setPromoCodeValid={setPromoCodeValid}
+                promoCodeError={promoCodeError}
+                setPromoCodeError={setPromoCodeError}
+                promoDiscount={promoDiscount}
+                setPromoDiscount={setPromoDiscount}
+                promoDiscountedAmount={promoDiscountedAmount}
+                setPromoDiscountedAmount={setPromoDiscountedAmount}
+                validatingPromo={validatingPromo}
+                setValidatingPromo={setValidatingPromo}
+                setPromoCodeId={setPromoCodeId}
             />
-          </ErrorBoundary>
         );
       case 2:
+        return (
+            <TariffPreviewForm
+                nextStep={nextStep}
+                prevStep={prevStep}
+                selectedTariff={selectedTariff}
+                currencySymbol={currencySymbol}
+                promoCodeValid={promoCodeValid}
+                promoDiscount={promoDiscount}
+            />
+        );
+      case 3:
         return (
           <InsurerForm 
             nextStep={nextStep} 
@@ -281,7 +290,7 @@ const MultiStepForm = () => {
             promoDiscountedAmount={promoDiscountedAmount}
           />
         );
-      case 3:
+      case 4:
         return (
           <OrderPreviewForm 
             prevStep={prevStep}
@@ -305,8 +314,9 @@ const MultiStepForm = () => {
   const steps = [
     'Данни за имота',
     'Покрити рискове',
-    'Застраховащ имота',
-    'Преглед на поръчката'
+    'Избран пакет',
+    'Допълнит. данни',
+    'Преглед поръчка'
   ];
 
   // Define custom animation styles with enhanced effects
@@ -340,9 +350,9 @@ const MultiStepForm = () => {
 
       {/* Stepper - improved for mobile */}
       <div className="p-4 sm:p-6 md:p-8 bg-primary/90 border-b border-primary/30">
-        <div className="flex items-center justify-between">
+        <div className="flex items-center">
           {steps.map((label, index) => (
-            <div key={label} className="flex flex-col items-center">
+            <div key={label} className="flex flex-col items-center w-1/5">
               <div className="relative flex items-center">
                 <div className={`w-8 h-8 sm:w-10 sm:h-10 rounded-full flex items-center justify-center ${
                   currentStep > index || (index === 3 && currentStep === 3)
@@ -360,12 +370,12 @@ const MultiStepForm = () => {
                   )}
                 </div>
                 {index < steps.length - 1 && (
-                  <div className={`absolute top-4 sm:top-5 w-full h-0.5 left-8 -right-8 sm:left-10 sm:-right-10 ${
+                  <div className={`absolute top-4 sm:top-5 h-0.5 left-8 right-0 sm:left-10 sm:right-0 ${
                     currentStep > index ? 'bg-primary' : 'bg-white/30'
-                  }`}></div>
+                  }`} style={{ width: 'calc(100% - 8px)' }}></div>
                 )}
               </div>
-              <span className="mt-2 sm:mt-3 text-xs sm:text-sm font-medium text-white text-center">
+              <span className="mt-2 sm:mt-3 text-xs sm:text-sm font-medium text-white text-center max-w-[60px] sm:max-w-none truncate">
                 {label}
               </span>
             </div>
