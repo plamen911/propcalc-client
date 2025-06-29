@@ -14,6 +14,7 @@ import { styled } from '@mui/material/styles';
 import BackButton from './ui/BackButton.jsx';
 import ProceedButton from './ui/ProceedButton.jsx';
 import CheckCircleOutlineIcon from '@mui/icons-material/CheckCircleOutline';
+import CheckIcon from './ui/CheckIcon.jsx';
 import api from '../services/api';
 import ErrorDisplay from './ui/ErrorDisplay.jsx';
 // import { formatCurrency } from '../utils/formatters';
@@ -489,7 +490,7 @@ const OrderPreviewForm = ({ prevStep, selectedTariff, insurerData, checkedItems,
                 <h3 className="text-base sm:text-lg font-medium text-gray-800 mb-2 sm:mb-3">
                   Собственик
                 </h3>
-                <div className="p-3 bg-gray-50 rounded-lg mb-4 border border-gray-200">
+                <div className="p-3 bg-gray-50 rounded-lg border border-gray-200">
                   <div className="space-y-2 sm:space-y-3">
                     {/* Property Owner Name */}
                     <div className="flex flex-col sm:flex-row sm:items-center border-b border-gray-200 py-2">
@@ -555,7 +556,7 @@ const OrderPreviewForm = ({ prevStep, selectedTariff, insurerData, checkedItems,
                 <h3 className="text-base sm:text-lg font-medium text-gray-800 mb-2 sm:mb-3">
                   Застраховащ
                 </h3>
-                <div className="p-3 bg-gray-50 rounded-lg mb-4 border border-gray-200">
+                <div className="p-3 bg-gray-50 rounded-lg border border-gray-200">
                   <div className="space-y-2 sm:space-y-3">
                     <div className="flex flex-col sm:flex-row sm:items-center border-b border-gray-200 py-2">
                       <div className="text-gray-800 text-sm sm:text-base pr-2 font-medium mb-0.5 sm:mb-0 sm:w-1/3">{getPersonRoleText()}</div>
@@ -619,24 +620,28 @@ const OrderPreviewForm = ({ prevStep, selectedTariff, insurerData, checkedItems,
             </div>
           )}
 
-          {/* Document links section - always visible before agree section */}
-          <div className="mb-4 flex flex-col gap-3 sm:gap-2 ml-1">
-            {[
-              { uri: "https://propcalc.zastrahovaite.com/docs/propcalc/pre-contract-insurance-info.pdf", title: "Информация преди сключване на застрахователния договор" },
-              { uri: "https://propcalc.zastrahovaite.com/docs/propcalc/property-insurance-product-info.pdf", title: "Информационен документ" },
-              { uri: "https://propcalc.zastrahovaite.com/docs/propcalc/bonus-home-plus.pdf", title: "Бонус дом+" }
-            ].map((doc) => (
-              <a
-                key={doc.uri}
-                href={doc.uri}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="block w-full px-4 py-3 rounded-lg bg-gray-50 text-primary underline font-semibold hover:text-primary-dark hover:bg-gray-100 transition-colors duration-150 text-base sm:text-base break-words border border-gray-200"
-                style={{ minHeight: '44px' }}
-              >
-                {doc.title}
-              </a>
-            ))}
+          {/* Document links section - always visible before the agree section */}
+          <div className="mb-4">
+            <div className="p-3 bg-gray-50 rounded-lg border border-gray-200">
+              <div className="space-y-2">
+                {[
+                  { uri: "https://propcalc.zastrahovaite.com/docs/propcalc/pre-contract-insurance-info.pdf", title: "Информация преди сключване на застрахователния договор" },
+                  { uri: "https://propcalc.zastrahovaite.com/docs/propcalc/property-insurance-product-info.pdf", title: "Информационен документ" },
+                  { uri: "https://propcalc.zastrahovaite.com/docs/propcalc/bonus-home-plus.pdf", title: "Бонус дом+" }
+                ].map((doc) => (
+                  <a
+                    key={doc.uri}
+                    href={doc.uri}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="flex items-center py-2 text-primary hover:text-primary-dark transition-colors duration-150 text-base sm:text-base break-words"
+                  >
+                    <CheckIcon className="text-primary mr-2 flex-shrink-0 h-5 w-5" />
+                    <span className="underline">{doc.title}</span>
+                  </a>
+                ))}
+              </div>
+            </div>
           </div>
 
           <div className="flex items-start mb-4">
