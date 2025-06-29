@@ -343,7 +343,7 @@ const OrderPreviewForm = ({ prevStep, selectedTariff, insurerData, checkedItems,
   return (
     <form onSubmit={handleSubmit}>
       {isSubmitted && policyData && (
-        <Box sx={{ mb: { xs: 2, sm: 3 }, display: 'flex', flexDirection: 'column', alignItems: 'center', px: { xs: 2, sm: 3 } }}>
+        <Box sx={{ mb: { xs: 3, sm: 3 }, display: 'flex', flexDirection: 'column', alignItems: 'center', px: { xs: 1, sm: 3 } }}>
           <style>
             {`
               @keyframes colorPulse {
@@ -362,21 +362,21 @@ const OrderPreviewForm = ({ prevStep, selectedTariff, insurerData, checkedItems,
               '& .MuiAlert-icon': {
                 display: 'none'
               },
-              mb: 2,
-              py: { xs: 2, sm: 3 },
-              px: { xs: 3, sm: 4 }
+              mb: 3,
+              py: { xs: 3, sm: 3 },
+              px: { xs: 2, sm: 4 }
             }}
           >
             <div className="text-center">
-              <div className="flex items-center justify-center mb-3">
-                <CheckCircleOutlineIcon style={{ color: '#4caf50', fontSize: '2.5rem' }} />
+              <div className="flex items-center justify-center mb-4 sm:mb-3">
+                <CheckCircleOutlineIcon style={{ color: '#4caf50', fontSize: '3rem' }} />
               </div>
-              <div className="text-xl sm:text-2xl font-bold mb-2 text-white">ВАШАТА ПОРЪЧКА Е ПРИЕТА УСПЕШНО!</div>
-              <div className="bg-white/10 py-2 px-4 rounded-lg inline-block mb-3 border border-white/20">
-                <span className="text-base sm:text-lg font-medium text-white">НОМЕР НА ПОРЪЧКАТА:</span>
-                <span className="text-lg sm:text-xl font-bold ml-2 text-white" style={{animation: 'colorPulse 2s ease-in-out infinite'}}>{policyData.code}</span>
+              <div className="text-xl sm:text-2xl font-bold mb-3 sm:mb-2 text-white leading-tight">ВАШАТА ПОРЪЧКА Е ПРИЕТА УСПЕШНО!</div>
+              <div className="bg-white/10 py-3 sm:py-2 px-3 sm:px-4 rounded-lg inline-block mb-4 sm:mb-3 border border-white/20">
+                <span className="text-base sm:text-lg font-medium text-white block sm:inline">НОМЕР НА ПОРЪЧКАТА:</span>
+                <span className="text-xl sm:text-xl font-bold sm:ml-2 text-white block sm:inline mt-1 sm:mt-0" style={{animation: 'colorPulse 2s ease-in-out infinite'}}>{policyData.code}</span>
               </div>
-              <div className="text-base sm:text-lg mb-4 leading-relaxed bg-white/5 p-3 rounded-lg border border-white/10">
+              <div className="text-sm sm:text-base mb-5 sm:mb-4 leading-relaxed bg-white/5 p-4 sm:p-3 rounded-lg border border-white/10">
                 <p className="mb-3 text-white">Екипът на ЗБ "Дженерал Брокер Клуб" ООД Ви благодари за направения избор.</p>
                 <p className="text-white">Нашите експерти ще обработят заявката и ще се свържат с Вас по телефон или имейл за уточняване на плащане и доставка на полицата.</p>
               </div>
@@ -386,7 +386,7 @@ const OrderPreviewForm = ({ prevStep, selectedTariff, insurerData, checkedItems,
                     resetForm();
                   }
                 }}
-                className="inline-flex items-center justify-center py-3 px-6 border border-transparent shadow-sm text-base font-medium rounded-full text-white bg-[#6b1021] hover:bg-[#5a0d1c] focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-[#6b1021] transition-all duration-200 hover:scale-105 min-h-[56px] touch-manipulation"
+                className="inline-flex items-center justify-center py-4 sm:py-3 px-8 sm:px-6 border border-transparent shadow-sm text-base font-medium rounded-full text-white bg-[#6b1021] hover:bg-[#5a0d1c] focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-[#6b1021] transition-all duration-200 hover:scale-105 min-h-[60px] sm:min-h-[56px] w-full sm:w-auto touch-manipulation"
               >
                 ГОТОВО
               </button>
@@ -422,57 +422,57 @@ const OrderPreviewForm = ({ prevStep, selectedTariff, insurerData, checkedItems,
           />
 
           {formData && (
-            <div className="mb-4">
-              <div className="bg-white p-3 sm:p-4 rounded-xl mb-3 sm:mb-4 border border-gray-200 shadow-sm">
-                <h3 className="text-base sm:text-lg font-medium text-gray-800 mb-2 sm:mb-3">
+            <div className="mb-5 sm:mb-4">
+              <div className="bg-white p-4 sm:p-4 rounded-xl mb-4 sm:mb-4 border border-gray-200 shadow-sm">
+                <h3 className="text-lg sm:text-lg font-medium text-gray-800 mb-3 sm:mb-3">
                   Данни за имота
                 </h3>
-                <div className="p-3 bg-gray-50 rounded-lg mb-4 border border-gray-200">
-                  <div className="space-y-2 sm:space-y-3">
-                    <div className="flex flex-col sm:flex-row sm:items-center border-b border-gray-200 py-2">
-                      <div className="text-gray-800 text-sm sm:text-base pr-2 font-medium mb-0.5 sm:mb-0 sm:w-1/3">Населено място:</div>
-                      <div className="text-gray-800 text-sm sm:text-base font-semibold sm:w-2/3">{estateSettlementData ? estateSettlementData.name : 'Не е посочено'}</div>
+                <div className="p-4 sm:p-3 bg-gray-50 rounded-lg mb-4 border border-gray-200">
+                  <div className="space-y-3 sm:space-y-3">
+                    <div className="flex flex-col sm:flex-row sm:items-center border-b border-gray-200 py-3 sm:py-2">
+                      <div className="text-gray-800 text-base sm:text-base pr-2 font-medium mb-1 sm:mb-0 sm:w-1/3">Населено място:</div>
+                      <div className="text-gray-800 text-base sm:text-base font-semibold sm:w-2/3">{estateSettlementData ? estateSettlementData.name : 'Не е посочено'}</div>
                     </div>
                     {/* Property Address */}
                     {insurerData && insurerData.property_address && (
-                      <div className="flex flex-col sm:flex-row sm:items-center border-b border-gray-200 py-2">
-                        <div className="text-gray-800 text-sm sm:text-base pr-2 font-medium mb-0.5 sm:mb-0 sm:w-1/3">Точен адрес на имота:</div>
-                        <div className="text-gray-800 text-sm sm:text-base font-semibold sm:w-2/3">{insurerData.property_address}</div>
+                      <div className="flex flex-col sm:flex-row sm:items-center border-b border-gray-200 py-3 sm:py-2">
+                        <div className="text-gray-800 text-base sm:text-base pr-2 font-medium mb-1 sm:mb-0 sm:w-1/3">Точен адрес на имота:</div>
+                        <div className="text-gray-800 text-base sm:text-base font-semibold sm:w-2/3">{insurerData.property_address}</div>
                       </div>
                     )}
                     {insurerData.property_additional_info && (
-                      <div className="flex flex-col sm:flex-row sm:items-center border-b border-gray-200 py-2">
-                        <div className="text-gray-800 text-sm sm:text-base pr-2 font-medium mb-0.5 sm:mb-0 sm:w-1/3">Допълнителни пояснения:</div>
-                        <div className="text-gray-800 text-sm sm:text-base font-semibold sm:w-2/3">{insurerData.property_additional_info}</div>
+                      <div className="flex flex-col sm:flex-row sm:items-center border-b border-gray-200 py-3 sm:py-2">
+                        <div className="text-gray-800 text-base sm:text-base pr-2 font-medium mb-1 sm:mb-0 sm:w-1/3">Допълнителни пояснения:</div>
+                        <div className="text-gray-800 text-base sm:text-base font-semibold sm:w-2/3">{insurerData.property_additional_info}</div>
                       </div>
                     )}
-                    <div className="flex flex-col sm:flex-row sm:items-center border-b border-gray-200 py-2">
-                      <div className="text-gray-800 text-sm sm:text-base pr-2 font-medium mb-0.5 sm:mb-0 sm:w-1/3">Тип имот:</div>
-                      <div className="text-gray-800 text-sm sm:text-base font-semibold sm:w-2/3">{getEstateTypeName()}</div>
+                    <div className="flex flex-col sm:flex-row sm:items-center border-b border-gray-200 py-3 sm:py-2">
+                      <div className="text-gray-800 text-base sm:text-base pr-2 font-medium mb-1 sm:mb-0 sm:w-1/3">Тип имот:</div>
+                      <div className="text-gray-800 text-base sm:text-base font-semibold sm:w-2/3">{getEstateTypeName()}</div>
                     </div>
-                    <div className="flex flex-col sm:flex-row sm:items-center border-b border-gray-200 py-2">
-                      <div className="text-gray-800 text-sm sm:text-base pr-2 font-medium mb-0.5 sm:mb-0 sm:w-1/3">Вид имот:</div>
-                      <div className="text-gray-800 text-sm sm:text-base font-semibold sm:w-2/3">{getEstateSubtypeName()}</div>
+                    <div className="flex flex-col sm:flex-row sm:items-center border-b border-gray-200 py-3 sm:py-2">
+                      <div className="text-gray-800 text-base sm:text-base pr-2 font-medium mb-1 sm:mb-0 sm:w-1/3">Вид имот:</div>
+                      <div className="text-gray-800 text-base sm:text-base font-semibold sm:w-2/3">{getEstateSubtypeName()}</div>
                     </div>
-                    <div className="flex flex-col sm:flex-row sm:items-center border-b border-gray-200 py-2">
-                      <div className="text-gray-800 text-sm sm:text-base pr-2 font-medium mb-0.5 sm:mb-0 sm:w-1/3">Отстояние от воден басейн:</div>
-                      <div className="text-gray-800 text-sm sm:text-base font-semibold sm:w-2/3">{getDistanceToWaterName()}</div>
+                    <div className="flex flex-col sm:flex-row sm:items-center border-b border-gray-200 py-3 sm:py-2">
+                      <div className="text-gray-800 text-base sm:text-base pr-2 font-medium mb-1 sm:mb-0 sm:w-1/3">Отстояние от воден басейн:</div>
+                      <div className="text-gray-800 text-base sm:text-base font-semibold sm:w-2/3">{getDistanceToWaterName()}</div>
                     </div>
-                    <div className="flex flex-col sm:flex-row sm:items-center border-b border-gray-200 py-2">
-                      <div className="text-gray-800 text-sm sm:text-base pr-2 font-medium mb-0.5 sm:mb-0 sm:w-1/3">РЗП:</div>
-                      <div className="text-gray-800 text-sm sm:text-base font-semibold sm:w-2/3">{formData.area_sq_meters ? `${formData.area_sq_meters} кв.м.` : 'Не е посочено'}</div>
+                    <div className="flex flex-col sm:flex-row sm:items-center border-b border-gray-200 py-3 sm:py-2">
+                      <div className="text-gray-800 text-base sm:text-base pr-2 font-medium mb-1 sm:mb-0 sm:w-1/3">РЗП:</div>
+                      <div className="text-gray-800 text-base sm:text-base font-semibold sm:w-2/3">{formData.area_sq_meters ? `${formData.area_sq_meters} кв.м.` : 'Не е посочено'}</div>
                     </div>
                   </div>
                 </div>
 
                 {propertyChecklistItems.length > 0 && checkedItems && Object.keys(checkedItems).length > 0 && (
-                  <div className="p-3 bg-gray-50 rounded-lg mt-3 sm:mt-4 border border-gray-200">
+                  <div className="p-4 sm:p-3 bg-gray-50 rounded-lg mt-4 sm:mt-4 border border-gray-200">
                     {/* Property checklist rows - mobile optimized */}
-                    <div className="space-y-2">
+                    <div className="space-y-3 sm:space-y-2">
                       {propertyChecklistItems.map(item => (
-                        <div key={item.id} className="flex flex-col sm:flex-row sm:justify-between sm:items-center border-b border-gray-200 py-2">
-                          <div className="text-gray-800 text-sm sm:text-base pr-2 font-medium mb-0.5 sm:mb-0 sm:flex-1">{item.name}</div>
-                          <div className="text-primary text-sm sm:text-base text-left sm:text-right font-semibold">
+                        <div key={item.id} className="flex flex-col sm:flex-row sm:justify-between sm:items-center border-b border-gray-200 py-3 sm:py-2">
+                          <div className="text-gray-800 text-base sm:text-base pr-2 font-medium mb-1 sm:mb-0 sm:flex-1">{item.name}</div>
+                          <div className="text-primary text-base sm:text-base text-left sm:text-right font-semibold">
                             {checkedItems[item.id] === true ? 'Да' : checkedItems[item.id] === false ? 'Не' : 'Не е посочено'}
                           </div>
                         </div>
@@ -622,7 +622,7 @@ const OrderPreviewForm = ({ prevStep, selectedTariff, insurerData, checkedItems,
 
           {/* Document links section - always visible before the agree section */}
           <div className="mb-4">
-            <div className="p-3 bg-gray-50 rounded-lg border border-gray-200">
+            <div className="p-3 sm:p-4 bg-gray-50 rounded-lg border border-gray-200">
               <div className="space-y-2">
                 {[
                   { uri: "https://propcalc.zastrahovaite.com/docs/propcalc/pre-contract-insurance-info.pdf", title: "Информация преди сключване на застрахователния договор" },
@@ -634,9 +634,9 @@ const OrderPreviewForm = ({ prevStep, selectedTariff, insurerData, checkedItems,
                     href={doc.uri}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="flex items-center py-2 text-primary hover:text-primary-dark transition-colors duration-150 text-base sm:text-base break-words"
+                    className="flex items-center py-3 sm:py-2 text-primary hover:text-primary-dark transition-colors duration-150 text-sm sm:text-base break-words"
                   >
-                    <CheckIcon className="text-primary mr-2 flex-shrink-0 h-5 w-5" />
+                    <CheckIcon className="text-primary mr-3 flex-shrink-0 h-6 w-6 sm:h-5 sm:w-5" />
                     <span className="underline">{doc.title}</span>
                   </a>
                 ))}
@@ -644,32 +644,35 @@ const OrderPreviewForm = ({ prevStep, selectedTariff, insurerData, checkedItems,
             </div>
           </div>
 
-          <div className="flex items-start mb-4">
+          <div className="flex items-start mb-5 sm:mb-4 px-1 sm:px-0">
             <input
               type="checkbox"
               id="terms-checkbox"
               checked={termsAccepted}
               onChange={handleTermsChange}
-              className="mt-1 mr-2 sm:mr-3 h-5 w-5 sm:h-4 sm:w-4 text-primary border-white/50 rounded focus:ring-primary"
+              className="mt-0.5 sm:mt-1 mr-3 sm:mr-3 h-6 w-6 sm:h-4 sm:w-4 text-primary border-white/50 rounded focus:ring-primary"
             />
-            <label htmlFor="terms-checkbox" className="text-white text-sm sm:text-base leading-tight">
+            <label htmlFor="terms-checkbox" className="text-white text-sm sm:text-base leading-tight -mt-1 sm:mt-0">
               Декларирам, че съм съгласен/а предоставените от мен лични данни по смисъла на чл.2 от Закона за защита на личните данни, да бъдат обработвани от ЗБ "Дженерал Брокер Клуб" ООД за предоставяне на застрахователни услуги, предоставяни на Асоциацията на българските застрахователи и Комисията за финансов надзор.
             </label>
           </div>
 
           {error && (
-            <div className="mb-4">
+            <div className="mb-5 sm:mb-4 px-1 sm:px-0">
               <ErrorDisplay error={error} />
             </div>
           )}
 
-          <div className="flex flex-col sm:flex-row justify-between gap-4 sm:gap-3 mt-5 sm:mt-6">
-            <BackButton onClick={prevStep} className="order-2 sm:order-1" />
+          <div className="flex flex-col sm:flex-row justify-between gap-5 sm:gap-3 mt-6 sm:mt-6">
+            <BackButton 
+              onClick={prevStep} 
+              className="order-2 sm:order-1 py-4 sm:py-3 min-h-[60px] sm:min-h-[48px] text-base" 
+            />
             <ProceedButton
               type="submit"
               disabled={isSubmitted}
               text={isSubmitted ? 'Изпратено' : 'ЗАВЪРШИ'}
-              className="order-1 sm:order-2"
+              className="order-1 sm:order-2 py-4 sm:py-3 min-h-[60px] sm:min-h-[48px] text-base"
             />
           </div>
         </>
