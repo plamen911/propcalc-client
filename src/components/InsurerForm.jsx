@@ -1042,7 +1042,7 @@ const InsurerForm = ({
                 id="property_settlement"
                 value={propertySettlement ? `${propertySettlement.name}, ${propertySettlement.post_code}` : ''}
                 readOnly
-                className="block w-full rounded-md shadow-sm focus:ring-primary focus:border-primary sm:text-sm text-black bg-gray-100 border-gray-300"
+                className="block w-full rounded-md shadow-sm focus:ring-primary focus:border-primary py-4 sm:py-2 sm:text-sm text-black bg-gray-100 border-gray-300"
               />
             </div>
           </div>
@@ -1061,7 +1061,7 @@ const InsurerForm = ({
                 onChange={handleChange}
                 placeholder="Въведете Точен адрес на имота"
                 required
-                className={`block w-full rounded-md shadow-sm focus:ring-primary focus:border-primary sm:text-sm text-black ${isFieldInvalid('property_address') ? 'border-error' : 'border-gray-300'}`}
+                className={`block w-full rounded-md shadow-sm focus:ring-primary focus:border-primary py-4 sm:py-2 sm:text-sm text-black ${isFieldInvalid('property_address') ? 'border-error' : 'border-gray-300'}`}
               />
               {isFieldInvalid('property_address') && <ErrorIcon />}
             </div>
@@ -1080,7 +1080,7 @@ const InsurerForm = ({
                 value={insurerData.property_additional_info || ''}
                 onChange={handleChange}
                 placeholder="Въведете допълнителни данни"
-                className="block w-full rounded-md shadow-sm focus:ring-primary focus:border-primary sm:text-sm text-black border-gray-300"
+                className="block w-full rounded-md shadow-sm focus:ring-primary focus:border-primary py-4 sm:py-2 sm:text-sm text-black border-gray-300"
               />
             </div>
           </div>
@@ -1107,7 +1107,7 @@ const InsurerForm = ({
                 onChange={handleChange}
                 placeholder="Въведете имена на собственика"
                 required
-                className={`block w-full rounded-md shadow-sm focus:ring-primary focus:border-primary sm:text-sm text-black ${isFieldInvalid('property_owner_name') ? 'border-error' : 'border-gray-300'}`}
+                className={`block w-full rounded-md shadow-sm focus:ring-primary focus:border-primary py-4 sm:py-2 sm:text-sm text-black ${isFieldInvalid('property_owner_name') ? 'border-error' : 'border-gray-300'}`}
               />
               {isFieldInvalid('property_owner_name') && <ErrorIcon />}
             </div>
@@ -1125,7 +1125,7 @@ const InsurerForm = ({
                   name="property_owner_id_number_type_id"
                   value={insurerData.property_owner_id_number_type_id || ''}
                   onChange={handleChange}
-                  className={`appearance-none block w-full pl-3 pr-10 py-4 sm:py-2 text-base sm:text-base border-gray-300 focus:outline-none focus:ring-primary focus:border-primary rounded-md text-black touch-manipulation`}
+                  className={`appearance-none block w-full pl-3 pr-10 py-4 sm:py-2 text-base sm:text-base border-gray-300 focus:outline-none focus:ring-primary focus:border-primary rounded-l-md rounded-r-none text-black touch-manipulation`}
                   required
                 >
                   {idNumberTypeOptions.map(option => (
@@ -1144,7 +1144,7 @@ const InsurerForm = ({
                   value={insurerData.property_owner_id_number || ''}
                   onChange={handleChange}
                   required
-                  className={`pl-3 block w-full rounded-r-md border-l-0 shadow-sm focus:ring-primary focus:border-primary focus:z-10 py-4 sm:py-2 text-sm sm:text-base text-black ${isFieldInvalid('property_owner_id_number') ? 'border-error' : 'border-gray-300'}`}
+                  className={`pl-3 block w-full rounded-r-md border-l-0 shadow-sm focus:ring-primary focus:border-primary focus:z-10 py-4 sm:py-2 text-base sm:text-base text-black ${isFieldInvalid('property_owner_id_number') ? 'border-error' : 'border-gray-300'}`}
                 />
                 {isFieldInvalid('property_owner_id_number') && <ErrorIcon />}
               </div>
@@ -1174,7 +1174,7 @@ const InsurerForm = ({
                     readOnly
                     placeholder="Изберете дата"
                     required
-                    className={`pl-10 block w-full rounded-md shadow-sm focus:ring-primary focus:border-primary sm:text-sm text-black cursor-pointer ${isFieldInvalid('property_owner_birth_date') ? 'border-red-500' : 'border-gray-300'}`}
+                    className={`pl-10 block w-full rounded-md shadow-sm focus:ring-primary focus:border-primary py-4 sm:py-2 sm:text-sm text-black cursor-pointer ${isFieldInvalid('property_owner_birth_date') ? 'border-red-500' : 'border-gray-300'}`}
                   />
                   {isFieldInvalid('property_owner_birth_date') && (
                     <ErrorIcon />
@@ -1264,7 +1264,7 @@ const InsurerForm = ({
                   }
                 }}
                 placeholder="Въведете населено място"
-                className={`pl-10 block w-full rounded-md shadow-sm focus:ring-primary focus:border-primary sm:text-sm text-black ${isFieldInvalid('property_owner_settlement_id') ? 'border-red-500' : 'border-gray-300'}`}
+                className={`pl-10 block w-full rounded-md shadow-sm focus:ring-primary focus:border-primary py-4 sm:py-2 sm:text-sm text-black ${isFieldInvalid('property_owner_settlement_id') ? 'border-red-500' : 'border-gray-300'}`}
                 autoComplete="off"
                 required
               />
@@ -1300,7 +1300,7 @@ const InsurerForm = ({
                 onChange={handleChange}
                 placeholder="Въведете постоянен адрес"
                 required
-                className={`block w-full rounded-md shadow-sm focus:ring-primary focus:border-primary sm:text-sm text-black ${isFieldInvalid('property_owner_permanent_address') ? 'border-error' : 'border-gray-300'}`}
+                className={`block w-full rounded-md shadow-sm focus:ring-primary focus:border-primary py-4 sm:py-2 sm:text-sm text-black ${isFieldInvalid('property_owner_permanent_address') ? 'border-error' : 'border-gray-300'}`}
               />
               {isFieldInvalid('property_owner_permanent_address') && <ErrorIcon />}
             </div>
@@ -1368,7 +1368,7 @@ const InsurerForm = ({
                 onChange={handleChange}
                 placeholder="Въведете имена на застраховащия"
                 required
-                className={`block w-full rounded-md shadow-sm focus:ring-primary focus:border-primary sm:text-sm text-black ${isFieldInvalid('full_name') ? 'border-error' : 'border-gray-300'}`}
+                className={`block w-full rounded-md shadow-sm focus:ring-primary focus:border-primary py-4 sm:py-2 sm:text-sm text-black ${isFieldInvalid('full_name') ? 'border-error' : 'border-gray-300'}`}
               />
               {isFieldInvalid('full_name') && <ErrorIcon />}
             </div>
@@ -1385,7 +1385,7 @@ const InsurerForm = ({
                   name="id_number_type_id"
                   value={insurerData.id_number_type_id}
                   onChange={handleChange}
-                  className={`appearance-none block w-full pl-3 pr-10 py-4 sm:py-2 text-base sm:text-base border-gray-300 focus:outline-none focus:ring-primary focus:border-primary rounded-md text-black touch-manipulation`}
+                  className={`appearance-none block w-full pl-3 pr-10 py-4 sm:py-2 text-base sm:text-base border-gray-300 focus:outline-none focus:ring-primary focus:border-primary rounded-l-md rounded-r-none text-black touch-manipulation`}
                   required
                 >
                   {idNumberTypeOptions.map(option => (
@@ -1404,7 +1404,7 @@ const InsurerForm = ({
                   value={insurerData.id_number}
                   onChange={handleChange}
                   required
-                  className={`pl-3 block w-full rounded-r-md border-l-0 shadow-sm focus:ring-primary focus:border-primary focus:z-10 py-4 sm:py-2 text-sm sm:text-base text-black ${isFieldInvalid('id_number') ? 'border-error' : 'border-gray-300'}`}
+                  className={`pl-3 block w-full rounded-r-md border-l-0 shadow-sm focus:ring-primary focus:border-primary focus:z-10 py-4 sm:py-2 text-base sm:text-base text-black ${isFieldInvalid('id_number') ? 'border-error' : 'border-gray-300'}`}
                 />
                 {isFieldInvalid('id_number') && <ErrorIcon />}
               </div>
@@ -1434,7 +1434,7 @@ const InsurerForm = ({
                     readOnly
                     placeholder="Изберете дата"
                     required
-                    className={`pl-10 block w-full rounded-md shadow-sm focus:ring-primary focus:border-primary sm:text-sm text-black cursor-pointer ${isFieldInvalid('birth_date') ? 'border-red-500' : 'border-gray-300'}`}
+                    className={`pl-10 block w-full rounded-md shadow-sm focus:ring-primary focus:border-primary py-4 sm:py-2 sm:text-sm text-black cursor-pointer ${isFieldInvalid('birth_date') ? 'border-red-500' : 'border-gray-300'}`}
                   />
                   {isFieldInvalid('birth_date') && <ErrorIcon />}
                 </div>
@@ -1521,7 +1521,7 @@ const InsurerForm = ({
                   }
                 }}
                 placeholder="Въведете населено място"
-                className={`pl-10 block w-full rounded-md shadow-sm focus:ring-primary focus:border-primary sm:text-sm text-black ${isFieldInvalid('insurer_settlement_id') ? 'border-red-500' : 'border-gray-300'}`}
+                className={`pl-10 block w-full rounded-md shadow-sm focus:ring-primary focus:border-primary py-4 sm:py-2 sm:text-sm text-black ${isFieldInvalid('insurer_settlement_id') ? 'border-red-500' : 'border-gray-300'}`}
                 autoComplete="off"
                 required
               />
@@ -1556,7 +1556,7 @@ const InsurerForm = ({
                 onChange={handleChange}
                 placeholder="Въведете постоянен адрес"
                 required
-                className={`block w-full rounded-md shadow-sm focus:ring-primary focus:border-primary sm:text-sm text-black ${isFieldInvalid('permanent_address') ? 'border-error' : 'border-gray-300'}`}
+                className={`block w-full rounded-md shadow-sm focus:ring-primary focus:border-primary py-4 sm:py-2 sm:text-sm text-black ${isFieldInvalid('permanent_address') ? 'border-error' : 'border-gray-300'}`}
               />
               {isFieldInvalid('permanent_address') && <ErrorIcon />}
             </div>
@@ -1610,7 +1610,7 @@ const InsurerForm = ({
                 onChange={handleChange}
                 placeholder="Въведете телефон"
                 required
-                className={`pl-10 block w-full rounded-md shadow-sm focus:ring-primary focus:border-primary sm:text-sm text-black ${isFieldInvalid('phone') ? 'border-red-500' : 'border-gray-300'}`}
+                className={`pl-10 block w-full rounded-md shadow-sm focus:ring-primary focus:border-primary py-4 sm:py-2 sm:text-sm text-black ${isFieldInvalid('phone') ? 'border-red-500' : 'border-gray-300'}`}
               />
               {isFieldInvalid('phone') && <ErrorIcon />}
             </div>
@@ -1635,7 +1635,7 @@ const InsurerForm = ({
                 onChange={handleChange}
                 placeholder="Въведете имейл"
                 required
-                className={`pl-10 block w-full rounded-md shadow-sm focus:ring-primary focus:border-primary sm:text-sm text-black ${isFieldInvalid('email') ? 'border-red-500' : 'border-gray-300'}`}
+                className={`pl-10 block w-full rounded-md shadow-sm focus:ring-primary focus:border-primary py-4 sm:py-2 sm:text-sm text-black ${isFieldInvalid('email') ? 'border-red-500' : 'border-gray-300'}`}
               />
               {isFieldInvalid('email') && <ErrorIcon />}
             </div>
