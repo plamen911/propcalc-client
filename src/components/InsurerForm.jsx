@@ -1032,8 +1032,8 @@ const InsurerForm = ({
           promoDiscount={promoDiscount}
       />
 
-      <div className="bg-white/10 p-6 rounded-xl mb-6 border border-white/20">
-        <h3 className="text-lg font-medium text-white mb-4">
+      <div className="bg-white/10 p-5 sm:p-6 rounded-xl mb-5 sm:mb-6 border border-white/20">
+        <h3 className="text-lg font-medium text-white mb-3 sm:mb-4">
           Данни за имота
         </h3>
 
@@ -1094,8 +1094,8 @@ const InsurerForm = ({
         </div>
       </div>
 
-      <div className="bg-white/10 p-6 rounded-xl mb-6 border border-white/20">
-        <h3 className="text-lg font-medium text-white mb-4">
+      <div className="bg-white/10 p-5 sm:p-6 rounded-xl mb-5 sm:mb-6 border border-white/20">
+        <h3 className="text-lg font-medium text-white mb-3 sm:mb-4">
           Данни за собственика
         </h3>
 
@@ -1132,7 +1132,7 @@ const InsurerForm = ({
                   name="property_owner_id_number_type_id"
                   value={insurerData.property_owner_id_number_type_id || ''}
                   onChange={handleChange}
-                  className={`appearance-none block w-full pl-3 pr-10 py-3.5 sm:py-2 text-base sm:text-base border-gray-300 focus:outline-none focus:ring-primary focus:border-primary rounded-md text-black touch-manipulation`}
+                  className={`appearance-none block w-full pl-3 pr-10 py-4 sm:py-2 text-base sm:text-base border-gray-300 focus:outline-none focus:ring-primary focus:border-primary rounded-md text-black touch-manipulation`}
                   required
                 >
                   {idNumberTypeOptions.map(option => (
@@ -1151,7 +1151,7 @@ const InsurerForm = ({
                   value={insurerData.property_owner_id_number || ''}
                   onChange={handleChange}
                   required
-                  className={`pl-3 block w-full rounded-r-md border-l-0 shadow-sm focus:ring-primary focus:border-primary focus:z-10 py-2.5 sm:py-2 text-sm sm:text-base text-black ${isFieldInvalid('property_owner_id_number') ? 'border-error' : 'border-gray-300'}`}
+                  className={`pl-3 block w-full rounded-r-md border-l-0 shadow-sm focus:ring-primary focus:border-primary focus:z-10 py-4 sm:py-2 text-sm sm:text-base text-black ${isFieldInvalid('property_owner_id_number') ? 'border-error' : 'border-gray-300'}`}
                 />
                 {isFieldInvalid('property_owner_id_number') && <ErrorIcon />}
               </div>
@@ -1200,7 +1200,7 @@ const InsurerForm = ({
                     name="property_owner_nationality_id"
                     value={insurerData.property_owner_nationality_id || ''}
                     onChange={handleChange}
-                    className={`appearance-none mt-1 block w-full pl-3 pr-10 py-3.5 sm:py-2 text-base sm:text-base border-gray-300 focus:outline-none focus:ring-primary focus:border-primary rounded-md text-black touch-manipulation`}
+                    className={`appearance-none mt-1 block w-full pl-3 pr-10 py-4 sm:py-2 text-base sm:text-base border-gray-300 focus:outline-none focus:ring-primary focus:border-primary rounded-md text-black touch-manipulation`}
                     required
                   >
                     <option value="">Изберете националност</option>
@@ -1223,7 +1223,7 @@ const InsurerForm = ({
                   <button
                     type="button"
                     onClick={() => handleChange({ target: { name: 'property_owner_gender', value: 'male' } })}
-                    className={`px-4 py-2 rounded-md border ${
+                    className={`px-5 py-3 sm:px-4 sm:py-2 rounded-md border ${
                       insurerData.property_owner_gender === 'male' 
                         ? 'bg-primary text-white border-primary' 
                         : 'bg-white/10 text-white border-white/30 hover:bg-white/20'
@@ -1234,7 +1234,7 @@ const InsurerForm = ({
                   <button
                     type="button"
                     onClick={() => handleChange({ target: { name: 'property_owner_gender', value: 'female' } })}
-                    className={`px-4 py-2 rounded-md border ${
+                    className={`px-5 py-3 sm:px-4 sm:py-2 rounded-md border ${
                       insurerData.property_owner_gender === 'female' 
                         ? 'bg-primary text-white border-primary' 
                         : 'bg-white/10 text-white border-white/30 hover:bg-white/20'
@@ -1284,7 +1284,7 @@ const InsurerForm = ({
                   <div
                     key={settlement.id}
                     onClick={() => handlePropertyOwnerSettlementSelect(settlement)}
-                    className="cursor-pointer select-none relative py-3.5 sm:py-3 px-4 sm:pl-10 sm:pr-4 hover:bg-gray-100 active:bg-gray-200 touch-manipulation border-b border-gray-100 last:border-b-0"
+                    className="cursor-pointer select-none relative py-4 sm:py-3 px-4 sm:pl-10 sm:pr-4 hover:bg-gray-100 active:bg-gray-200 touch-manipulation border-b border-gray-100 last:border-b-0"
                   >
                     {settlement.name}
                   </div>
@@ -1332,8 +1332,8 @@ const InsurerForm = ({
         </div>
       </div>
 
-      <div className="bg-white/10 p-6 rounded-xl mb-6 border border-white/20">
-        <h3 className="text-lg font-medium text-white mb-4">
+      <div className="bg-white/10 p-5 sm:p-6 rounded-xl mb-5 sm:mb-6 border border-white/20">
+        <h3 className="text-lg font-medium text-white mb-3 sm:mb-4">
           Данни за застраховащия
         </h3>
 
@@ -1349,7 +1349,7 @@ const InsurerForm = ({
                 name="person_role_id"
                 value={insurerData.person_role_id}
                 onChange={handleChange}
-                className={`appearance-none mt-1 block w-full pl-3 pr-10 py-3.5 sm:py-2 text-base sm:text-base border-gray-300 focus:outline-none focus:ring-primary focus:border-primary rounded-md text-black touch-manipulation`}
+                className={`appearance-none mt-1 block w-full pl-3 pr-10 py-4 sm:py-2 text-base sm:text-base border-gray-300 focus:outline-none focus:ring-primary focus:border-primary rounded-md text-black touch-manipulation`}
                 required
               >
                 {personRoleOptions.map(option => (
@@ -1392,7 +1392,7 @@ const InsurerForm = ({
                   name="id_number_type_id"
                   value={insurerData.id_number_type_id}
                   onChange={handleChange}
-                  className={`appearance-none block w-full pl-3 pr-10 py-3.5 sm:py-2 text-base sm:text-base border-gray-300 focus:outline-none focus:ring-primary focus:border-primary rounded-md text-black touch-manipulation`}
+                  className={`appearance-none block w-full pl-3 pr-10 py-4 sm:py-2 text-base sm:text-base border-gray-300 focus:outline-none focus:ring-primary focus:border-primary rounded-md text-black touch-manipulation`}
                   required
                 >
                   {idNumberTypeOptions.map(option => (
@@ -1411,7 +1411,7 @@ const InsurerForm = ({
                   value={insurerData.id_number}
                   onChange={handleChange}
                   required
-                  className={`pl-3 block w-full rounded-r-md border-l-0 shadow-sm focus:ring-primary focus:border-primary focus:z-10 py-2.5 sm:py-2 text-sm sm:text-base text-black ${isFieldInvalid('id_number') ? 'border-error' : 'border-gray-300'}`}
+                  className={`pl-3 block w-full rounded-r-md border-l-0 shadow-sm focus:ring-primary focus:border-primary focus:z-10 py-4 sm:py-2 text-sm sm:text-base text-black ${isFieldInvalid('id_number') ? 'border-error' : 'border-gray-300'}`}
                 />
                 {isFieldInvalid('id_number') && <ErrorIcon />}
               </div>
@@ -1458,7 +1458,7 @@ const InsurerForm = ({
                     name="insurer_nationality_id"
                     value={insurerData.insurer_nationality_id}
                     onChange={handleChange}
-                    className={`appearance-none mt-1 block w-full pl-3 pr-10 py-3.5 sm:py-2 text-base sm:text-base border-gray-300 focus:outline-none focus:ring-primary focus:border-primary rounded-md text-black touch-manipulation`}
+                    className={`appearance-none mt-1 block w-full pl-3 pr-10 py-4 sm:py-2 text-base sm:text-base border-gray-300 focus:outline-none focus:ring-primary focus:border-primary rounded-md text-black touch-manipulation`}
                     required
                   >
                     <option value="">Изберете националност</option>
@@ -1481,7 +1481,7 @@ const InsurerForm = ({
                   <button
                     type="button"
                     onClick={() => handleChange({ target: { name: 'gender', value: 'male' } })}
-                    className={`px-4 py-2 rounded-md border ${
+                    className={`px-5 py-3 sm:px-4 sm:py-2 rounded-md border ${
                       insurerData.gender === 'male' 
                         ? 'bg-primary text-white border-primary' 
                         : 'bg-white/10 text-white border-white/30 hover:bg-white/20'
@@ -1492,7 +1492,7 @@ const InsurerForm = ({
                   <button
                     type="button"
                     onClick={() => handleChange({ target: { name: 'gender', value: 'female' } })}
-                    className={`px-4 py-2 rounded-md border ${
+                    className={`px-5 py-3 sm:px-4 sm:py-2 rounded-md border ${
                       insurerData.gender === 'female' 
                         ? 'bg-primary text-white border-primary' 
                         : 'bg-white/10 text-white border-white/30 hover:bg-white/20'
@@ -1541,7 +1541,7 @@ const InsurerForm = ({
                   <div
                     key={settlement.id}
                     onClick={() => handleSettlementSelect(settlement)}
-                    className="cursor-pointer select-none relative py-3.5 sm:py-3 px-4 sm:pl-10 sm:pr-4 hover:bg-gray-100 active:bg-gray-200 touch-manipulation border-b border-gray-100 last:border-b-0"
+                    className="cursor-pointer select-none relative py-4 sm:py-3 px-4 sm:pl-10 sm:pr-4 hover:bg-gray-100 active:bg-gray-200 touch-manipulation border-b border-gray-100 last:border-b-0"
                   >
                     {settlement.name}
                   </div>
@@ -1651,10 +1651,10 @@ const InsurerForm = ({
         </div>
 
         {propertyChecklistItems.length > 0 && (
-          <div className="mt-6">
-            <div className="bg-white/5 rounded-lg px-3 sm:px-4">
+          <div className="mt-5 sm:mt-6">
+            <div className="bg-white/5 rounded-lg px-4 sm:px-4">
               {/* Property checklist items - mobile optimized */}
-              <div className="space-y-2 sm:space-y-1">
+              <div className="space-y-3 sm:space-y-1">
                 {propertyChecklistItems.map(item => (
                   <div key={item.id} className="flex flex-col sm:flex-row sm:justify-between sm:items-center border-b border-white/10 py-3 sm:py-2">
                     <div className="text-white text-base sm:text-base pr-2 flex-1 mb-2 sm:mb-0 font-medium flex items-center">
@@ -1675,7 +1675,7 @@ const InsurerForm = ({
                       <button
                         type="button"
                         onClick={() => handleChecklistChange(item.id, true)}
-                        className={`px-4 sm:px-3 py-2.5 sm:py-1 rounded-md border text-base sm:text-sm flex-1 sm:flex-none ${
+                        className={`px-5 sm:px-3 py-3 sm:py-1 rounded-md border text-base sm:text-sm flex-1 sm:flex-none ${
                           checkedItems[item.id] === true 
                             ? 'bg-primary text-white border-primary' 
                             : 'bg-white/10 text-white border-white/30 hover:bg-white/20'
@@ -1686,7 +1686,7 @@ const InsurerForm = ({
                       <button
                         type="button"
                         onClick={() => handleChecklistChange(item.id, false)}
-                        className={`px-4 sm:px-3 py-2.5 sm:py-1 rounded-md border text-base sm:text-sm flex-1 sm:flex-none ${
+                        className={`px-5 sm:px-3 py-3 sm:py-1 rounded-md border text-base sm:text-sm flex-1 sm:flex-none ${
                           checkedItems[item.id] === false 
                             ? 'bg-primary text-white border-primary' 
                             : 'bg-white/10 text-white border-white/30 hover:bg-white/20'
@@ -1712,12 +1712,12 @@ const InsurerForm = ({
         </div>
       )}
 
-      <div className="flex flex-col sm:flex-row justify-between gap-3 sm:gap-0 mt-6">
-        <BackButton onClick={prevStep} className="order-2 sm:order-1" />
+      <div className="flex flex-col sm:flex-row justify-between gap-4 sm:gap-0 mt-6 sm:mt-6">
+        <BackButton onClick={prevStep} className="order-2 sm:order-1 py-4 sm:py-3 min-h-[60px] sm:min-h-[48px] text-base" />
         {areAllItemsChecked() && (
           <ProceedButton
             type="submit"
-            className="order-1 sm:order-2"
+            className="order-1 sm:order-2 py-4 sm:py-3 min-h-[60px] sm:min-h-[48px] text-base"
           />
         )}
       </div>
