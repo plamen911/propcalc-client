@@ -344,14 +344,6 @@ const OrderPreviewForm = ({ prevStep, selectedTariff, insurerData, checkedItems,
     <form onSubmit={handleSubmit}>
       {isSubmitted && policyData && (
         <Box sx={{ mb: { xs: 3, sm: 3 }, display: 'flex', flexDirection: 'column', alignItems: 'center', px: { xs: 1, sm: 3 } }}>
-          <style>
-            {`
-              @keyframes colorPulse {
-                0%, 100% { color: white; }
-                50% { color: #ffcc00; }
-              }
-            `}
-          </style>
           <SuccessAlert 
             severity="success" 
             icon={false}
@@ -374,7 +366,7 @@ const OrderPreviewForm = ({ prevStep, selectedTariff, insurerData, checkedItems,
               <div className="text-xl sm:text-2xl font-bold mb-3 sm:mb-2 text-white leading-tight">ВАШАТА ПОРЪЧКА Е ПРИЕТА УСПЕШНО!</div>
               <div className="bg-white/10 py-3 sm:py-2 px-3 sm:px-4 rounded-lg inline-block mb-4 sm:mb-3 border border-white/20">
                 <span className="text-base sm:text-lg font-medium text-white block sm:inline">НОМЕР НА ПОРЪЧКАТА:</span>
-                <span className="text-xl sm:text-xl font-bold sm:ml-2 text-white block sm:inline mt-1 sm:mt-0" style={{animation: 'colorPulse 2s ease-in-out infinite'}}>{policyData.code}</span>
+                <span className="text-xl sm:text-xl font-bold sm:ml-2 text-white block sm:inline mt-1 sm:mt-0 pulse">{policyData.code}</span>
               </div>
               <div className="text-sm sm:text-base mb-5 sm:mb-4 leading-relaxed bg-white/5 p-4 sm:p-3 rounded-lg border border-white/10">
                 <p className="mb-3 text-white">Екипът на ЗБ "Дженерал Брокер Клуб" ООД Ви благодари за направения избор.</p>
@@ -396,20 +388,9 @@ const OrderPreviewForm = ({ prevStep, selectedTariff, insurerData, checkedItems,
       )}
 
       {!isSubmitted && (
-        <>
-          <style>
-            {`
-              @keyframes colorPulse {
-                0%, 100% { color: white; }
-                50% { color: #ffcc00; }
-              }
-            `}
-          </style>
-
           <Typography variant="h5" gutterBottom color="white" sx={{ fontWeight: 'medium', mb: 3 }}>
             Преглед на поръчката
           </Typography>
-        </>
       )}
 
       {!isSubmitted && (

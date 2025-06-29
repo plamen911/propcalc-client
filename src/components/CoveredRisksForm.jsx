@@ -11,6 +11,7 @@ import ErrorIcon from './ui/ErrorIcon.jsx';
 import api from '../services/api';
 import CalcStatisticsService from '../services/calc-statistics';
 import { formatCurrency, formatDescription } from '../utils/formatters.jsx';
+import {Typography} from "@mui/material";
 
 const CoveredRisksForm = ({ 
   formData, 
@@ -592,15 +593,10 @@ const CoveredRisksForm = ({
   }
 
   return (
-    <form onSubmit={handleSubmit} className="space-y-4 sm:space-y-6">
-      <style>
-        {`
-          @keyframes colorPulse {
-            0%, 100% { color: white; }
-            50% { color: #ffcc00; }
-          }
-        `}
-      </style>
+    <form onSubmit={handleSubmit} className="space-y-6">
+      <Typography variant="h5" gutterBottom color="white" sx={{ fontWeight: 'medium', mb: 3 }}>
+        Покрити рискове
+      </Typography>
       {/* Promotional Code Section */}
       <div>
         <label htmlFor="promotional_code" className="block text-sm sm:text-base font-medium text-white mb-1 sm:mb-2">
@@ -639,7 +635,7 @@ const CoveredRisksForm = ({
 
       <div className="bg-white p-3 sm:p-4 rounded-xl mb-3 sm:mb-4 border border-gray-200 shadow-sm">
         <h3 className="text-base sm:text-lg font-medium text-gray-800 mb-2 sm:mb-3">
-          Покрити рискове
+          Изберете пакет
         </h3>
 
         <div className="space-y-2 sm:space-y-3">

@@ -2,10 +2,11 @@ import React from 'react';
 import BackButton from './ui/BackButton.jsx';
 import ProceedButton from './ui/ProceedButton.jsx';
 import TariffPreview from "./ui/TariffPreview.jsx";
+import {Typography} from "@mui/material";
 
 const TariffPreviewForm = ({
-  nextStep, 
-  prevStep, 
+  nextStep,
+  prevStep,
   selectedTariff,
   currencySymbol,
   promoCodeValid,
@@ -18,7 +19,9 @@ const TariffPreviewForm = ({
 
   return (
     <form onSubmit={handleSubmit} className="space-y-6">
-
+      <Typography variant="h5" gutterBottom color="white" sx={{ fontWeight: 'medium', mb: 3 }}>
+        Преглед пакет
+      </Typography>
       <TariffPreview
           selectedTariff={selectedTariff}
           currencySymbol={currencySymbol}

@@ -3,7 +3,7 @@ import {ArrowForward, CheckCircle, Close, LocalOffer} from '@mui/icons-material'
 import EyeIcon from './ui/EyeIcon';
 import BackButton from './ui/BackButton.jsx';
 import ProceedButton from './ui/ProceedButton.jsx';
-import { Dialog, DialogContent, DialogTitle, IconButton } from '@mui/material';
+import {Dialog, DialogContent, DialogTitle, IconButton, Typography} from '@mui/material';
 import api from '../services/api';
 import LoadingSpinner from './ui/LoadingSpinner.jsx';
 import ErrorDisplay from './ui/ErrorDisplay.jsx';
@@ -906,6 +906,9 @@ const InsurerForm = ({
 
   return (
     <form onSubmit={handleSubmit} className="space-y-6">
+      <Typography variant="h5" gutterBottom color="white" sx={{ fontWeight: 'medium', mb: 3 }}>
+        Допълнителни данни
+      </Typography>
       {/* Date Picker Dialog */}
       <Dialog
         open={datePickerOpen}
