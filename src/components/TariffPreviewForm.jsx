@@ -97,6 +97,8 @@ const TariffPreviewForm = ({
             sx={{
               borderColor: '#8b2131',
               color: '#8b2131',
+              display: 'flex',
+              visibility: 'visible',
               '&:hover': {
                 borderColor: '#6b1021',
                 backgroundColor: 'rgba(139, 33, 49, 0.04)'
