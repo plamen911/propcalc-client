@@ -271,6 +271,7 @@ const MultiStepForm = () => {
                 currencySymbol={currencySymbol}
                 promoCodeValid={promoCodeValid}
                 promoDiscount={promoDiscount}
+                formData={formData}
             />
         );
       case 3:

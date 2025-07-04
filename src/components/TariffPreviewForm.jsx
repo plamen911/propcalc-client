@@ -13,7 +13,8 @@ const TariffPreviewForm = ({
   selectedTariff,
   currencySymbol,
   promoCodeValid,
-  promoDiscount
+  promoDiscount,
+  formData
 }) => {
   const [loading, setLoading] = useState(false);
   const [snackbar, setSnackbar] = useState({
@@ -46,7 +47,8 @@ const TariffPreviewForm = ({
         selectedTariff,
         currencySymbol,
         promoCodeValid,
-        promoDiscount
+        promoDiscount,
+        estateData: formData
       };
 
       // Make API request to generate PDF
@@ -120,7 +122,8 @@ const TariffPreviewForm = ({
         currencySymbol,
         promoCodeValid,
         promoDiscount,
-        recipientEmail: friendEmail
+        recipientEmail: friendEmail,
+        estateData: formData
       };
 
       // Make API request to send PDF via email
