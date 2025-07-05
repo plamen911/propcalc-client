@@ -217,7 +217,7 @@ const TariffPreviewForm = ({
       </Snackbar>
 
       {/* Email Dialog */}
-      <div className={`fixed inset-0 z-50 flex items-center justify-center ${emailDialogOpen ? 'flex' : 'hidden'}`} onClick={handleCloseEmailDialog}>
+      <div className={`fixed inset-0 z-50 flex items-end justify-center pb-20 ${emailDialogOpen ? 'flex' : 'hidden'}`} onClick={handleCloseEmailDialog}>
         <div className="relative bg-[#1a1a1a] text-white rounded-xl border border-[rgba(255,255,255,0.2)] shadow-lg w-full max-w-md mx-4" onClick={(e) => e.stopPropagation()}>
           <div className="flex justify-between items-center p-4 border-b border-[rgba(255,255,255,0.1)]">
             <h2 className="text-lg font-medium">Изпрати на приятел</h2>
