@@ -475,6 +475,17 @@ const CoveredRisksForm = ({
       return; // Don't proceed if validation fails
     }
 
+    // Пожари и щети на имущество - Соларни инсталации
+    if (formData.estate_type_id === '4' && customClauseAmounts[3]) {
+      const clause3Value = customClauseAmounts[3];
+      const clause3ValueNum = parseFloat(clause3Value);
+
+      if (!isNaN(clause1ValueNum) && clause3ValueNum > 15000) {
+        setValidationError('Клауза "Пожари и щети на имущество - Соларни инсталации" е задължителна и стойността трябва да бъде до 15000.');
+        return; // Don't proceed if validation fails
+      }
+    }
+
     // Check if clause 6 is filled when its checkbox is checked
     if (clauseCheckboxes[6]) {
       const clause6Value = customClauseAmounts[6];
