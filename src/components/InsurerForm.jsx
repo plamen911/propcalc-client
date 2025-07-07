@@ -539,6 +539,7 @@ const InsurerForm = ({
 
   // Validate permanent address according to the specified requirements
   const validatePermanentAddress = (address) => {
+    return true
     // Allowed characters:
     // - Cyrillic letters
     // - Latin letters I, V, X
@@ -757,12 +758,6 @@ const InsurerForm = ({
     } else if (!validatePermanentAddress(insurerData.property_owner_permanent_address)) {
       newInvalidFields.push('property_owner_permanent_address');
       errorMessages.push(`Позволени символи за полето "${fieldLabels['property_owner_permanent_address']}" - букви на кирилица, букви I, V, X на латиница, цифри от 0 до 9, препинателни знаци – точка, двуеточие, точка и запетая, кавички и символи - № ( ) /.`);
-    }
-
-    // Validate property additional info
-    if (!insurerData.property_additional_info?.trim()) {
-      newInvalidFields.push('property_additional_info');
-      errorMessages.push(`Моля, въведете ${fieldLabels['property_additional_info'].toLowerCase()}`);
     }
 
     // Update state with invalid fields and error messages
