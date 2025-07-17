@@ -21,7 +21,7 @@ import ErrorDisplay from './ui/ErrorDisplay.jsx';
 import TariffPreview from "./ui/TariffPreview.jsx";
 import CalcStatisticsService from "../services/calc-statistics.js";
 
-// Styled Paper component for the preview section
+// Styled Paper component for the preview section§
 const PreviewPaper = styled(Paper)(({ theme }) => ({
   padding: theme.spacing(4),
   backgroundColor: 'rgba(255, 255, 255, 0.1)',
@@ -70,6 +70,7 @@ const OrderPreviewForm = ({ prevStep, selectedTariff, insurerData, checkedItems,
   const [estateSettlementData, setEstateSettlementData] = useState(null);
   const [propertyOwnerSettlementData, setPropertyOwnerSettlementData] = useState(null);
   const [nationalityOptions, setNationalityOptions] = useState([]);
+  const [documentLinks, setDocumentLinks] = useState([]);
 
   // Helper function to get the person role text based on the ID
   const getPersonRoleText = () => {
@@ -154,6 +155,7 @@ const OrderPreviewForm = ({ prevStep, selectedTariff, insurerData, checkedItems,
           setPropertyChecklistItems(window.initialFormData.property_checklist_items || []);
           setEstateTypes(window.initialFormData.estate_types || []);
           setDistanceToWater(window.initialFormData.water_distances || []);
+          setDocumentLinks(window.initialFormData.document_links || []);
         } else {
           // If initialFormData is not available, show error
           console.error('Initial form data not available');
@@ -163,6 +165,7 @@ const OrderPreviewForm = ({ prevStep, selectedTariff, insurerData, checkedItems,
           setPropertyChecklistItems([]);
           setEstateTypes([]);
           setDistanceToWater([]);
+          setDocumentLinks([]);
         }
 
         // Fetch settlement data if insurer_settlement_id is available
@@ -605,11 +608,7 @@ const OrderPreviewForm = ({ prevStep, selectedTariff, insurerData, checkedItems,
           <div className="mb-4">
             <div className="p-3 sm:p-4 bg-gray-50 rounded-lg border border-gray-200">
               <div className="space-y-2">
-                {[
-                  { uri: "https://propcalc.zastrahovaite.com/docs/propcalc/pre-contract-insurance-info.pdf", title: "Информация преди сключване на застрахователния договор" },
-                  { uri: "https://propcalc.zastrahovaite.com/docs/propcalc/property-insurance-product-info.pdf", title: "Информационен документ" },
-                  { uri: "https://propcalc.zastrahovaite.com/docs/propcalc/bonus-home-plus.pdf", title: "Бонус дом+" }
-                ].map((doc) => (
+                {documentLinks.map((doc) => (
                   <a
                     key={doc.uri}
                     href={doc.uri}
