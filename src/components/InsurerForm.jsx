@@ -1239,6 +1239,22 @@ const InsurerForm = ({
             </>
           )}
 
+          {/* Checkbox: Address same as insured property */}
+          <div className="flex flex-col sm:flex-row sm:items-center gap-2 mt-3 mb-2">
+            <label htmlFor="owner-address-same-checkbox" className="flex items-center cursor-pointer w-full">
+              <input
+                  type="checkbox"
+                  id="owner-address-same-checkbox"
+                  checked={isOwnerAddressSame}
+                  onChange={handleOwnerAddressCheckbox}
+                  className="h-6 w-6 sm:h-5 sm:w-5 accent-primary border-white/50 rounded focus:ring-primary transition-all duration-150"
+              />
+              <span className="ml-3 text-white text-base sm:text-sm font-medium break-words">
+                Адресът е същия като на застрахования имот
+              </span>
+            </label>
+          </div>
+
           {/* Property Owner Settlement */}
           <div className="relative" ref={propertyOwnerSettlementRef}>
             <label htmlFor="property_owner_settlement_id" className="block text-sm font-medium text-white mb-1">
@@ -1303,23 +1319,6 @@ const InsurerForm = ({
               {isFieldInvalid('property_owner_permanent_address') && <ErrorIcon />}
             </div>
           </div>
-
-          {/* Checkbox: Address same as insured property */}
-          <div className="flex flex-col sm:flex-row sm:items-center gap-2 mt-3 mb-2">
-            <label htmlFor="owner-address-same-checkbox" className="flex items-center cursor-pointer w-full">
-              <input
-                type="checkbox"
-                id="owner-address-same-checkbox"
-                checked={isOwnerAddressSame}
-                onChange={handleOwnerAddressCheckbox}
-                className="h-6 w-6 sm:h-5 sm:w-5 accent-primary border-white/50 rounded focus:ring-primary transition-all duration-150"
-              />
-              <span className="ml-3 text-white text-base sm:text-sm font-medium break-words">
-                Адресът е същия като на застрахования имот
-              </span>
-            </label>
-          </div>
-          <div className="border-t border-white/10 mt-2 sm:mt-3"></div>
         </div>
       </div>
 
@@ -1497,6 +1496,36 @@ const InsurerForm = ({
             </>
           )}
 
+          {/* Checkboxes for insurer address - moved below permanent_address */}
+          <div className="flex flex-col gap-3 mt-3 mb-4 sm:mb-6">
+            <div className="flex flex-col sm:flex-row sm:items-center sm:gap-x-8 gap-y-2">
+              <label htmlFor="insurer-address-same-property" className="flex items-center cursor-pointer w-full sm:w-auto">
+                <input
+                    type="checkbox"
+                    id="insurer-address-same-property"
+                    checked={isInsurerAddressSameAsProperty}
+                    onChange={handleInsurerAddressSameAsProperty}
+                    className="h-6 w-6 sm:h-5 sm:w-5 accent-primary border-white/50 rounded focus:ring-primary transition-all duration-150"
+                />
+                <span className="ml-3 text-white text-base sm:text-sm font-medium break-words">
+                  Адресът е същия като на застрахования имот
+                </span>
+              </label>
+              <label htmlFor="insurer-address-same-owner" className="flex items-center cursor-pointer w-full sm:w-auto">
+                <input
+                    type="checkbox"
+                    id="insurer-address-same-owner"
+                    checked={isInsurerAddressSameAsOwner}
+                    onChange={handleInsurerAddressSameAsOwner}
+                    className="h-6 w-6 sm:h-5 sm:w-5 accent-primary border-white/50 rounded focus:ring-primary transition-all duration-150"
+                />
+                <span className="ml-3 text-white text-base sm:text-sm font-medium break-words">
+                  Адресът е същия като на собственика
+                </span>
+              </label>
+            </div>
+          </div>
+
           <div className="relative" ref={settlementRef}>
             <label htmlFor="insurer_settlement_id" className="block text-sm font-medium text-white mb-1">
               Населено място <span className="text-red-300">*</span>
@@ -1557,36 +1586,6 @@ const InsurerForm = ({
                 className={`block w-full rounded-md shadow-sm focus:ring-primary focus:border-primary py-4 sm:py-2 sm:text-sm text-black ${isFieldInvalid('permanent_address') ? 'border-error' : 'border-gray-300'}`}
               />
               {isFieldInvalid('permanent_address') && <ErrorIcon />}
-            </div>
-          </div>
-
-          {/* Checkboxes for insurer address - moved below permanent_address */}
-          <div className="flex flex-col gap-3 mt-3 mb-4 sm:mb-6">
-            <div className="flex flex-col sm:flex-row sm:items-center sm:gap-x-8 gap-y-2">
-              <label htmlFor="insurer-address-same-property" className="flex items-center cursor-pointer w-full sm:w-auto">
-                <input
-                    type="checkbox"
-                    id="insurer-address-same-property"
-                    checked={isInsurerAddressSameAsProperty}
-                    onChange={handleInsurerAddressSameAsProperty}
-                    className="h-6 w-6 sm:h-5 sm:w-5 accent-primary border-white/50 rounded focus:ring-primary transition-all duration-150"
-                />
-                <span className="ml-3 text-white text-base sm:text-sm font-medium break-words">
-                  Адресът е същия като на застрахования имот
-                </span>
-              </label>
-              <label htmlFor="insurer-address-same-owner" className="flex items-center cursor-pointer w-full sm:w-auto">
-                <input
-                    type="checkbox"
-                    id="insurer-address-same-owner"
-                    checked={isInsurerAddressSameAsOwner}
-                    onChange={handleInsurerAddressSameAsOwner}
-                    className="h-6 w-6 sm:h-5 sm:w-5 accent-primary border-white/50 rounded focus:ring-primary transition-all duration-150"
-                />
-                <span className="ml-3 text-white text-base sm:text-sm font-medium break-words">
-                  Адресът е същия като на собственика
-                </span>
-              </label>
             </div>
           </div>
 
