@@ -726,7 +726,7 @@ const CoveredRisksForm = ({
               <div className="flex items-center flex-1 min-w-0">
                 <div className="flex flex-col w-full">
                   <div className="flex items-center">
-                    <span className="text-gray-800 font-medium text-base sm:text-lg">
+                    <span className="text-gray-800 font-medium text-base sm:text-lg pulse-primary">
                       Пакет по избор
                     </span>
                     {isCustomPackageSelected && (
