@@ -726,14 +726,14 @@ const CoveredRisksForm = ({
               <div className="flex items-center flex-1 min-w-0">
                 <div className="flex flex-col w-full">
                   <div className="flex items-center">
-                    <span className="text-gray-800 font-medium text-base sm:text-lg pulse-primary">
+                    <span className="text-gray-800 font-medium text-base sm:text-lg">
                       Пакет по избор
                     </span>
                     {isCustomPackageSelected && (
                       <CheckCircle className="text-primary ml-1" fontSize="medium" />
                     )}
                   </div>
-                  <span className="text-gray-600 text-xs sm:text-sm mt-1">
+                  <span className="text-primary-darker text-xs sm:text-sm mt-1 blink-text">
                     Създайте свой собствен пакет
                   </span>
                 </div>
