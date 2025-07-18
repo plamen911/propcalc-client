@@ -154,21 +154,6 @@ const CoveredRisksForm = ({
     fetchTariffPresets();
   }, [formData, customClauseAmounts, setCustomClauseAmounts, selectedRisks, setSelectedRisks]);
 
-  const toggleAccordion = (id) => {
-    setExpandedItems(prev => {
-      // If the clicked item is already expanded, collapse it
-      if (prev[id]) {
-        setLastOpenedAccordion(null);
-        return {};
-      }
-      // Otherwise, collapse all items and expand only the clicked one
-      setLastOpenedAccordion(id);
-      return { [id]: true };
-    });
-    // Close custom package when opening a preset
-    setIsCustomPackageExpanded(false);
-  };
-
   const toggleCustomPackage = () => {
     const newExpandedState = !isCustomPackageExpanded;
     setIsCustomPackageExpanded(newExpandedState);
@@ -182,7 +167,7 @@ const CoveredRisksForm = ({
   };
 
   const handleRiskChange = (presetId) => {
-    // Deselect custom package when selecting a preset
+    // Deselect a custom package when selecting a preset
     setIsCustomPackageSelected(false);
 
     // Update selectedRisks to mark the selected preset
@@ -208,10 +193,10 @@ const CoveredRisksForm = ({
   };
 
 
-  // Function to calculate statistics for custom package
+  // Function to calculate statistics for a custom package
   const calculateCustomPackageStatistics = async () => {
     try {
-      // Only call API if custom package is expanded
+      // Only call API if a custom package is expanded
       if (!isCustomPackageExpanded) {
         return;
       }
@@ -253,7 +238,7 @@ const CoveredRisksForm = ({
     if (promoCodeError) {
       setPromoCodeError('');
     }
-    // Hide success message when the code changes
+    // Hide the success message when the code changes
     setShowPromoSuccess(false);
   };
 
@@ -471,7 +456,7 @@ const CoveredRisksForm = ({
     const clause1ValueNum = parseFloat(clause1Value);
 
     if (!clause1Value || clause1Value === '' || clause1Value === '0' || isNaN(clause1ValueNum) || clause1ValueNum < 100000 || clause1ValueNum > 2000000) {
-      setValidationError('Клауза "Пожар и щети - Недвижимо имущество" е задължителна и стойността трябва да бъде между 100000 и 2000000.');
+      setValidationError('Клауза "Пожар и щети - Недвижимо имущество" е задължителна и стойността трябва да бъде между 100000 и 2000000 ' + currencySymbol);
       return; // Don't proceed if validation fails
     }
 
@@ -481,17 +466,107 @@ const CoveredRisksForm = ({
       const clause3ValueNum = parseFloat(clause3Value);
 
       if (!isNaN(clause1ValueNum) && clause3ValueNum > 15000) {
-        setValidationError('Клауза "Пожари и щети на имущество - Соларни инсталации" е задължителна и стойността трябва да бъде до 15000.');
+        setValidationError('Клауза "Пожари и щети на имущество - Соларни инсталации" е задължителна и стойността трябва да бъде до 15000 ' + currencySymbol);
         return; // Don't proceed if validation fails
       }
     }
+
+    // Check if-clause id = 7 has a valid value between 0 and 20000
+    const clause7Value = customClauseAmounts[7];
+    const clause7ValueNum = parseFloat(clause7Value);
+
+    if (clause7Value && +clause7Value > 0 && (clause7ValueNum < 0 || clause7ValueNum > 20000)) {
+      setValidationError('Стойността на клауза "Кражба чрез взлом, кражба с техническо средство и грабеж" трябва да бъде между 0 и 20000 ' + currencySymbol);
+      return;
+    }
+
+    // Check if-clause id = 8 has a valid value between 0 and 50000
+    const clause8Value = customClauseAmounts[8];
+    const clause8ValueNum = parseFloat(clause8Value);
+
+    if (clause8Value && +clause8Value > 0 && (clause8ValueNum < 0 || clause8ValueNum > 50000)) {
+      setValidationError('Стойността на клауза "Гражданска отговорност към трети лица" трябва да бъде между 0 и 50000 ' + currencySymbol);
+      return;
+    }
+
+    // Check if-clause id = 9 has a valid value between 0 and 15000
+    const clause9Value = customClauseAmounts[9];
+    const clause9ValueNum = parseFloat(clause9Value);
+
+    if (clause9Value && +clause9Value > 0 && (clause9ValueNum < 0 || clause9ValueNum > 15000)) {
+      setValidationError('Стойността на клауза "Наем за алтернативно настаняване" трябва да бъде между 0 и 15000 ' + currencySymbol);
+      return;
+    }
+
+    // Check if-clause id = 10 has a valid value between 0 and 50000
+    const clause10Value = customClauseAmounts[10];
+    const clause10ValueNum = parseFloat(clause10Value);
+
+    if (clause10Value && +clause10Value > 0 && (clause10ValueNum < 0 || clause10ValueNum > 50000)) {
+      setValidationError('Стойността на клауза "Злополука на член от семейството/домакинството" трябва да бъде между 0 и 50000 ' + currencySymbol);
+      return;
+    }
+
+    // Check if-clause id = 11 has a valid value between 0 and 15000
+    const clause11Value = customClauseAmounts[11];
+    const clause11ValueNum = parseFloat(clause11Value);
+
+    if (clause11Value && +clause11Value > 0 && (clause11ValueNum < 0 || clause11ValueNum > 15000)) {
+      setValidationError('Стойността на клауза "Загуба на доход от наем" трябва да бъде между 0 и 15000 ' + currencySymbol);
+      return;
+    }
+
+    // Check if-clause id = 12 has a valid value between 0 and 1000000
+    const clause12Value = customClauseAmounts[12];
+    const clause12ValueNum = parseFloat(clause12Value);
+
+    if (clause12Value && +clause12Value > 0 && (clause12ValueNum < 0 || clause12ValueNum > clause1ValueNum)) {
+      setValidationError('Стойността на клауза "Късо съединение и токов удар на ел. инсталации и/или уреди" трябва да бъде между 0 и ' + clause1ValueNum + ' ' + currencySymbol);
+      return;
+    }
+
+    // Check if-clause id = 13 has a valid value between 0 and 50000
+    const clause13Value = customClauseAmounts[13];
+    const clause13ValueNum = parseFloat(clause13Value);
+
+    if (clause13Value && +clause13Value > 0 && (clause13ValueNum < 0 || clause13ValueNum > 50000)) {
+      setValidationError('Стойността на клауза "Щети вследствие на опит за кражба чрез взлом или грабеж" трябва да бъде между 0 и 50000 ' + currencySymbol);
+      return;
+    }
+
+    // Check if-clause id = 14 has a valid value between 0 and 150
+    // const clause14Value = customClauseAmounts[14];
+    // const clause14ValueNum = parseFloat(clause14Value);
+    //
+    // if (clause14Value && +clause14Value > 0 && (clause14ValueNum < 0 || clause14ValueNum > 150)) {
+    //   setValidationError('Стойността на клауза "Разходи за отключване на брава" трябва да бъде между 0 и 150 ' + currencySymbol);
+    //   return;
+    // }
+
+    // Check if-clause id = 15 has a valid value between 0 and 500
+    const clause15Value = customClauseAmounts[15];
+    const clause15ValueNum = parseFloat(clause15Value);
+
+    if (clause15Value && +clause15Value > 0 && (clause15ValueNum < 0 || clause15ValueNum > 500)) {
+      setValidationError('Стойността на клауза "Гражданска отговорност за вреди, причинени от домашни любимци и злополука на домашен любимец" трябва да бъде между 0 и 500 ' + currencySymbol);
+      return;
+    }
+
+    // Check if-clause id = 16 has a valid value between 0 and 150
+    // const clause16Value = customClauseAmounts[16];
+    // const clause16ValueNum = parseFloat(clause16Value);
+    //
+    // if (clause16Value && +clause16Value > 0 && (clause16ValueNum < 0 || clause16ValueNum > 150)) {
+    //   setValidationError('Стойността на клауза "Разходи за издаване на документи" трябва да бъде между 0 и 150 ' + currencySymbol);
+    //   return;
+    // }
 
     // Check if clause 6 is filled when its checkbox is checked
     if (clauseCheckboxes[6]) {
       const clause6Value = customClauseAmounts[6];
 
       if (!clause6Value || clause6Value === '' || clause6Value === '0') {
-        setValidationError('Моля, попълнете стойност за клауза 6.');
+        setValidationError('Моля, попълнете стойност за клауза Земетресение.');
         return; // Don't proceed if validation fails
       }
     }
@@ -503,7 +578,7 @@ const CoveredRisksForm = ({
 
       if (!clause14Value || clause14Value === '' || clause14Value === '0' || 
           !clause16Value || clause16Value === '' || clause16Value === '0') {
-        setValidationError('Моля, попълнете стойности за клаузи 14 и 16.');
+        setValidationError('Моля, попълнете стойности за клаузи "Разходи за отключване на брава" и "Разходи за издаване на документи".');
         return; // Don't proceed if validation fails
       }
     }
@@ -540,8 +615,8 @@ const CoveredRisksForm = ({
         // Find the clause in allClauses
         const clause = allClauses.find(c => c.id === clauseIdInt);
         if (clause) {
-          // If checkbox is checked, include with value (which should be 150)
-          // If checkbox is unchecked, include with empty value
+          // If the checkbox is checked, include with value (which should be 150)
+          // If the checkbox is unchecked, include with empty value
           customClauses.push({
             id: `custom-${clauseId}`,
             insurance_clause: clause,
