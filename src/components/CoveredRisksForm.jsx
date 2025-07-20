@@ -11,7 +11,7 @@ import ErrorIcon from './ui/ErrorIcon.jsx';
 import api from '../services/api';
 import CalcStatisticsService from '../services/calc-statistics';
 import { formatCurrency, formatDescription } from '../utils/formatters.jsx';
-import {Typography} from "@mui/material";
+import { Typography, Slider } from "@mui/material";
 
 const CoveredRisksForm = ({ 
   formData, 
@@ -58,6 +58,9 @@ const CoveredRisksForm = ({
   // State for the promotional code success message
   const [showPromoSuccess, setShowPromoSuccess] = useState(false);
 
+  // State for clause configuration values (min, max, step)
+  const [clauseConfig, setClauseConfig] = useState({});
+
   // State for custom package statistics
   const [customPackageStatistics, setCustomPackageStatistics] = useState({
     discount_percent: 0,
@@ -77,16 +80,23 @@ const CoveredRisksForm = ({
       return;
     }
 
-    const fetchTariffPresets = async () => {
+    const fetchData = async () => {
       try {
-        const response = await api.get('/api/v1/insurance-policies/admin/tariff-presets', {
+        // Fetch tariff presets
+        const tariffResponse = await api.get('/api/v1/insurance-policies/admin/tariff-presets', {
           params: {
             settlement_id: formData.settlement_id,
             distance_to_water_id: formData.distance_to_water_id
           }
         });
 
-        const data = Array.isArray(response.data) ? response.data : [];
+        // Fetch clause configuration values
+        const clauseConfigResponse = await api.get('/api/v1/form-data/clause-config');
+        
+        // Set clause configuration state
+        setClauseConfig(clauseConfigResponse.data);
+
+        const data = Array.isArray(tariffResponse.data) ? tariffResponse.data : [];
         setTariffPresets(data);
 
         // Use lastOpenedAccordion if available, otherwise all items will be collapsed by default
@@ -128,30 +138,37 @@ const CoveredRisksForm = ({
           return a.id - b.id;
         });
 
-        // Log the clauses to check if allow_custom_amount is present
-        console.log('All unique clauses:', uniqueClauses);
-
         setAllClauses(uniqueClauses);
 
         // Initialize custom clause amounts only if they're empty
         if (Object.keys(customClauseAmounts).length === 0) {
           const initialCustomAmounts = {};
           uniqueClauses.forEach(clause => {
-            // All clauses should be empty by default
-            initialCustomAmounts[clause.id] = '';
+            // Set default values to min values for each clause
+            if (clause.id === 1) {
+              // Use configuration value if available, otherwise fallback to hardcoded value
+              const minValue = clauseConfigResponse.data[1]?.min || 100000;
+              initialCustomAmounts[clause.id] = minValue.toString();
+            } else if (clause.id === 6 || clause.id === 14 || clause.id === 16) {
+              initialCustomAmounts[clause.id] = ''; // Special clauses with checkboxes
+            } else {
+              // Use configuration value if available, otherwise fallback to 0
+              const minValue = clauseConfigResponse.data[clause.id]?.min || 0;
+              initialCustomAmounts[clause.id] = minValue.toString();
+            }
           });
           setCustomClauseAmounts(initialCustomAmounts);
         }
 
         setLoading(false);
       } catch (err) {
-        console.error('Error fetching tariff presets:', err);
-        setError('Failed to load tariff presets');
+        console.error('Error fetching data:', err);
+        setError('Failed to load data');
         setLoading(false);
       }
     };
 
-    fetchTariffPresets();
+    fetchData();
   }, [formData, customClauseAmounts, setCustomClauseAmounts, selectedRisks, setSelectedRisks]);
 
   const toggleCustomPackage = () => {
@@ -338,44 +355,63 @@ const CoveredRisksForm = ({
   }, [debouncedCalculate]);
 
   const handleClauseAmountChange = (clauseId, value) => {
-    // Only allow numeric values (digits and decimal point)
-    if (value === '' || /^\d*\.?\d*$/.test(value)) {
-      // Update the value for the current clause
-      setCustomClauseAmounts(prev => {
-        const updatedAmounts = {
-          ...prev,
-          [clauseId]: value
-        };
-
-        // If clause 1 or 2 was changed and clause 6 checkbox is checked, update clause 6 value
-        if ((clauseId === 1 || clauseId === 2) && clauseCheckboxes[6]) {
-          const clause1Value = clauseId === 1 ? value : prev[1];
-          const clause2Value = clauseId === 2 ? value : prev[2];
-
-          // If both clause 1 and clause 2 have values, calculate their sum
-          if (clause1Value && clause2Value && 
-              clause1Value !== '' && clause2Value !== '' && 
-              !isNaN(parseFloat(clause1Value)) && !isNaN(parseFloat(clause2Value))) {
-            // Calculate the sum of clause 1 and clause 2
-            const sum = parseFloat(clause1Value) + parseFloat(clause2Value);
-            updatedAmounts[6] = sum.toString();
-          }
-          // If only clause 1 has a value, use that value
-          else if (clause1Value && clause1Value !== '' && !isNaN(parseFloat(clause1Value))) {
-            updatedAmounts[6] = clause1Value;
-          }
-          // If only clause 2 has a value, use that value
-          else if (clause2Value && clause2Value !== '' && !isNaN(parseFloat(clause2Value))) {
-            updatedAmounts[6] = clause2Value;
-          }
-        }
-
-        return updatedAmounts;
-      });
-
-      // Call the debounced function directly to ensure immediate update
-      debouncedCalculate();
+    // For input fields, we need to validate the value
+    if (clauseId === 6 || clauseId === 14 || clauseId === 16) {
+      // Only allow numeric values (digits and decimal point)
+      if (value === '' || /^\d*\.?\d*$/.test(value)) {
+        // Update the value for the current clause
+        setCustomClauseAmounts(prev => {
+          const updatedAmounts = {
+            ...prev,
+            [clauseId]: value
+          };
+          return updatedAmounts;
+        });
+        
+        // Call the debounced function directly to ensure immediate update
+        debouncedCalculate();
+      }
+      return;
     }
+    
+    // For slider values, we get a number directly
+    const stringValue = value.toString();
+    
+    // Update the value for the current clause
+    setCustomClauseAmounts(prev => {
+      const updatedAmounts = {
+        ...prev,
+        [clauseId]: stringValue
+      };
+
+      // If clause 1 or 2 was changed and clause 6 checkbox is checked, update clause 6 value
+      if ((clauseId === 1 || clauseId === 2) && clauseCheckboxes[6]) {
+        const clause1Value = clauseId === 1 ? stringValue : prev[1];
+        const clause2Value = clauseId === 2 ? stringValue : prev[2];
+
+        // If both clause 1 and clause 2 have values, calculate their sum
+        if (clause1Value && clause2Value && 
+            clause1Value !== '' && clause2Value !== '' && 
+            !isNaN(parseFloat(clause1Value)) && !isNaN(parseFloat(clause2Value))) {
+          // Calculate the sum of clause 1 and clause 2
+          const sum = parseFloat(clause1Value) + parseFloat(clause2Value);
+          updatedAmounts[6] = sum.toString();
+        }
+        // If only clause 1 has a value, use that value
+        else if (clause1Value && clause1Value !== '' && !isNaN(parseFloat(clause1Value))) {
+          updatedAmounts[6] = clause1Value;
+        }
+        // If only clause 2 has a value, use that value
+        else if (clause2Value && clause2Value !== '' && !isNaN(parseFloat(clause2Value))) {
+          updatedAmounts[6] = clause2Value;
+        }
+      }
+
+      return updatedAmounts;
+    });
+
+    // Call the debounced function directly to ensure immediate update
+    debouncedCalculate();
   };
 
   const handleClauseCheckboxChange = (clauseId) => {
@@ -451,12 +487,14 @@ const CoveredRisksForm = ({
 
   const handleCustomPackageSelect = () => {
     // Validate the required clause and that at least one field is filled in
-    // Check if-clause id = 1 has a valid value between 100,000 and 600,000
+    // Check if-clause id = 1 has a valid value between min and max
     const clause1Value = customClauseAmounts[1];
     const clause1ValueNum = parseFloat(clause1Value);
+    const clause1Min = clauseConfig[1]?.min || 100000;
+    const clause1Max = clauseConfig[1]?.max || 2000000;
 
-    if (!clause1Value || clause1Value === '' || clause1Value === '0' || isNaN(clause1ValueNum) || clause1ValueNum < 100000 || clause1ValueNum > 2000000) {
-      setValidationError('Клауза "Пожар и щети - Недвижимо имущество" е задължителна и стойността трябва да бъде между 100000 и 2000000 ' + currencySymbol);
+    if (!clause1Value || clause1Value === '' || clause1Value === '0' || isNaN(clause1ValueNum) || clause1ValueNum < clause1Min || clause1ValueNum > clause1Max) {
+      setValidationError(`Клауза "Пожар и щети - Недвижимо имущество" е задължителна и стойността трябва да бъде между ${clause1Min.toLocaleString()} и ${clause1Max.toLocaleString()} ${currencySymbol}`);
       return; // Don't proceed if validation fails
     }
 
@@ -464,102 +502,101 @@ const CoveredRisksForm = ({
     if (formData.estate_type_id === '4' && customClauseAmounts[3]) {
       const clause3Value = customClauseAmounts[3];
       const clause3ValueNum = parseFloat(clause3Value);
+      const clause3Max = clauseConfig[3]?.max || 15000;
 
-      if (!isNaN(clause1ValueNum) && clause3ValueNum > 15000) {
-        setValidationError('Клауза "Пожари и щети на имущество - Соларни инсталации" е задължителна и стойността трябва да бъде до 15000 ' + currencySymbol);
+      if (!isNaN(clause1ValueNum) && clause3ValueNum > clause3Max) {
+        setValidationError(`Клауза "Пожари и щети на имущество - Соларни инсталации" е задължителна и стойността трябва да бъде до ${clause3Max.toLocaleString()} ${currencySymbol}`);
         return; // Don't proceed if validation fails
       }
     }
 
-    // Check if-clause id = 7 has a valid value between 0 and 20000
+    // Check if-clause id = 7 has a valid value between min and max
     const clause7Value = customClauseAmounts[7];
     const clause7ValueNum = parseFloat(clause7Value);
+    const clause7Min = clauseConfig[7]?.min || 0;
+    const clause7Max = clauseConfig[7]?.max || 20000;
 
-    if (clause7Value && +clause7Value > 0 && (clause7ValueNum < 0 || clause7ValueNum > 20000)) {
-      setValidationError('Стойността на клауза "Кражба чрез взлом, кражба с техническо средство и грабеж" трябва да бъде между 0 и 20000 ' + currencySymbol);
+    if (clause7Value && +clause7Value > 0 && (clause7ValueNum < clause7Min || clause7ValueNum > clause7Max)) {
+      setValidationError(`Стойността на клауза "Кражба чрез взлом, кражба с техническо средство и грабеж" трябва да бъде между ${clause7Min.toLocaleString()} и ${clause7Max.toLocaleString()} ${currencySymbol}`);
       return;
     }
 
-    // Check if-clause id = 8 has a valid value between 0 and 50000
+    // Check if-clause id = 8 has a valid value between min and max
     const clause8Value = customClauseAmounts[8];
     const clause8ValueNum = parseFloat(clause8Value);
+    const clause8Min = clauseConfig[8]?.min || 0;
+    const clause8Max = clauseConfig[8]?.max || 50000;
 
-    if (clause8Value && +clause8Value > 0 && (clause8ValueNum < 0 || clause8ValueNum > 50000)) {
-      setValidationError('Стойността на клауза "Гражданска отговорност към трети лица" трябва да бъде между 0 и 50000 ' + currencySymbol);
+    if (clause8Value && +clause8Value > 0 && (clause8ValueNum < clause8Min || clause8ValueNum > clause8Max)) {
+      setValidationError(`Стойността на клауза "Гражданска отговорност към трети лица" трябва да бъде между ${clause8Min.toLocaleString()} и ${clause8Max.toLocaleString()} ${currencySymbol}`);
       return;
     }
 
-    // Check if-clause id = 9 has a valid value between 0 and 15000
+    // Check if-clause id = 9 has a valid value between min and max
     const clause9Value = customClauseAmounts[9];
     const clause9ValueNum = parseFloat(clause9Value);
+    const clause9Min = clauseConfig[9]?.min || 0;
+    const clause9Max = clauseConfig[9]?.max || 15000;
 
-    if (clause9Value && +clause9Value > 0 && (clause9ValueNum < 0 || clause9ValueNum > 15000)) {
-      setValidationError('Стойността на клауза "Наем за алтернативно настаняване" трябва да бъде между 0 и 15000 ' + currencySymbol);
+    if (clause9Value && +clause9Value > 0 && (clause9ValueNum < clause9Min || clause9ValueNum > clause9Max)) {
+      setValidationError(`Стойността на клауза "Наем за алтернативно настаняване" трябва да бъде между ${clause9Min.toLocaleString()} и ${clause9Max.toLocaleString()} ${currencySymbol}`);
       return;
     }
 
-    // Check if-clause id = 10 has a valid value between 0 and 50000
+    // Check if-clause id = 10 has a valid value between min and max
     const clause10Value = customClauseAmounts[10];
     const clause10ValueNum = parseFloat(clause10Value);
+    const clause10Min = clauseConfig[10]?.min || 0;
+    const clause10Max = clauseConfig[10]?.max || 50000;
 
-    if (clause10Value && +clause10Value > 0 && (clause10ValueNum < 0 || clause10ValueNum > 50000)) {
-      setValidationError('Стойността на клауза "Злополука на член от семейството/домакинството" трябва да бъде между 0 и 50000 ' + currencySymbol);
+    if (clause10Value && +clause10Value > 0 && (clause10ValueNum < clause10Min || clause10ValueNum > clause10Max)) {
+      setValidationError(`Стойността на клауза "Злополука на член от семейството/домакинството" трябва да бъде между ${clause10Min.toLocaleString()} и ${clause10Max.toLocaleString()} ${currencySymbol}`);
       return;
     }
 
-    // Check if-clause id = 11 has a valid value between 0 and 15000
+    // Check if-clause id = 11 has a valid value between min and max
     const clause11Value = customClauseAmounts[11];
     const clause11ValueNum = parseFloat(clause11Value);
+    const clause11Min = clauseConfig[11]?.min || 0;
+    const clause11Max = clauseConfig[11]?.max || 15000;
 
-    if (clause11Value && +clause11Value > 0 && (clause11ValueNum < 0 || clause11ValueNum > 15000)) {
-      setValidationError('Стойността на клауза "Загуба на доход от наем" трябва да бъде между 0 и 15000 ' + currencySymbol);
+    if (clause11Value && +clause11Value > 0 && (clause11ValueNum < clause11Min || clause11ValueNum > clause11Max)) {
+      setValidationError(`Стойността на клауза "Загуба на доход от наем" трябва да бъде между ${clause11Min.toLocaleString()} и ${clause11Max.toLocaleString()} ${currencySymbol}`);
       return;
     }
 
-    // Check if-clause id = 12 has a valid value between 0 and 1000000
+    // Check if-clause id = 12 has a valid value between min and max
     const clause12Value = customClauseAmounts[12];
     const clause12ValueNum = parseFloat(clause12Value);
+    const clause12Min = clauseConfig[12]?.min || 0;
+    const clause12Max = clauseConfig[12]?.max || 2000000;
 
-    if (clause12Value && +clause12Value > 0 && (clause12ValueNum < 0 || clause12ValueNum > clause1ValueNum)) {
-      setValidationError('Стойността на клауза "Късо съединение и токов удар на ел. инсталации и/или уреди" трябва да бъде между 0 и ' + clause1ValueNum + ' ' + currencySymbol);
+    if (clause12Value && +clause12Value > 0 && (clause12ValueNum < clause12Min || clause12ValueNum > clause12Max)) {
+      setValidationError(`Стойността на клауза "Късо съединение и токов удар на ел. инсталации и/или уреди" трябва да бъде между ${clause12Min.toLocaleString()} и ${clause12Max.toLocaleString()} ${currencySymbol}`);
       return;
     }
 
-    // Check if-clause id = 13 has a valid value between 0 and 50000
+    // Check if-clause id = 13 has a valid value between min and max
     const clause13Value = customClauseAmounts[13];
     const clause13ValueNum = parseFloat(clause13Value);
+    const clause13Min = clauseConfig[13]?.min || 0;
+    const clause13Max = clauseConfig[13]?.max || 50000;
 
-    if (clause13Value && +clause13Value > 0 && (clause13ValueNum < 0 || clause13ValueNum > 50000)) {
-      setValidationError('Стойността на клауза "Щети вследствие на опит за кражба чрез взлом или грабеж" трябва да бъде между 0 и 50000 ' + currencySymbol);
+    if (clause13Value && +clause13Value > 0 && (clause13ValueNum < clause13Min || clause13ValueNum > clause13Max)) {
+      setValidationError(`Стойността на клауза "Щети вследствие на опит за кражба чрез взлом или грабеж" трябва да бъде между ${clause13Min.toLocaleString()} и ${clause13Max.toLocaleString()} ${currencySymbol}`);
       return;
     }
 
-    // Check if-clause id = 14 has a valid value between 0 and 150
-    // const clause14Value = customClauseAmounts[14];
-    // const clause14ValueNum = parseFloat(clause14Value);
-    //
-    // if (clause14Value && +clause14Value > 0 && (clause14ValueNum < 0 || clause14ValueNum > 150)) {
-    //   setValidationError('Стойността на клауза "Разходи за отключване на брава" трябва да бъде между 0 и 150 ' + currencySymbol);
-    //   return;
-    // }
-
-    // Check if-clause id = 15 has a valid value between 0 and 500
+    // Check if-clause id = 15 has a valid value between min and max
     const clause15Value = customClauseAmounts[15];
     const clause15ValueNum = parseFloat(clause15Value);
+    const clause15Min = clauseConfig[15]?.min || 0;
+    const clause15Max = clauseConfig[15]?.max || 500;
 
-    if (clause15Value && +clause15Value > 0 && (clause15ValueNum < 0 || clause15ValueNum > 500)) {
-      setValidationError('Стойността на клауза "Гражданска отговорност за вреди, причинени от домашни любимци и злополука на домашен любимец" трябва да бъде между 0 и 500 ' + currencySymbol);
+    if (clause15Value && +clause15Value > 0 && (clause15ValueNum < clause15Min || clause15ValueNum > clause15Max)) {
+      setValidationError(`Стойността на клауза "Гражданска отговорност за вреди, причинени от домашни любимци и злополука на домашен любимец" трябва да бъде между ${clause15Min.toLocaleString()} и ${clause15Max.toLocaleString()} ${currencySymbol}`);
       return;
     }
-
-    // Check if-clause id = 16 has a valid value between 0 and 150
-    // const clause16Value = customClauseAmounts[16];
-    // const clause16ValueNum = parseFloat(clause16Value);
-    //
-    // if (clause16Value && +clause16Value > 0 && (clause16ValueNum < 0 || clause16ValueNum > 150)) {
-    //   setValidationError('Стойността на клауза "Разходи за издаване на документи" трябва да бъде между 0 и 150 ' + currencySymbol);
-    //   return;
-    // }
 
     // Check if clause 6 is filled when its checkbox is checked
     if (clauseCheckboxes[6]) {
@@ -852,7 +889,7 @@ const CoveredRisksForm = ({
                       </div>
                       <div className="w-full sm:w-40">
                         {clause.allow_custom_amount && (
-                          <div className="relative rounded-md shadow-sm">
+                          <div className="relative rounded-md">
                             {(clause.id === 6 || clause.id === 14 || clause.id === 16) && (
                               <div className="absolute left-0 top-0 bottom-0 flex items-center pl-3 sm:pl-2 z-10">
                                 <div className="p-1.5 sm:p-0.5 -m-1.5 sm:-m-0.5">
@@ -865,33 +902,117 @@ const CoveredRisksForm = ({
                                 </div>
                               </div>
                             )}
-                            <input
-                              type="text"
-                              inputMode="numeric"
-                              value={customClauseAmounts[clause.id]}
-                              onChange={(e) => handleClauseAmountChange(clause.id, e.target.value)}
-                              placeholder={(clause.id === 14 || clause.id === 16) ? "150" : "Сума"}
-                              className={`w-full pr-12 ${(clause.id === 6 || clause.id === 14 || clause.id === 16) ? 'pl-11 sm:pl-8' : 'px-3'} py-4 sm:py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-primary focus:border-primary text-black text-base touch-manipulation ${(clause.id === 6 || clause.id === 14 || clause.id === 16) ? 'bg-gray-100' : ''}`}
-                              readOnly={clause.id === 6 || clause.id === 14 || clause.id === 16}
-                              {...(clause.id === 1 ? {
-                                min: "100000",
-                                max: "2000000",
-                                required: true
-                              } : clause.id === 2 ? {
-                                min: "0",
-                                max: "100000"
-                              } : clause.id === 3 ? {
-                                min: "0",
-                                max: "15000"
-                              } : clause.id === 6 && clauseCheckboxes[6] ? {
-                                required: true
-                              } : (clause.id === 14 || clause.id === 16) && clauseCheckboxes[14] && clauseCheckboxes[16] ? {
-                                required: true
-                              } : {})}
-                            />
-                            <div className="absolute inset-y-0 right-0 pr-3 flex items-center pointer-events-none">
-                              <span className="text-gray-700 text-sm sm:text-base font-medium">{currencySymbol}</span>
-                            </div>
+                            {(clause.id === 6 || clause.id === 14 || clause.id === 16) ? (
+                              // Original input field implementation for clauses 6, 14, 16
+                              <>
+                                <input
+                                  type="text"
+                                  inputMode="numeric"
+                                  value={customClauseAmounts[clause.id]}
+                                  onChange={(e) => handleClauseAmountChange(clause.id, e.target.value)}
+                                  placeholder={(clause.id === 14 || clause.id === 16) ? "150" : "Сума"}
+                                  className={`w-full pr-12 ${(clause.id === 6 || clause.id === 14 || clause.id === 16) ? 'pl-11 sm:pl-8' : 'px-3'} py-4 sm:py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-primary focus:border-primary text-black text-base touch-manipulation ${(clause.id === 6 || clause.id === 14 || clause.id === 16) ? 'bg-gray-100' : ''}`}
+                                  readOnly={clause.id === 6 || clause.id === 14 || clause.id === 16}
+                                  {...(clause.id === 6 && clauseCheckboxes[6] ? {
+                                    required: true
+                                  } : (clause.id === 14 || clause.id === 16) && clauseCheckboxes[14] && clauseCheckboxes[16] ? {
+                                    required: true
+                                  } : {})}
+                                />
+                                <div className="absolute inset-y-0 right-0 pr-3 flex items-center pointer-events-none">
+                                  <span className="text-gray-700 text-sm sm:text-base font-medium">{currencySymbol}</span>
+                                </div>
+                              </>
+                            ) : (
+                              // Slider implementation for other clauses
+                              <div className="px-3 py-0">
+                                {/* Display current value above slider */}
+                                <div className="flex justify-between mb-0">
+                                  <Typography variant="body2" color="text.secondary">
+                                    {(clauseConfig[clause.id]?.min !== undefined 
+                                      ? clauseConfig[clause.id].min.toLocaleString() 
+                                      : (clause.id === 1 ? "100,000" : "0"))}
+                                  </Typography>
+                                  <Typography variant="body2" color="text.secondary">
+                                    {(clauseConfig[clause.id]?.max !== undefined 
+                                      ? clauseConfig[clause.id].max.toLocaleString() 
+                                      : (clause.id === 1 ? "2,000,000" : 
+                                         clause.id === 2 ? "100,000" : 
+                                         clause.id === 3 ? "15,000" : 
+                                         clause.id === 7 ? "20,000" : 
+                                         clause.id === 8 ? "50,000" : 
+                                         clause.id === 9 ? "15,000" : 
+                                         clause.id === 10 ? "50,000" : 
+                                         clause.id === 11 ? "15,000" : 
+                                         clause.id === 12 ? "2,000,000" : 
+                                         clause.id === 13 ? "50,000" : 
+                                         clause.id === 15 ? "500" : "150"))}
+                                  </Typography>
+                                </div>
+                                
+                                {/* Slider component */}
+                                <Slider
+                                  value={customClauseAmounts[clause.id] ? parseFloat(customClauseAmounts[clause.id]) : 
+                                         (clauseConfig[clause.id]?.min || (clause.id === 1 ? 100000 : 0))}
+                                  onChange={(_, newValue) => handleClauseAmountChange(clause.id, newValue)}
+                                  min={clauseConfig[clause.id]?.min !== undefined ? clauseConfig[clause.id].min : (clause.id === 1 ? 100000 : 0)}
+                                  max={clauseConfig[clause.id]?.max !== undefined ? clauseConfig[clause.id].max : 
+                                       (clause.id === 1 ? 2000000 : 
+                                       clause.id === 2 ? 100000 : 
+                                       clause.id === 3 ? 15000 : 
+                                       clause.id === 7 ? 20000 : 
+                                       clause.id === 8 ? 50000 : 
+                                       clause.id === 9 ? 15000 : 
+                                       clause.id === 10 ? 50000 : 
+                                       clause.id === 11 ? 15000 : 
+                                       clause.id === 12 ? 2000000 : 
+                                       clause.id === 13 ? 50000 : 
+                                       clause.id === 15 ? 500 : 150)}
+                                  step={clauseConfig[clause.id]?.step !== undefined ? clauseConfig[clause.id].step : 
+                                        (clause.id === 1 ? 10000 : 
+                                        clause.id === 2 ? 5000 : 
+                                        clause.id === 3 ? 1000 : 
+                                        clause.id === 7 ? 1000 : 
+                                        clause.id === 8 ? 1000 : 
+                                        clause.id === 9 ? 1000 : 
+                                        clause.id === 10 ? 1000 : 
+                                        clause.id === 11 ? 1000 : 
+                                        clause.id === 12 ? 10000 : 
+                                        clause.id === 13 ? 1000 : 
+                                        clause.id === 15 ? 50 : 10)}
+                                  valueLabelDisplay="auto"
+                                  valueLabelFormat={(value) => `${value.toLocaleString()} ${currencySymbol}`}
+                                  sx={{
+                                    color: 'primary.main',
+                                    '& .MuiSlider-thumb': {
+                                      height: 16,
+                                      width: 16,
+                                    },
+                                    '& .MuiSlider-rail': {
+                                      height: 4,
+                                      border: 'none',
+                                      boxShadow: 'none',
+                                    },
+                                    '& .MuiSlider-track': {
+                                      height: 4,
+                                      border: 'none',
+                                      boxShadow: 'none',
+                                    },
+                                  }}
+                                />
+                                
+                                {/* Current value display */}
+                                <div className="mt-0 text-center">
+                                  <Typography className="text-primary font-semibold whitespace-nowrap" fontWeight="medium">
+                                    <span className="text-sm sm:text-md font-semibold">
+                                      {customClauseAmounts[clause.id] ?
+                                        parseInt(customClauseAmounts[clause.id]).toLocaleString() :
+                                        (clause.id === 1 ? "100,000" : "0")} {currencySymbol}
+                                      </span>
+                                  </Typography>
+                                </div>
+                              </div>
+                            )}
                           </div>
                         )}
                       </div>
