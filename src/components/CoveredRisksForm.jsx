@@ -762,7 +762,7 @@ const CoveredRisksForm = ({
         </h3>
 
         <div className="space-y-2 sm:space-y-3">
-          {tariffPresets.filter(preset => preset.active).map((preset) => (
+          {!isCustomPackageExpanded && tariffPresets.filter(preset => preset.active).map((preset) => (
             <div key={preset.id} className="border border-gray-300 rounded-lg overflow-hidden shadow-sm">
               {/* Accordion Header - enhanced for mobile */}
               <div 
