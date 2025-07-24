@@ -925,15 +925,15 @@ const CoveredRisksForm = ({
                               </>
                             ) : (
                               // Slider implementation for other clauses
-                              <div className="px-3 py-0">
-                                {/* Display current value above slider */}
+                              <div className="p-0">
+                                {/* Display the current value above slider */}
                                 <div className="flex justify-between mb-0">
-                                  <Typography variant="body2" color="text.secondary">
+                                  <Typography variant="body2" color="text.secondary" sx={{ fontSize: '0.7rem' }}>
                                     {(clauseConfig[clause.id]?.min !== undefined 
                                       ? clauseConfig[clause.id].min.toLocaleString() 
                                       : (clause.id === 1 ? "100,000" : "0"))}
                                   </Typography>
-                                  <Typography variant="body2" color="text.secondary">
+                                  <Typography variant="body2" color="text.secondary" sx={{ fontSize: '0.7rem' }}>
                                     {(clauseConfig[clause.id]?.max !== undefined 
                                       ? clauseConfig[clause.id].max.toLocaleString() 
                                       : (clause.id === 1 ? "2,000,000" : 
@@ -950,61 +950,141 @@ const CoveredRisksForm = ({
                                   </Typography>
                                 </div>
                                 
-                                {/* Slider component */}
-                                <Slider
-                                  value={customClauseAmounts[clause.id] ? parseFloat(customClauseAmounts[clause.id]) : 
-                                         (clauseConfig[clause.id]?.min || (clause.id === 1 ? 100000 : 0))}
-                                  onChange={(_, newValue) => handleClauseAmountChange(clause.id, newValue)}
-                                  min={clauseConfig[clause.id]?.min !== undefined ? clauseConfig[clause.id].min : (clause.id === 1 ? 100000 : 0)}
-                                  max={clauseConfig[clause.id]?.max !== undefined ? clauseConfig[clause.id].max : 
-                                       (clause.id === 1 ? 2000000 : 
-                                       clause.id === 2 ? 100000 : 
-                                       clause.id === 3 ? 15000 : 
-                                       clause.id === 7 ? 20000 : 
-                                       clause.id === 8 ? 50000 : 
-                                       clause.id === 9 ? 15000 : 
-                                       clause.id === 10 ? 50000 : 
-                                       clause.id === 11 ? 15000 : 
-                                       clause.id === 12 ? 2000000 : 
-                                       clause.id === 13 ? 50000 : 
-                                       clause.id === 15 ? 500 : 150)}
-                                  step={clauseConfig[clause.id]?.step !== undefined ? clauseConfig[clause.id].step : 
-                                        (clause.id === 1 ? 10000 : 
-                                        clause.id === 2 ? 5000 : 
-                                        clause.id === 3 ? 1000 : 
-                                        clause.id === 7 ? 1000 : 
-                                        clause.id === 8 ? 1000 : 
-                                        clause.id === 9 ? 1000 : 
-                                        clause.id === 10 ? 1000 : 
-                                        clause.id === 11 ? 1000 : 
-                                        clause.id === 12 ? 10000 : 
-                                        clause.id === 13 ? 1000 : 
-                                        clause.id === 15 ? 50 : 10)}
-                                  valueLabelDisplay="auto"
-                                  valueLabelFormat={(value) => `${value.toLocaleString()} ${currencySymbol}`}
-                                  sx={{
-                                    color: 'primary.main',
-                                    '& .MuiSlider-thumb': {
-                                      height: 16,
-                                      width: 16,
-                                    },
-                                    '& .MuiSlider-rail': {
-                                      height: 4,
-                                      border: 'none',
-                                      boxShadow: 'none',
-                                    },
-                                    '& .MuiSlider-track': {
-                                      height: 4,
-                                      border: 'none',
-                                      boxShadow: 'none',
-                                    },
-                                  }}
-                                />
+                                {/* Slider with +/- buttons */}
+                                <div className="flex items-center mt-0">
+                                  {/* Minus button */}
+                                  <button
+                                    type="button"
+                                    onClick={() => {
+                                      const currentValue = customClauseAmounts[clause.id] 
+                                        ? parseFloat(customClauseAmounts[clause.id]) 
+                                        : (clauseConfig[clause.id]?.min || (clause.id === 1 ? 100000 : 0));
+                                      const step = clauseConfig[clause.id]?.step !== undefined 
+                                        ? clauseConfig[clause.id].step 
+                                        : (clause.id === 1 ? 10000 : 
+                                           clause.id === 2 ? 5000 : 
+                                           clause.id === 3 ? 1000 : 
+                                           clause.id === 7 ? 1000 : 
+                                           clause.id === 8 ? 1000 : 
+                                           clause.id === 9 ? 1000 : 
+                                           clause.id === 10 ? 1000 : 
+                                           clause.id === 11 ? 1000 : 
+                                           clause.id === 12 ? 10000 : 
+                                           clause.id === 13 ? 1000 : 
+                                           clause.id === 15 ? 50 : 10);
+                                      const min = clauseConfig[clause.id]?.min !== undefined 
+                                        ? clauseConfig[clause.id].min 
+                                        : (clause.id === 1 ? 100000 : 0);
+                                      const newValue = Math.max(currentValue - step, min);
+                                      handleClauseAmountChange(clause.id, newValue);
+                                    }}
+                                    className="w-8 h-8 sm:w-6 sm:h-6 flex items-center justify-center bg-gray-200 hover:bg-gray-300 active:bg-gray-400 rounded-full text-gray-700 font-bold text-lg sm:text-base focus:outline-none focus:ring-2 focus:ring-primary touch-manipulation mr-2"
+                                    aria-label="Decrease value"
+                                  >
+                                    -
+                                  </button>
+                                  
+                                  {/* Slider component */}
+                                  <div className="flex-1 mx-2">
+                                    <Slider
+                                      value={customClauseAmounts[clause.id] ? parseFloat(customClauseAmounts[clause.id]) : 
+                                             (clauseConfig[clause.id]?.min || (clause.id === 1 ? 100000 : 0))}
+                                      onChange={(_, newValue) => handleClauseAmountChange(clause.id, newValue)}
+                                      min={clauseConfig[clause.id]?.min !== undefined ? clauseConfig[clause.id].min : (clause.id === 1 ? 100000 : 0)}
+                                      max={clauseConfig[clause.id]?.max !== undefined ? clauseConfig[clause.id].max : 
+                                           (clause.id === 1 ? 2000000 : 
+                                           clause.id === 2 ? 100000 : 
+                                           clause.id === 3 ? 15000 : 
+                                           clause.id === 7 ? 20000 : 
+                                           clause.id === 8 ? 50000 : 
+                                           clause.id === 9 ? 15000 : 
+                                           clause.id === 10 ? 50000 : 
+                                           clause.id === 11 ? 15000 : 
+                                           clause.id === 12 ? 2000000 : 
+                                           clause.id === 13 ? 50000 : 
+                                           clause.id === 15 ? 500 : 150)}
+                                      step={clauseConfig[clause.id]?.step !== undefined ? clauseConfig[clause.id].step : 
+                                            (clause.id === 1 ? 10000 : 
+                                            clause.id === 2 ? 5000 : 
+                                            clause.id === 3 ? 1000 : 
+                                            clause.id === 7 ? 1000 : 
+                                            clause.id === 8 ? 1000 : 
+                                            clause.id === 9 ? 1000 : 
+                                            clause.id === 10 ? 1000 : 
+                                            clause.id === 11 ? 1000 : 
+                                            clause.id === 12 ? 10000 : 
+                                            clause.id === 13 ? 1000 : 
+                                            clause.id === 15 ? 50 : 10)}
+                                      valueLabelDisplay="auto"
+                                      valueLabelFormat={(value) => `${value.toLocaleString()} ${currencySymbol}`}
+                                      sx={{
+                                        color: 'primary.main',
+                                        padding: '10px 0', // Reduced padding (default is 13px)
+                                        '& .MuiSlider-thumb': {
+                                          height: 14,
+                                          width: 14,
+                                        },
+                                        '& .MuiSlider-rail': {
+                                          height: 3,
+                                          border: 'none',
+                                          boxShadow: 'none',
+                                        },
+                                        '& .MuiSlider-track': {
+                                          height: 3,
+                                          border: 'none',
+                                          boxShadow: 'none',
+                                        },
+                                      }}
+                                    />
+                                  </div>
+                                  
+                                  {/* Plus button */}
+                                  <button
+                                    type="button"
+                                    onClick={() => {
+                                      const currentValue = customClauseAmounts[clause.id] 
+                                        ? parseFloat(customClauseAmounts[clause.id]) 
+                                        : (clauseConfig[clause.id]?.min || (clause.id === 1 ? 100000 : 0));
+                                      const step = clauseConfig[clause.id]?.step !== undefined 
+                                        ? clauseConfig[clause.id].step 
+                                        : (clause.id === 1 ? 10000 : 
+                                           clause.id === 2 ? 5000 : 
+                                           clause.id === 3 ? 1000 : 
+                                           clause.id === 7 ? 1000 : 
+                                           clause.id === 8 ? 1000 : 
+                                           clause.id === 9 ? 1000 : 
+                                           clause.id === 10 ? 1000 : 
+                                           clause.id === 11 ? 1000 : 
+                                           clause.id === 12 ? 10000 : 
+                                           clause.id === 13 ? 1000 : 
+                                           clause.id === 15 ? 50 : 10);
+                                      const max = clauseConfig[clause.id]?.max !== undefined 
+                                        ? clauseConfig[clause.id].max 
+                                        : (clause.id === 1 ? 2000000 : 
+                                           clause.id === 2 ? 100000 : 
+                                           clause.id === 3 ? 15000 : 
+                                           clause.id === 7 ? 20000 : 
+                                           clause.id === 8 ? 50000 : 
+                                           clause.id === 9 ? 15000 : 
+                                           clause.id === 10 ? 50000 : 
+                                           clause.id === 11 ? 15000 : 
+                                           clause.id === 12 ? 2000000 : 
+                                           clause.id === 13 ? 50000 : 
+                                           clause.id === 15 ? 500 : 150);
+                                      const newValue = Math.min(currentValue + step, max);
+                                      handleClauseAmountChange(clause.id, newValue);
+                                    }}
+                                    className="w-8 h-8 sm:w-6 sm:h-6 flex items-center justify-center bg-gray-200 hover:bg-gray-300 active:bg-gray-400 rounded-full text-gray-700 font-bold text-lg sm:text-base focus:outline-none focus:ring-2 focus:ring-primary touch-manipulation ml-2"
+                                    aria-label="Increase value"
+                                  >
+                                    +
+                                  </button>
+                                </div>
                                 
                                 {/* Current value display */}
-                                <div className="mt-0 text-center">
-                                  <Typography className="text-primary font-semibold whitespace-nowrap" fontWeight="medium">
-                                    <span className="text-sm sm:text-md font-semibold">
+                                <div className="text-center" style={{ marginTop: '-8px' }}>
+                                  <Typography className="text-primary font-semibold whitespace-nowrap" fontWeight="medium" sx={{ lineHeight: 1.1 }}>
+                                    <span className="text-sm font-semibold">
                                       {customClauseAmounts[clause.id] ?
                                         parseInt(customClauseAmounts[clause.id]).toLocaleString() :
                                         (clause.id === 1 ? "100,000" : "0")} {currencySymbol}
