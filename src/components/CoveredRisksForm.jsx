@@ -86,7 +86,8 @@ const CoveredRisksForm = ({
         const tariffResponse = await api.get('/api/v1/insurance-policies/admin/tariff-presets', {
           params: {
             settlement_id: formData.settlement_id,
-            distance_to_water_id: formData.distance_to_water_id
+            distance_to_water_id: formData.distance_to_water_id,
+            area_sq_meters: formData.area_sq_meters
           }
         });
 
