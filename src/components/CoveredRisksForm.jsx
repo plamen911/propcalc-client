@@ -785,7 +785,7 @@ const CoveredRisksForm = ({
                     </div>
                     <div className="flex flex-wrap items-center mt-1.5 sm:mt-1">
                       <div className="flex items-center">
-                        {preset.statistics.total_premium > preset.statistics.total_amount && (
+                        {+preset.statistics.total_premium > +preset.statistics.total_amount && (
                           <span className="text-gray-500 text-sm sm:text-md font-semibold whitespace-nowrap line-through mr-1.5 sm:mr-2">
                             {formatCurrency(
                                 CalcStatisticsService.calculate(
