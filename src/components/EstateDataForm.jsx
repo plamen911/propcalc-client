@@ -301,7 +301,7 @@ const EstateDataForm = ({ formData, handleChange, nextStep }) => {
               onChange={handleChange}
               placeholder="Въведете площ"
               min="1"
-              max="1000000"
+              max="600"
               className="block w-full pr-16 py-3.5 sm:py-2.5 text-base sm:text-base border-gray-300 rounded-md focus:ring-primary focus:border-primary text-black touch-manipulation"
               required
             />
