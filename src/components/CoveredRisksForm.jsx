@@ -94,7 +94,7 @@ const CoveredRisksForm = ({
         // Fetch clause configuration values
         const clauseConfigResponse = await api.get('/api/v1/form-data/clause-config');
         
-        // Set clause configuration state
+        // Set the clause configuration state
         setClauseConfig(clauseConfigResponse.data);
 
         const data = Array.isArray(tariffResponse.data) ? tariffResponse.data : [];
@@ -148,7 +148,7 @@ const CoveredRisksForm = ({
             // Set default values to min values for each clause
             if (clause.id === 1) {
               // Use configuration value if available, otherwise fallback to hardcoded value
-              const minValue = clauseConfigResponse.data[1]?.min || 100000;
+              const minValue = (formData.area_sq_meters * 1000) || clauseConfigResponse.data[1]?.min || 100000;
               initialCustomAmounts[clause.id] = minValue.toString();
             } else if (clause.id === 6 || clause.id === 14 || clause.id === 16) {
               initialCustomAmounts[clause.id] = ''; // Special clauses with checkboxes
