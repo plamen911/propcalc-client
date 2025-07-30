@@ -19,7 +19,7 @@
   }
 
   .pulse-primary {
-    animation: pulse-primary-animation 2s infinite;
+    animation: pulse-primary-animation 1s infinite;
     border-radius: 0.5rem;
   }
 

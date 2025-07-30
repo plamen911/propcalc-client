@@ -839,7 +839,7 @@ const CoveredRisksForm = ({
               <div className="flex items-center flex-1 min-w-0">
                 <div className="flex flex-col w-full">
                   <div className="flex items-center">
-                    <span className="text-gray-800 font-medium text-base sm:text-lg">
+                    <span className="text-gray-800 font-medium text-base sm:text-lg pulse-primary">
                       Пакет по избор
                     </span>
                     {isCustomPackageSelected && (
@@ -879,7 +879,9 @@ const CoveredRisksForm = ({
                     (clause.id !== 3 || formData.estate_type_id === '4') ? (
                     <div key={clause.id} className="flex flex-col sm:flex-row sm:justify-between sm:items-center border-b border-gray-200 py-2.5 sm:py-2">
                       <div className="flex items-start sm:items-center text-gray-800 text-sm sm:text-base pr-2 flex-1 mb-1.5 sm:mb-0">
-                        <span className="leading-tight">{clause.name}</span>
+                        <span className={`leading-tight ${clause.id === 3 ? 'blink-text text-primary-darker' : ''}`}>
+                          {clause.name}
+                        </span>
                         {clause.description && (
                           <InfoModal
                             title={clause.name}
@@ -903,7 +905,7 @@ const CoveredRisksForm = ({
                                 </div>
                               </div>
                             )}
-                            {(clause.id === 6 || clause.id === 14 || clause.id === 16) ? (
+                            {(clause.id === 6 || clause.id === 14 || clause.id === 15 || clause.id === 16) ? (
                               // Original input field implementation for clauses 6, 14, 16
                               <>
                                 <input
