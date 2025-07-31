@@ -919,7 +919,7 @@ const CoveredRisksForm = ({
                               </div>
                             )}
                             {(clause.id === 6 || clause.id === 14 || clause.id === 15 || clause.id === 16) ? (
-                              // Original input field implementation for clauses 6, 14, 16
+                              // Original input field implementation for clauses 6, 14, 15, 16
                               <>
                                 <input
                                   type="text"

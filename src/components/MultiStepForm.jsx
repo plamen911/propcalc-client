@@ -234,6 +234,7 @@ const MultiStepForm = () => {
             formData={formData} 
             handleChange={handleChange} 
             nextStep={nextStep}
+            setCustomClauseAmounts={setCustomClauseAmounts}
           />
         );
       case 1:

@@ -4,7 +4,7 @@ import LoadingSpinner from './ui/LoadingSpinner.jsx';
 import ErrorDisplay from './ui/ErrorDisplay.jsx';
 import { ArrowForward } from '@mui/icons-material';
 
-const EstateDataForm = ({ formData, handleChange, nextStep }) => {
+const EstateDataForm = ({ formData, handleChange, nextStep, setCustomClauseAmounts }) => {
   const [showSettlementOptions, setShowSettlementOptions] = useState(false);
   const [filteredSettlements, setFilteredSettlements] = useState([]);
   // eslint-disable-next-line no-unused-vars
@@ -65,6 +65,17 @@ const EstateDataForm = ({ formData, handleChange, nextStep }) => {
 
   const handleSubmit = (e) => {
     e.preventDefault();
+    setCustomClauseAmounts(prevState => {
+      let defaultValue = +formData.area_sq_meters * 1000;
+      if (defaultValue < 100000) {
+        defaultValue = 100000;
+      }
+
+      return {
+        ...prevState,
+        1: defaultValue
+      }
+    })
     nextStep();
   };
 
