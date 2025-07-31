@@ -8,6 +8,7 @@ import AuthService from '../services/auth';
 import LoadingSpinner from './ui/LoadingSpinner.jsx';
 import ErrorDisplay from './ui/ErrorDisplay.jsx';
 import TariffPreviewForm from "./TariffPreviewForm.jsx";
+import {getSolarClauseId} from "../utils/helpers.js";
 
 const MultiStepForm = () => {
   const [currentStep, setCurrentStep] = useState(0);
@@ -117,6 +118,12 @@ const MultiStepForm = () => {
       ...prevState,
       [name]: value
     }));
+    if (name === 'estate_type_id' && value.toString() !== '4' && Object.keys(customClauseAmounts).length > 0) {
+      setCustomClauseAmounts(prevState => ({
+        ...prevState,
+        [getSolarClauseId()]: 0
+      }));
+    }
   };
 
   const nextStep = () => {
@@ -226,7 +233,7 @@ const MultiStepForm = () => {
           <EstateDataForm 
             formData={formData} 
             handleChange={handleChange} 
-            nextStep={nextStep} 
+            nextStep={nextStep}
           />
         );
       case 1:

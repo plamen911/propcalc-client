@@ -1,17 +1,18 @@
-import React, { useState, useEffect, useCallback } from 'react';
+import React, {useCallback, useEffect, useState} from 'react';
+import {Slider, Typography} from "@mui/material";
+import {CheckCircle} from '@mui/icons-material';
+import {debounce} from 'lodash';
 import BackButton from './ui/BackButton.jsx';
 import ProceedButton from './ui/ProceedButton.jsx';
-import { debounce } from 'lodash';
 import LoadingSpinner from './ui/LoadingSpinner.jsx';
 import ErrorDisplay from './ui/ErrorDisplay.jsx';
 import EyeIcon from './ui/EyeIcon';
-import { LocalOffer, CheckCircle } from '@mui/icons-material';
 import InfoModal from './ui/InfoModal.jsx';
 import ErrorIcon from './ui/ErrorIcon.jsx';
 import api from '../services/api';
 import CalcStatisticsService from '../services/calc-statistics';
-import { formatCurrency, formatDescription } from '../utils/formatters.jsx';
-import { Typography, Slider } from "@mui/material";
+import {formatCurrency, formatDescription} from '../utils/formatters.jsx';
+import {getSolarClauseId, isSolarByEstateTypeApplicable} from "../utils/helpers.js";
 
 const CoveredRisksForm = ({ 
   formData, 
@@ -357,16 +358,18 @@ const CoveredRisksForm = ({
 
   const handleClauseAmountChange = (clauseId, value) => {
     // For input fields, we need to validate the value
+    // 6 - Земетресение
+    // 14 - Разходи за отключване на брава
+    // 16 - Разходи за издаване на документи
     if (clauseId === 6 || clauseId === 14 || clauseId === 16) {
       // Only allow numeric values (digits and decimal point)
       if (value === '' || /^\d*\.?\d*$/.test(value)) {
         // Update the value for the current clause
         setCustomClauseAmounts(prev => {
-          const updatedAmounts = {
+          return {
             ...prev,
             [clauseId]: value
           };
-          return updatedAmounts;
         });
         
         // Call the debounced function directly to ensure immediate update
@@ -385,17 +388,18 @@ const CoveredRisksForm = ({
         [clauseId]: stringValue
       };
 
-      // If clause 1 or 2 was changed and clause 6 checkbox is checked, update clause 6 value
-      if ((clauseId === 1 || clauseId === 2) && clauseCheckboxes[6]) {
+      // If-clause 1, 2 or 3 was changed and the clause 6 checkbox is checked, update clause 6 value
+      if ((clauseId === 1 || clauseId === 2 || clauseId === getSolarClauseId()) && clauseCheckboxes[6]) {
         const clause1Value = clauseId === 1 ? stringValue : prev[1];
         const clause2Value = clauseId === 2 ? stringValue : prev[2];
+        const clause3Value = clauseId === getSolarClauseId() ? stringValue : prev[3];
 
         // If both clause 1 and clause 2 have values, calculate their sum
-        if (clause1Value && clause2Value && 
-            clause1Value !== '' && clause2Value !== '' && 
-            !isNaN(parseFloat(clause1Value)) && !isNaN(parseFloat(clause2Value))) {
-          // Calculate the sum of clause 1 and clause 2
-          const sum = parseFloat(clause1Value) + parseFloat(clause2Value);
+        if (clause1Value && clause2Value && clause3Value &&
+            clause1Value !== '' && clause2Value !== '' && clause3Value !== '' &&
+            !isNaN(parseFloat(clause1Value)) && !isNaN(parseFloat(clause2Value)) && !isNaN(parseFloat(clause3Value))) {
+          // Calculate the sum of clause 1, clause 2 and clause 3
+          const sum = parseFloat(clause1Value) + parseFloat(clause2Value) + parseFloat(clause3Value);
           updatedAmounts[6] = sum.toString();
         }
         // If only clause 1 has a value, use that value
@@ -405,6 +409,10 @@ const CoveredRisksForm = ({
         // If only clause 2 has a value, use that value
         else if (clause2Value && clause2Value !== '' && !isNaN(parseFloat(clause2Value))) {
           updatedAmounts[6] = clause2Value;
+        }
+        // If only clause 3 has a value, use that value
+        else if (clause3Value && clause3Value !== '' && !isNaN(parseFloat(clause3Value))) {
+          updatedAmounts[6] = clause3Value;
         }
       }
 
@@ -431,13 +439,14 @@ const CoveredRisksForm = ({
         let clause6Value = '';
         const clause1Value = customClauseAmounts[1];
         const clause2Value = customClauseAmounts[2];
+        const clause3Value = customClauseAmounts[3];
 
-        // If both clause 1 and clause 2 have values, calculate their sum
-        if (clause1Value && clause2Value && 
-            clause1Value !== '' && clause2Value !== '' && 
-            !isNaN(parseFloat(clause1Value)) && !isNaN(parseFloat(clause2Value))) {
-          // Calculate the sum of clause 1 and clause 2
-          const sum = parseFloat(clause1Value) + parseFloat(clause2Value);
+        // If-clause 1, clause 2 and clause 3 have values, calculate their sum
+        if (clause1Value && clause2Value && clause3Value &&
+            clause1Value !== '' && clause2Value !== '' && clause3Value !== '' &&
+            !isNaN(parseFloat(clause1Value)) && !isNaN(parseFloat(clause2Value)) && !isNaN(parseFloat(clause3Value))) {
+          // Calculate the sum of clause 1, clause 2 and clause 3
+          const sum = parseFloat(clause1Value) + parseFloat(clause2Value) + parseFloat(clause3Value);
           clause6Value = sum.toString();
         } 
         // If only clause 1 has a value, use that value
@@ -447,6 +456,10 @@ const CoveredRisksForm = ({
         // If only clause 2 has a value, use that value
         else if (clause2Value && clause2Value !== '' && !isNaN(parseFloat(clause2Value))) {
           clause6Value = clause2Value;
+        }
+        // If only clause 3 has a value, use that value
+        else if (clause3Value && clause3Value !== '' && !isNaN(parseFloat(clause3Value))) {
+          clause6Value = clause3Value;
         }
 
         setCustomClauseAmounts(prev => ({
@@ -876,10 +889,10 @@ const CoveredRisksForm = ({
                 <div className="space-y-1">
                   {allClauses.map((clause) => (
                     // Hide the clause with id = 3 if estate_type_id is not 4
-                    (clause.id !== 3 || formData.estate_type_id === '4') ? (
+                    (clause.id !== getSolarClauseId() || isSolarByEstateTypeApplicable(formData.estate_type_id)) ? (
                     <div key={clause.id} className="flex flex-col sm:flex-row sm:justify-between sm:items-center border-b border-gray-200 py-2.5 sm:py-2">
                       <div className="flex items-start sm:items-center text-gray-800 text-sm sm:text-base pr-2 flex-1 mb-1.5 sm:mb-0">
-                        <span className={`leading-tight ${clause.id === 3 ? 'blink-text text-primary-darker' : ''}`}>
+                        <span className={`leading-tight ${clause.id === getSolarClauseId() ? 'blink-text text-primary-darker' : ''}`}>
                           {clause.name}
                         </span>
                         {clause.description && (
@@ -941,7 +954,7 @@ const CoveredRisksForm = ({
                                       ? clauseConfig[clause.id].max.toLocaleString() 
                                       : (clause.id === 1 ? "2,000,000" : 
                                          clause.id === 2 ? "100,000" : 
-                                         clause.id === 3 ? "15,000" : 
+                                         clause.id === getSolarClauseId() ? "15,000" :
                                          clause.id === 7 ? "20,000" : 
                                          clause.id === 8 ? "50,000" : 
                                          clause.id === 9 ? "15,000" : 
@@ -966,7 +979,7 @@ const CoveredRisksForm = ({
                                         ? clauseConfig[clause.id].step 
                                         : (clause.id === 1 ? 10000 : 
                                            clause.id === 2 ? 5000 : 
-                                           clause.id === 3 ? 1000 : 
+                                           clause.id === getSolarClauseId() ? 1000 :
                                            clause.id === 7 ? 1000 : 
                                            clause.id === 8 ? 1000 : 
                                            clause.id === 9 ? 1000 : 
@@ -997,7 +1010,7 @@ const CoveredRisksForm = ({
                                       max={clauseConfig[clause.id]?.max !== undefined ? clauseConfig[clause.id].max : 
                                            (clause.id === 1 ? 2000000 : 
                                            clause.id === 2 ? 100000 : 
-                                           clause.id === 3 ? 15000 : 
+                                           clause.id === getSolarClauseId() ? 15000 :
                                            clause.id === 7 ? 20000 : 
                                            clause.id === 8 ? 50000 : 
                                            clause.id === 9 ? 15000 : 
@@ -1009,7 +1022,7 @@ const CoveredRisksForm = ({
                                       step={clauseConfig[clause.id]?.step !== undefined ? clauseConfig[clause.id].step : 
                                             (clause.id === 1 ? 10000 : 
                                             clause.id === 2 ? 5000 : 
-                                            clause.id === 3 ? 1000 : 
+                                            clause.id === getSolarClauseId() ? 1000 :
                                             clause.id === 7 ? 1000 : 
                                             clause.id === 8 ? 1000 : 
                                             clause.id === 9 ? 1000 : 
@@ -1052,7 +1065,7 @@ const CoveredRisksForm = ({
                                         ? clauseConfig[clause.id].step 
                                         : (clause.id === 1 ? 10000 : 
                                            clause.id === 2 ? 5000 : 
-                                           clause.id === 3 ? 1000 : 
+                                           clause.id === getSolarClauseId() ? 1000 :
                                            clause.id === 7 ? 1000 : 
                                            clause.id === 8 ? 1000 : 
                                            clause.id === 9 ? 1000 : 
@@ -1065,7 +1078,7 @@ const CoveredRisksForm = ({
                                         ? clauseConfig[clause.id].max 
                                         : (clause.id === 1 ? 2000000 : 
                                            clause.id === 2 ? 100000 : 
-                                           clause.id === 3 ? 15000 : 
+                                           clause.id === getSolarClauseId() ? 15000 :
                                            clause.id === 7 ? 20000 : 
                                            clause.id === 8 ? 50000 : 
                                            clause.id === 9 ? 15000 : 
