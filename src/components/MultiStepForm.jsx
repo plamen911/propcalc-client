@@ -57,6 +57,7 @@ const MultiStepForm = () => {
   // State for clause checkboxes (for clauses 14 and 16)
   const [clauseCheckboxes, setClauseCheckboxes] = useState({
     14: false,
+    15: false,
     16: false
   });
 
@@ -86,7 +87,7 @@ const MultiStepForm = () => {
         // Then fetch all initial data in a single API call
         const response = await api.get('/api/v1/form-data/initial-data');
 
-        // Set currency symbol
+        // Set the currency symbol
         setCurrencySymbol(response.data.currency_symbol);
 
         // Store the initial data in a global variable to be used by child components

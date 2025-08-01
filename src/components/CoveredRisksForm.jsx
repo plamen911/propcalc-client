@@ -12,7 +12,7 @@ import ErrorIcon from './ui/ErrorIcon.jsx';
 import api from '../services/api';
 import CalcStatisticsService from '../services/calc-statistics';
 import {formatCurrency, formatDescription} from '../utils/formatters.jsx';
-import {getSolarClauseId, isSolarByEstateTypeApplicable} from "../utils/helpers.js";
+import {getSolarClauseId, isClauseWithCheckbox, isSolarByEstateTypeApplicable} from "../utils/helpers.js";
 
 const CoveredRisksForm = ({ 
   formData, 
@@ -149,16 +149,19 @@ const CoveredRisksForm = ({
             // Set default values to min values for each clause
             if (clause.id === 1) {
               // Use configuration value if available, otherwise fallback to hardcoded value
-              const minValue = (formData.area_sq_meters * 1000) || clauseConfigResponse.data[1]?.min || 100000;
+              const minValue = (formData.area_sq_meters * 1000) || clauseConfigResponse.data[clause.id]?.min || 100000;
               initialCustomAmounts[clause.id] = minValue.toString();
-            } else if (clause.id === 6 || clause.id === 14 || clause.id === 16) {
-              initialCustomAmounts[clause.id] = ''; // Special clauses with checkboxes
+            } else if (isClauseWithCheckbox(clause.id)) {
+              initialCustomAmounts[clause.id] = clauseConfigResponse.data[clause.id]?.tariff_amount || 0; // Special clauses with checkboxes
             } else {
               // Use configuration value if available, otherwise fallback to 0
               const minValue = clauseConfigResponse.data[clause.id]?.min || 0;
               initialCustomAmounts[clause.id] = minValue.toString();
             }
           });
+
+          console.log('initialCustomAmounts: ', initialCustomAmounts);
+
           setCustomClauseAmounts(initialCustomAmounts);
         }
 
@@ -360,8 +363,9 @@ const CoveredRisksForm = ({
     // For input fields, we need to validate the value
     // 6 - Земетресение
     // 14 - Разходи за отключване на брава
+    // 15 - Гражданска отговорност за вреди, причинени от домашни любимци и злополука на домашен любимец
     // 16 - Разходи за издаване на документи
-    if (clauseId === 6 || clauseId === 14 || clauseId === 16) {
+    if (isClauseWithCheckbox(clauseId)) {
       // Only allow numeric values (digits and decimal point)
       if (value === '' || /^\d*\.?\d*$/.test(value)) {
         // Update the value for the current clause
@@ -427,14 +431,24 @@ const CoveredRisksForm = ({
     // Get the current state of the clicked checkbox
     const newCheckedState = !clauseCheckboxes[clauseId];
 
+    console.log('111clauseId: ', clauseId);
+    console.log(newCheckedState);
+    console.log(clauseCheckboxes);
+    console.log(customClauseAmounts);
+
+    // if (clauseId === 15) {
+    //
+    //
+    // }
+
     if (clauseId === 6) {
       // Only update checkbox 6
       setClauseCheckboxes(prev => ({
         ...prev,
-        6: newCheckedState
+        [clauseId]: newCheckedState
       }));
 
-      // If checking checkbox 6, calculate sum of clause 1 and 2
+      // If checking checkbox 6, calculate the sum of clause 1, 2 and 3
       if (newCheckedState) {
         let clause6Value = '';
         const clause1Value = customClauseAmounts[1];
@@ -464,7 +478,7 @@ const CoveredRisksForm = ({
 
         setCustomClauseAmounts(prev => ({
           ...prev,
-          6: clause6Value
+          [clauseId]: clause6Value
         }));
       } else {
         // If unchecking, clear the value of clause 6
@@ -473,6 +487,16 @@ const CoveredRisksForm = ({
           6: ''
         }));
       }
+    } else if (clauseId === 15) {
+      setClauseCheckboxes(prev => ({
+        ...prev,
+        [clauseId]: newCheckedState
+      }));
+
+      setCustomClauseAmounts(prev => ({
+        ...prev,
+        [clauseId]: newCheckedState ? window.initialFormData.tariff_amount_coverages[clauseId].tariff_amount_coverage : '',
+      }));
     } else {
       // For checkboxes 14 and 16, update both to the same state
       setClauseCheckboxes(prev => ({
@@ -485,8 +509,8 @@ const CoveredRisksForm = ({
       if (newCheckedState) {
         setCustomClauseAmounts(prev => ({
           ...prev,
-          14: '150',
-          16: '150'
+          14: window.initialFormData.tariff_amount_coverages[14].tariff_amount_coverage,
+          16: window.initialFormData.tariff_amount_coverages[16].tariff_amount_coverage,
         }));
       } else {
         // If unchecking, clear the values for clauses 14 and 16
@@ -906,7 +930,7 @@ const CoveredRisksForm = ({
                       <div className="w-full sm:w-40">
                         {clause.allow_custom_amount && (
                           <div className="relative rounded-md">
-                            {(clause.id === 6 || clause.id === 14 || clause.id === 16) && (
+                            {(clause.id === 6 || clause.id === 14 || clause.id === 15 || clause.id === 16) && (
                               <div className="absolute left-0 top-0 bottom-0 flex items-center pl-3 sm:pl-2 z-10">
                                 <div className="p-1.5 sm:p-0.5 -m-1.5 sm:-m-0.5">
                                   <input
@@ -918,7 +942,7 @@ const CoveredRisksForm = ({
                                 </div>
                               </div>
                             )}
-                            {(clause.id === 6 || clause.id === 14 || clause.id === 15 || clause.id === 16) ? (
+                            {isClauseWithCheckbox(clause.id) ? (
                               // Original input field implementation for clauses 6, 14, 15, 16
                               <>
                                 <input
@@ -926,10 +950,10 @@ const CoveredRisksForm = ({
                                   inputMode="numeric"
                                   value={customClauseAmounts[clause.id]}
                                   onChange={(e) => handleClauseAmountChange(clause.id, e.target.value)}
-                                  placeholder={(clause.id === 14 || clause.id === 16) ? "150" : "Сума"}
-                                  className={`w-full pr-12 ${(clause.id === 6 || clause.id === 14 || clause.id === 16) ? 'pl-11 sm:pl-8' : 'px-3'} py-4 sm:py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-primary focus:border-primary text-black text-base touch-manipulation ${(clause.id === 6 || clause.id === 14 || clause.id === 16) ? 'bg-gray-100' : ''}`}
-                                  readOnly={clause.id === 6 || clause.id === 14 || clause.id === 16}
-                                  {...(clause.id === 6 && clauseCheckboxes[6] ? {
+                                  placeholder={(window.initialFormData.tariff_amount_coverages[clause.id] && window.initialFormData.tariff_amount_coverages[clause.id].tariff_amount_coverage) || "Сума"}
+                                  className={`w-full pr-12 pl-11 sm:pl-8 py-4 sm:py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-primary focus:border-primary text-black text-base touch-manipulation bg-gray-100`}
+                                  readOnly={true}
+                                  {...((clause.id === 6 && clauseCheckboxes[6]) || (clause.id === 15 && clauseCheckboxes[15]) ? {
                                     required: true
                                   } : (clause.id === 14 || clause.id === 16) && clauseCheckboxes[14] && clauseCheckboxes[16] ? {
                                     required: true
