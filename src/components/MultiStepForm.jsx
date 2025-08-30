@@ -115,15 +115,27 @@ const MultiStepForm = () => {
 
   const handleChange = (e) => {
     const { name, value } = e.target;
+    const prevValue = formData[name];
+    
     setFormData(prevState => ({
       ...prevState,
       [name]: value
     }));
-    if (name === 'estate_type_id' && value.toString() !== '4' && Object.keys(customClauseAmounts).length > 0) {
-      setCustomClauseAmounts(prevState => ({
-        ...prevState,
-        [getSolarClauseId()]: 0
-      }));
+    
+    // Reset custom package data when estate_type_id changes
+    if (name === 'estate_type_id' && value !== prevValue) {
+      // Reset all custom package related state
+      setCustomClauseAmounts({});
+      setSelectedRisks({});
+      setIsCustomPackageSelected(false);
+      setSelectedTariff(null);
+      setLastOpenedAccordion(null);
+      setClauseCheckboxes({
+        14: false,
+        15: false,
+        16: false
+      });
+      // Do not reset promotional code state - preserve applied promo codes
     }
   };
 
