@@ -57,7 +57,7 @@
 
 /* Brand header — mirrored from the Каското calculator (source of truth):
    daike_eu2/resources/views/c/{layout,kaskoto/index}.blade.php */
-.brand-header { max-width: 600px; margin: 0 auto; }
+.brand-header { max-width: 600px; margin-left: auto; margin-right: auto; }
 .brand-logo {
   display: block;
   width: 55%;

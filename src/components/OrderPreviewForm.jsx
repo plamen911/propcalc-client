@@ -13,13 +13,14 @@ import {
 import { styled } from '@mui/material/styles';
 import BackButton from './ui/BackButton.jsx';
 import ProceedButton from './ui/ProceedButton.jsx';
-import CheckCircleOutlineIcon from '@mui/icons-material/CheckCircleOutline';
+import ThumbUpAltIcon from '@mui/icons-material/ThumbUpAlt';
 import CheckIcon from './ui/CheckIcon.jsx';
 import api from '../services/api';
 import ErrorDisplay from './ui/ErrorDisplay.jsx';
 // import { formatCurrency } from '../utils/formatters';
 import TariffPreview from "./ui/TariffPreview.jsx";
 import CalcStatisticsService from "../services/calc-statistics.js";
+import { our_broker_name, our_office_name, our_office_email, our_office_phone1, our_office_phone2 } from "../config/company.js";
 
 // Styled Paper component for the preview section§
 const PreviewPaper = styled(Paper)(({ theme }) => ({
@@ -350,30 +351,64 @@ const OrderPreviewForm = ({ prevStep, selectedTariff, insurerData, checkedItems,
           <SuccessAlert 
             severity="success" 
             icon={false}
-            sx={{ 
+            sx={{
               maxWidth: '100%',
               width: '100%',
+              backgroundColor: 'transparent',
+              border: 'none',
               fontSize: { xs: '0.875rem', sm: '1rem' },
               '& .MuiAlert-icon': {
                 display: 'none'
               },
               mb: 3,
-              py: { xs: 3, sm: 3 },
-              px: { xs: 2, sm: 4 }
+              py: { xs: 1, sm: 1 },
+              px: { xs: 0, sm: 0 }
             }}
           >
-            <div className="text-center">
-              <div className="flex items-center justify-center mb-4 sm:mb-3">
-                <CheckCircleOutlineIcon style={{ color: '#4caf50', fontSize: '3rem' }} />
+            <div className="text-left">
+              <div className="flex items-start mb-4 sm:mb-5">
+                <ThumbUpAltIcon className="text-white flex-shrink-0 mr-3" style={{ fontSize: '2rem' }} />
+                <div className="text-xl sm:text-2xl font-bold text-white leading-tight">
+                  ВАШАТА ПОРЪЧКА Е ПРИЕТА УСПЕШНО!
+                </div>
               </div>
-              <div className="text-xl sm:text-2xl font-bold mb-3 sm:mb-2 text-white leading-tight">ВАШАТА ПОРЪЧКА Е ПРИЕТА УСПЕШНО!</div>
-              <div className="bg-white/10 py-3 sm:py-2 px-3 sm:px-4 rounded-lg inline-block mb-4 sm:mb-3 border border-white/20">
-                <span className="text-base sm:text-lg font-medium text-white block sm:inline">НОМЕР НА ПОРЪЧКАТА:</span>
-                <span className="text-xl sm:text-xl font-bold sm:ml-2 text-white block sm:inline mt-1 sm:mt-0 pulse">{policyData.code}</span>
-              </div>
-              <div className="text-sm sm:text-base mb-5 sm:mb-4 leading-relaxed bg-white/5 p-4 sm:p-3 rounded-lg border border-white/10">
-                <p className="mb-3 text-white">Екипът на ЗБ "Дженерал Брокер Клуб" ООД Ви благодари за направения избор.</p>
-                <p className="text-white">Нашите експерти ще обработят заявката и ще се свържат с Вас по телефон или имейл за уточняване на плащане и доставка на полицата.</p>
+              <div className="bg-white rounded-lg overflow-hidden mb-5 sm:mb-6 divide-y divide-gray-200">
+                <div className="px-4 sm:px-5 py-3">
+                  <span className="text-base sm:text-lg font-medium text-gray-700">
+                    НОМЕР НА ПОРЪЧКАТА:{' '}
+                  </span>
+                  <span className="text-lg sm:text-xl font-bold text-primary pulse-primary">
+                    {policyData.code}
+                  </span>
+                </div>
+                <div className="px-4 sm:px-5 py-3">
+                  <p className="text-sm sm:text-base text-gray-700 leading-relaxed">
+                    Екипът на <span className="font-bold text-primary">{our_broker_name}</span>, част от <span className="font-bold text-primary">{our_office_name}</span>, Ви благодари за направения избор.
+                  </p>
+                </div>
+                <div className="px-4 sm:px-5 py-3">
+                  <p className="text-sm sm:text-base text-gray-700 leading-relaxed">
+                    Нашите експерти ще обработят заявката и ще се свържат с Вас по телефон или имейл за уточняване на плащане и доставка на полицата.
+                  </p>
+                </div>
+                <div className="px-4 sm:px-5 py-3">
+                  <p className="mb-1 text-sm sm:text-base text-gray-700">
+                    <span className="text-gray-500">Имейл: </span>
+                    <a href={`mailto:${our_office_email}`} className="font-medium text-primary hover:underline">
+                      {our_office_email}
+                    </a>
+                  </p>
+                  <p className="text-sm sm:text-base text-gray-700">
+                    <span className="text-gray-500">Телефон: </span>
+                    <a href={`tel:${our_office_phone1.replace(/\s/g, '')}`} className="font-medium text-primary hover:underline">
+                      {our_office_phone1}
+                    </a>
+                    <span className="text-gray-400"> / </span>
+                    <a href={`tel:${our_office_phone2.replace(/\s/g, '')}`} className="font-medium text-primary hover:underline">
+                      {our_office_phone2}
+                    </a>
+                  </p>
+                </div>
               </div>
               <button
                 onClick={() => {
@@ -381,8 +416,9 @@ const OrderPreviewForm = ({ prevStep, selectedTariff, insurerData, checkedItems,
                     resetForm();
                   }
                 }}
-                className="inline-flex items-center justify-center py-4 sm:py-3 px-8 sm:px-6 border border-transparent shadow-sm text-base font-medium rounded-full text-white bg-[#6b1021] hover:bg-[#5a0d1c] focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-[#6b1021] transition-all duration-200 hover:scale-105 min-h-[60px] sm:min-h-[56px] w-full sm:w-auto touch-manipulation"
+                className="inline-flex items-center justify-center py-4 sm:py-3 px-8 sm:px-6 border-2 border-white text-base font-medium rounded-full text-white bg-transparent hover:bg-white/10 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-white transition-all duration-200 min-h-[60px] sm:min-h-[56px] w-full sm:w-auto touch-manipulation"
               >
+                <CheckIcon className="text-white mr-2 flex-shrink-0 h-5 w-5" />
                 ГОТОВО
               </button>
             </div>
@@ -633,7 +669,7 @@ const OrderPreviewForm = ({ prevStep, selectedTariff, insurerData, checkedItems,
               className="mt-0.5 sm:mt-1 mr-3 sm:mr-3 h-6 w-6 sm:h-4 sm:w-4 text-primary border-white/50 rounded focus:ring-primary"
             />
             <label htmlFor="terms-checkbox" className="text-white text-sm sm:text-base leading-tight -mt-1 sm:mt-0">
-              Декларирам, че съм съгласен/а предоставените от мен лични данни по смисъла на чл.2 от Закона за защита на личните данни, да бъдат обработвани от ЗБ "Дженерал Брокер Клуб" ООД за предоставяне на застрахователни услуги, предоставяни на Асоциацията на българските застрахователи и Комисията за финансов надзор.
+              Декларирам, че съм съгласен/а предоставените от мен лични данни по смисъла на чл.2 от Закона за защита на личните данни, да бъдат обработвани от {our_office_name} за предоставяне на застрахователни услуги, предоставяни на Асоциацията на българските застрахователи и Комисията за финансов надзор.
             </label>
           </div>
 
