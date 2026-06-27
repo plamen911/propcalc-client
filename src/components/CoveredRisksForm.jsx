@@ -1,4 +1,4 @@
-import React, {useCallback, useEffect, useState} from 'react';
+import React, {useEffect, useMemo, useRef, useState} from 'react';
 import {Slider, Typography} from "@mui/material";
 import {CheckCircle} from '@mui/icons-material';
 import {debounce} from 'lodash';
@@ -48,16 +48,16 @@ const CoveredRisksForm = ({
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
 
-    // State for expanded accordion items
-    const [expandedItems, setExpandedItems] = useState({});
+    // State for expanded accordion items (value is write-only; only the setter is used)
+    const [, setExpandedItems] = useState({});
     const [isCustomPackageExpanded, setIsCustomPackageExpanded] = useState(false);
     const [validationError, setValidationError] = useState('');
 
     // State for all unique clauses
     const [allClauses, setAllClauses] = useState([]);
 
-    // State for the promotional code success message
-    const [showPromoSuccess, setShowPromoSuccess] = useState(false);
+    // State for the promotional code success message (value is write-only; only the setter is used)
+    const [, setShowPromoSuccess] = useState(false);
 
     // State for clause configuration values (min, max, step)
     const [clauseConfig, setClauseConfig] = useState({});
@@ -73,6 +73,14 @@ const CoveredRisksForm = ({
             total_amount: '0.00'
         }
     });
+
+    // Keep the latest lastOpenedAccordion in a ref so the data-fetch effect below
+    // can restore the open accordion without listing it as a dependency (which
+    // would re-trigger the fetch every time the user opens/closes an accordion).
+    const lastOpenedAccordionRef = useRef(lastOpenedAccordion);
+    useEffect(() => {
+        lastOpenedAccordionRef.current = lastOpenedAccordion;
+    }, [lastOpenedAccordion]);
 
     useEffect(() => {
         // Only fetch if both settlement_id and distance_to_water_id are available
@@ -102,11 +110,12 @@ const CoveredRisksForm = ({
                 setTariffPresets(data);
 
                 // Use lastOpenedAccordion if available, otherwise all items will be collapsed by default
-                if (lastOpenedAccordion) {
-                    if (lastOpenedAccordion === 'custom') {
+                const lastOpened = lastOpenedAccordionRef.current;
+                if (lastOpened) {
+                    if (lastOpened === 'custom') {
                         setIsCustomPackageExpanded(true);
                     } else {
-                        setExpandedItems({[lastOpenedAccordion]: true});
+                        setExpandedItems({[lastOpened]: true});
                     }
                 }
 
@@ -215,9 +224,12 @@ const CoveredRisksForm = ({
     };
 
 
-    // Function to calculate statistics for a custom package
-    const calculateCustomPackageStatistics = async () => {
-        try {
+    // Debounced calculation of custom package statistics. Built with useMemo so the
+    // debounced instance is stable across renders and only rebuilt when its inputs
+    // change. The API call is inlined here (rather than calling a separately-defined
+    // function) so ESLint can statically verify the dependency list.
+    const debouncedCalculate = useMemo(
+        () => debounce(async () => {
             // Only call API if a custom package is expanded
             if (!isCustomPackageExpanded) {
                 return;
@@ -230,20 +242,12 @@ const CoveredRisksForm = ({
                 distance_to_water_id: formData.distance_to_water_id
             };
 
-            // Call API
-            const response = await api.post('/api/v1/form-data/custom-package-statistics', data);
-
-            // Update state with response data
-            setCustomPackageStatistics(response.data);
-        } catch (err) {
-            console.error('Error calculating custom package statistics:', err);
-        }
-    };
-
-    // Debounce function to avoid too many API calls
-    const debouncedCalculate = useCallback(
-        debounce(() => {
-            calculateCustomPackageStatistics();
+            try {
+                const response = await api.post('/api/v1/form-data/custom-package-statistics', data);
+                setCustomPackageStatistics(response.data);
+            } catch (err) {
+                console.error('Error calculating custom package statistics:', err);
+            }
         }, 500),
         [customClauseAmounts, formData.settlement_id, formData.distance_to_water_id, isCustomPackageExpanded]
     );

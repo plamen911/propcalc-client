@@ -8,7 +8,6 @@ import AuthService from '../services/auth';
 import LoadingSpinner from './ui/LoadingSpinner.jsx';
 import ErrorDisplay from './ui/ErrorDisplay.jsx';
 import TariffPreviewForm from "./TariffPreviewForm.jsx";
-import {getSolarClauseId} from "../utils/helpers.js";
 
 const MultiStepForm = () => {
   const [currentStep, setCurrentStep] = useState(0);

@@ -10,22 +10,17 @@ import ErrorDisplay from './ui/ErrorDisplay.jsx';
 import ErrorIcon from './ui/ErrorIcon.jsx';
 import InfoModal from './ui/InfoModal.jsx';
 import CalcStatisticsService from '../services/calc-statistics';
-import { formatCurrency, formatDescription } from '../utils/formatters';
+import { formatDescription } from '../utils/formatters';
 import TariffPreview from "./ui/TariffPreview.jsx";
 
-const InsurerForm = ({ 
-  nextStep, 
-  prevStep, 
-  selectedTariff, 
-  insurerData, 
-  setInsurerData, 
-  checkedItems, 
+const InsurerForm = ({
+  nextStep,
+  prevStep,
+  insurerData,
+  setInsurerData,
+  checkedItems,
   setCheckedItems,
-  currencySymbol,
-  formData,
-  promoCodeValid,
-  promoDiscount,
-  promoDiscountedAmount
+  formData
 }) => {
   const [propertyChecklistItems, setPropertyChecklistItems] = useState([]);
   const [personRoleOptions, setPersonRoleOptions] = useState([]);
@@ -116,6 +111,10 @@ const InsurerForm = ({
     };
 
     fetchFormData();
+    // Mount-only: fetches form data once and seeds checkedItems if the parent
+    // hasn't populated it. checkedItems/setCheckedItems are intentionally omitted
+    // so toggling a checkbox doesn't re-trigger the fetch.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   // Handle settlement input change
@@ -537,17 +536,11 @@ const InsurerForm = ({
     return /^\d{10}$/.test(lnch);
   };
 
-  // Validate permanent address according to the specified requirements
-  const validatePermanentAddress = (address) => {
-    return true
-    // Allowed characters:
-    // - Cyrillic letters
-    // - Latin letters I, V, X
-    // - Digits 0-9
-    // - Punctuation marks: period, colon, semicolon, quotes
-    // - Symbols: №, (, ), /
-    const regex = /^[\u0400-\u04FF0-9IVXivx.,:;"№()/\s]+$/;
-    return regex.test(address);
+  // Address validation is currently disabled (always passes). It previously
+  // restricted input to Cyrillic/Latin I,V,X letters, digits, common
+  // punctuation, and the symbols № ( ) /. Re-add a regex test here to enforce.
+  const validatePermanentAddress = () => {
+    return true;
   };
 
   // Validate if user is at least 18 years old
