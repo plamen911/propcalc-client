@@ -361,9 +361,14 @@ const MultiStepForm = () => {
     <div className="bg-primary text-white rounded-lg shadow-lg overflow-hidden transition-all duration-300 hover:shadow-xl">
       {/* Header with title and step indicator - improved for mobile */}
       <div className="p-4 sm:p-6 md:p-8 border-b border-primary/30 flex flex-col sm:flex-row justify-between items-center gap-3 sm:gap-0">
-        <h2 className="text-xl sm:text-2xl font-medium text-center sm:text-left">
-          ЗАСТРАХОВКА ИМУЩЕСТВО
-        </h2>
+        <div>
+          <h2 className="text-xl sm:text-2xl font-medium text-center sm:text-left">
+            ЗАСТРАХОВКА ИМУЩЕСТВО
+          </h2>
+          <div className="text-sm text-white/70">
+            Изчислява по тарифа Бонус дом+ на Булстрад
+          </div>
+        </div>
         <span className="px-3 sm:px-4 py-1.5 sm:py-2 bg-white text-primary rounded-full border-2 border-white text-sm sm:text-base font-medium whitespace-nowrap">
           Стъпка {currentStep + 1} от {steps.length}
         </span>

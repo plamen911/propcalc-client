@@ -93,6 +93,15 @@ npm run build
 The application uses JWT (JSON Web Token) authentication with anonymous users. Tokens expire after 1 hour, and the application automatically refreshes them to provide a seamless user experience.
 
 ## Deployment
-The application is configured to be deployed to any static hosting service. The production build outputs optimized static files to the `dist` directory.
+The application is deployed on **Cloudflare Pages** (Direct Upload, no Git
+integration) and accessible at [https://propcalc-dy7.pages.dev/](https://propcalc-dy7.pages.dev/).
 
-The application is currently deployed on Cloudflare Pages and accessible at [https://propcalc-dy7.pages.dev/](https://propcalc-dy7.pages.dev/).
+Deployment is manual — `git push` does **not** deploy. Build locally and upload
+`dist/` with Wrangler:
+
+```bash
+./deploy.sh        # build + deploy (or: npm run deploy)
+```
+
+See **[DEPLOYMENT.md](./DEPLOYMENT.md)** for the full process, authentication,
+and the pre-deploy checklist.

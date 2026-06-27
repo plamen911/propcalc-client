@@ -54,3 +54,71 @@
     }
   }
 }
+
+/* Brand header — mirrored from the Каското calculator (source of truth):
+   daike_eu2/resources/views/c/{layout,kaskoto/index}.blade.php */
+.brand-header { max-width: 600px; margin: 0 auto; }
+.brand-logo {
+  display: block;
+  width: 55%;
+  max-width: 220px;
+  height: auto;
+  margin: 0 auto;
+}
+.brand-sep {
+  width: 60%;
+  max-width: 240px;
+  height: 2px;
+  margin: 1rem auto .75rem;
+  border: 0;
+  opacity: 1;
+  background: linear-gradient(90deg, transparent, rgb(139, 33, 49), transparent);
+}
+.calc-badge { line-height: 1; }
+.calc-badge__title {
+  display: block;
+  font-weight: 900;
+  text-transform: uppercase;
+  color: #4b4f54;
+  letter-spacing: .02em;
+  font-size: clamp(1.75rem, 7vw, 3rem);
+}
+.calc-badge__ribbon {
+  display: inline-block;
+  margin-top: .15em;
+  padding: .12em .65em;
+  background: rgb(139, 33, 49);
+  color: #fff;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: .02em;
+  font-size: clamp(.9rem, 3.5vw, 1.5rem);
+  transform: rotate(-3deg);
+}
+
+/* Mobile (stacked): bigger badge text, smaller logo */
+@media (max-width: 767.98px) {
+  .calc-badge__title  { font-size: clamp(2.625rem, 10.5vw, 4.5rem); }
+  .calc-badge__ribbon { font-size: clamp(1.35rem, 5.25vw, 2.25rem); }
+  .brand-logo         { width: 30.25%; max-width: 121px; }
+}
+
+/* Desktop: logo left, calculator text right, side by side */
+@media (min-width: 768px) {
+  .brand-header {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 1.75rem;
+    max-width: 820px;
+  }
+  .brand-logo { width: auto; max-width: 220px; margin: 0; transform: translateY(6px); }
+  .brand-sep {
+    width: 2px;
+    height: 90px;
+    max-width: none;
+    margin: 0;
+    background: linear-gradient(180deg, transparent, rgb(139, 33, 49), transparent);
+  }
+  .calc-badge { text-align: left; }
+}
