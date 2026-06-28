@@ -14,7 +14,7 @@ function App() {
             />
             <hr className="brand-sep" />
             <div className="calc-badge">
-              <span className="calc-badge__title">Домът</span>
+              <span className="calc-badge__title">Защита</span>
               <span className="calc-badge__ribbon">без завишение</span>
             </div>
           </header>
