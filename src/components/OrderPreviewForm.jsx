@@ -305,6 +305,18 @@ const OrderPreviewForm = ({ prevStep, selectedTariff, insurerData, checkedItems,
           policyData.subtotal_tax = stats.taxAmount;
           policyData.total = stats.totalAmount;
 
+          // A custom package ("Пакет по избор") has no preset id: send the insured sums the
+          // customer chose, keyed by insurance clause id, or the order lists no coverages.
+          if (!selectedTariff.id) {
+            const tariffAmounts = {};
+            (selectedTariff.tariff_preset_clauses || []).forEach(({ insurance_clause, tariff_amount }) => {
+              if (insurance_clause && tariff_amount !== '' && tariff_amount != null) {
+                tariffAmounts[insurance_clause.id] = tariff_amount;
+              }
+            });
+            policyData.tariff_amounts = tariffAmounts;
+          }
+
           // Add promotional code data if a valid promo code is applied
           if (promoCodeValid && promoDiscount && promoCodeId) {
             policyData.promotional_code_id = promoCodeId;
